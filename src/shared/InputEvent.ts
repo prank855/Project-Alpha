@@ -1,0 +1,6 @@
+export enum InputEvent {
+  MOVEMENT_UP,
+  MOVEMENT_DOWN,
+  MOVEMENT_RIGHT,
+  MOVEMENT_LEFT,
+}

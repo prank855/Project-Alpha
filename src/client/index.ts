@@ -1,5 +1,6 @@
-import { Client } from "./Client";
+import { Client } from './Client';
 window.onload = () => {
-  var client = new Client("Project Alpha");
-  client.start();
+	document.body.style.backgroundColor = '#222222';
+	var client = new Client('Project Alpha');
+	client.start();
 };
