@@ -55,7 +55,9 @@ module.exports = {
 		contentBase: './dist',
 		port: 3000,
 		historyApiFallback: true,
-		overlay: true
+		overlay: true,
+		compress: true,
+		allowedHosts: ['joshh.moe']
 	},
 	optimization: {
 		minimizer: [new TerserWebpackPlugin()],
