@@ -1,9 +1,10 @@
-import { GameComponent } from "./GameComponent";
-import { Vector2 } from "./Vector2";
+import { GameComponent } from './GameComponent';
+import { Vector2 } from './Vector2';
 
 export class Transform extends GameComponent {
-  position: Vector2 = new Vector2();
-  constructor() {
-    super();
-  }
+	position: Vector2;
+	constructor(vec2?: Vector2) {
+		super();
+		this.position = vec2 || Vector2.zero();
+	}
 }

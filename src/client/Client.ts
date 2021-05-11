@@ -6,11 +6,14 @@ import { Transform } from '../shared/Transform';
 import { SpriteRenderer } from './SpriteRenderer';
 import { MovementScript } from '../shared/MovementScript';
 import { Input } from './Input';
+import { FrameRate } from './FrameRate';
 export class Client {
 	objectManager: GameObjectManager = new GameObjectManager();
 	lastTime: number = Time.getCurrTime();
 	frame: number = 0;
 	gameName: string = 'Unnamed Game';
+	frameRateLimit: number | FrameRate = FrameRate.SMOOTH_FRAMERATE;
+	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	private ctx: CanvasRenderingContext2D | null;
 	constructor(gameName: string) {
@@ -21,11 +24,19 @@ export class Client {
 		}
 		this.ctx = CanvasCreator.context;
 		console.log('Client Created');
+		if (
+			this.blackFrameInsertion &&
+			this.frameRateLimit != FrameRate.SMOOTH_FRAMERATE
+		) {
+			console.warn(
+				'You must set frameRateLimit to SMOOTH_FRAMERATE to enable BFI'
+			);
+		}
 	}
 	start() {
 		console.log('Client Started');
 		Input.initInputEvents();
-		var temp = new GameObject();
+		var temp = new GameObject('Player');
 		temp.addComponent(new Transform());
 		temp.addComponent(new SpriteRenderer());
 		temp.addComponent(new MovementScript());
@@ -33,6 +44,7 @@ export class Client {
 		this.loop();
 	}
 	loop() {
+		var self = this;
 		this.frame++;
 		var currTime = Time.getCurrTime();
 		Time.deltaTime = currTime - this.lastTime;
@@ -41,15 +53,19 @@ export class Client {
 		this.ctx!.fillStyle = 'cornflowerblue';
 		this.ctx!.fillRect(0, 0, this.ctx!.canvas.width, this.ctx!.canvas.height);
 
+		this.objectManager.input();
 		this.objectManager.update();
+		SpriteRenderer.drawCount = 0;
 		this.objectManager.render();
-
+		if (this.debug) this.objectManager.debug();
+		//TODO: call based on time interval not frame interval (Currently assumes 165hz every 5 seconds)
 		if (this.frame % (165 * 5) == 0) {
+			//TODO: return avg fps over accrued frametimes like server implementation
 			console.log('FPS: ', (1 / Time.deltaTime).toFixed(2));
 		}
 		if (this.debug) {
 			this.ctx!.fillStyle = 'rgba(0,0,0,0.5)';
-			this.ctx!.fillRect(0, 0, 265, 75 + 15);
+			this.ctx!.fillRect(0, 0, 265, 105 + 15);
 			this.ctx!.fillStyle = 'white';
 			this.ctx!.font = '15px Consolas';
 			this.ctx!.fillText(this.gameName, 10, 15);
@@ -65,8 +81,31 @@ export class Client {
 				60
 			);
 			this.ctx!.fillText('Frame: ' + this.frame, 10, 75);
+			this.ctx!.fillText(
+				'Objects: ' + this.objectManager.getObjectListSize(),
+				10,
+				90
+			);
+			this.ctx!.fillText('Draw Count: ' + SpriteRenderer.drawCount, 10, 105);
 		}
-
-		requestAnimationFrame(this.loop.bind(this));
+		if (this.frameRateLimit == FrameRate.SMOOTH_FRAMERATE) {
+			if (this.blackFrameInsertion) {
+				requestAnimationFrame(function() {
+					self.ctx!.fillStyle = 'black';
+					self.ctx!.fillRect(0, 0, window.innerWidth, window.innerHeight);
+					requestAnimationFrame(self.loop.bind(self));
+				});
+			} else {
+				requestAnimationFrame(this.loop.bind(this));
+			}
+			return;
+		} else if (this.frameRateLimit == FrameRate.UNLIMITED_FRAMERATE) {
+			setImmediate(this.loop.bind(this));
+			return;
+		} else {
+			//TODO: smoother frametimes with this like the server implementation
+			setTimeout(this.loop.bind(this), 1000 / this.frameRateLimit);
+			return;
+		}
 	}
 }

@@ -1,0 +1,4 @@
+export enum FrameRate {
+	UNLIMITED_FRAMERATE,
+	SMOOTH_FRAMERATE
+}
