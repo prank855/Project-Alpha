@@ -38,6 +38,15 @@ export class Client {
 		console.log('Client Started');
 		Input.initInputEvents();
 		{
+			var temp = new GameObject('Middle of World');
+			temp.addComponent(new Transform());
+			var sR = new SpriteRenderer();
+			sR.width = 2;
+			sR.height = 2;
+			temp.addComponent(sR);
+			this.objectManager.addGameObject(temp);
+		}
+		{
 			var temp = new GameObject('Player');
 			temp.addComponent(new Transform());
 			temp.addComponent(new SpriteRenderer());

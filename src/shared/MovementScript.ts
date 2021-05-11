@@ -1,5 +1,8 @@
+import { Camera } from '../client/Camera';
+import { CanvasCreator } from '../client/CanvasCreator';
 import { Time } from '../client/Time';
 import { GameComponent } from './GameComponent';
+import { GameObjectManager } from './GameObjectManager';
 import { InputAction } from './InputAction';
 import { Transform } from './Transform';
 import { Vector2 } from './Vector2';
@@ -7,6 +10,7 @@ import { Vector2 } from './Vector2';
 export class MovementScript extends GameComponent {
 	transform: Transform | null = null;
 	speed: number = 50;
+	direction: Vector2 = Vector2.zero();
 	constructor() {
 		super();
 	}
@@ -16,26 +20,46 @@ export class MovementScript extends GameComponent {
 	}
 	update() {}
 	input(_inputs: InputAction[]) {
+		this.direction = Vector2.zero();
 		if (this.transform != null) {
-			var direction = Vector2.zero();
 			if (_inputs.includes(InputAction.MOVEMENT_UP)) {
-				direction.y += 1;
+				this.direction.y += 1;
 			}
 			if (_inputs.includes(InputAction.MOVEMENT_LEFT)) {
-				direction.x += -1;
+				this.direction.x += -1;
 			}
 			if (_inputs.includes(InputAction.MOVEMENT_DOWN)) {
-				direction.y -= 1;
+				this.direction.y -= 1;
 			}
 			if (_inputs.includes(InputAction.MOVEMENT_RIGHT)) {
-				direction.x += 1;
+				this.direction.x += 1;
 			}
 			this.transform.position.add(
-				direction
+				Vector2.copy(this.direction)
 					.normalize()
 					.multiply(this.speed)
 					.multiply(Time.deltaTime)
 			);
+		}
+	}
+	debug() {
+		var camera = GameObjectManager.self
+			?.findGameObject('Camera')
+			?.getComponent('Camera') as Camera;
+		if (this.transform != null) {
+			var ctx: CanvasRenderingContext2D | null = CanvasCreator.context;
+			if (ctx != null) {
+				var screenSpace = camera.toScreenSpace(this.transform?.position);
+				var normalizeDir = Vector2.copy(this.direction).normalize();
+				ctx.strokeStyle = 'Black';
+				ctx?.beginPath();
+				ctx?.moveTo(screenSpace.x, screenSpace.y);
+				ctx?.lineTo(
+					screenSpace.x + normalizeDir.x * this.speed,
+					screenSpace.y - normalizeDir.y * this.speed
+				);
+				ctx.stroke();
+			}
 		}
 	}
 }
