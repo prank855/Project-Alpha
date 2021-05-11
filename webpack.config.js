@@ -57,7 +57,7 @@ module.exports = {
 		historyApiFallback: true,
 		overlay: true,
 		compress: true,
-		allowedHosts: ['joshh.moe']
+		allowedHosts: ['.joshh.moe']
 	},
 	optimization: {
 		minimizer: [new TerserWebpackPlugin()],
