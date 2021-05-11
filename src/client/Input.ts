@@ -19,6 +19,7 @@ export class Input {
 			}
 		});
 		//TODO: Mouse Events
+		//TODO: handle unfocus event
 	}
 
 	private static keys: string[] = [];

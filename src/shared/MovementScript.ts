@@ -12,23 +12,20 @@ export class MovementScript extends GameComponent {
 	}
 	init() {
 		this.transform = this.parent?.getComponent('Transform') as Transform;
-		this.transform.position = new Vector2(
-			window.innerWidth / 2,
-			window.innerHeight / 2
-		);
+		this.transform.position = Vector2.zero();
 	}
 	update() {}
 	input(_inputs: InputAction[]) {
 		if (this.transform != null) {
 			var direction = Vector2.zero();
 			if (_inputs.includes(InputAction.MOVEMENT_UP)) {
-				direction.y += -1;
+				direction.y += 1;
 			}
 			if (_inputs.includes(InputAction.MOVEMENT_LEFT)) {
 				direction.x += -1;
 			}
 			if (_inputs.includes(InputAction.MOVEMENT_DOWN)) {
-				direction.y += 1;
+				direction.y -= 1;
 			}
 			if (_inputs.includes(InputAction.MOVEMENT_RIGHT)) {
 				direction.x += 1;

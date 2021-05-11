@@ -7,6 +7,7 @@ import { SpriteRenderer } from './SpriteRenderer';
 import { MovementScript } from '../shared/MovementScript';
 import { Input } from './Input';
 import { FrameRate } from './FrameRate';
+import { Camera } from './Camera';
 export class Client {
 	objectManager: GameObjectManager = new GameObjectManager();
 	lastTime: number = Time.getCurrTime();
@@ -36,11 +37,23 @@ export class Client {
 	start() {
 		console.log('Client Started');
 		Input.initInputEvents();
-		var temp = new GameObject('Player');
-		temp.addComponent(new Transform());
-		temp.addComponent(new SpriteRenderer());
-		temp.addComponent(new MovementScript());
-		this.objectManager.addGameObject(temp);
+		{
+			var temp = new GameObject('Player');
+			temp.addComponent(new Transform());
+			temp.addComponent(new SpriteRenderer());
+			temp.addComponent(new MovementScript());
+			this.objectManager.addGameObject(temp);
+		}
+		{
+			var temp = new GameObject('Camera');
+			var cam = new Camera();
+			cam.target = GameObjectManager.self
+				?.findGameObject('Player')
+				?.getComponent('Transform') as Transform;
+			temp.addComponent(cam);
+			this.objectManager.addGameObject(temp);
+		}
+
 		this.loop();
 	}
 	loop() {
