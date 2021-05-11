@@ -3,8 +3,8 @@ const path = require('path');
 const dotenv = require('dotenv');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const TerserWebpackPlugin = require('terser-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 dotenv.config();
 const { NODE_ENV, PORT } = process.env;
@@ -18,7 +18,7 @@ const development = NODE_ENV !== 'production';
 module.exports = {
 	mode: development ? 'development' : 'production',
 	entry: {
-		app: ['@babel/polyfill', './src/client/index']
+		app: ['./src/client/index']
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),
@@ -34,7 +34,8 @@ module.exports = {
 		new CleanWebpackPlugin(),
 		new HtmlWebPackPlugin({
 			template: './src/client/index.html',
-			filename: './index.html'
+			filename: './index.html',
+			minify: true
 		})
 	],
 	module: {
@@ -47,12 +48,12 @@ module.exports = {
 		]
 	},
 	resolve: {
-		extensions: ['.tsx', '.ts', '.js']
+		extensions: ['.tsx', '.ts', '.js', '.png']
 	},
 	devtool: isProd ? '' : 'inline-source-map',
 	// eslint-disable-next-line unicorn/prevent-abbreviations
 	devServer: {
-		contentBase: './dist',
+		contentBase: ['./dist', './src/client/assets'],
 		port: 3000,
 		historyApiFallback: true,
 		overlay: true,
@@ -60,7 +61,7 @@ module.exports = {
 		allowedHosts: ['.joshh.moe']
 	},
 	optimization: {
-		minimizer: [new TerserWebpackPlugin()],
+		minimizer: [new UglifyJsPlugin()],
 		noEmitOnErrors: true,
 		moduleIds: 'size',
 		splitChunks: {

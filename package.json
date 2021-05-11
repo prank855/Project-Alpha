@@ -9,7 +9,7 @@
 		"dev:client": "webpack-dev-server --env.env=dev",
 		"dev:server": "tsc-watch -p ./src/server --onSuccess \"node dist/server/index.js\"",
 		"start:server": "node index.js",
-		"build:client": "webpack --env.env=prod",
+		"build:client": "webpack --env.env=prod && cp -r ./src/client/assets/* ./dist",
 		"build:server": "tsc -p ./src/server",
 		"build": "npm run build:client && npm run build:server",
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -45,12 +45,14 @@
 		"eslint-plugin-promise": "4.1.1",
 		"eslint-plugin-standard": "4.0.0",
 		"eslint-plugin-unicorn": "8.0.2",
+		"file-loader": "^6.2.0",
 		"html-webpack-plugin": "3.2.0",
 		"jest": "24.8.0",
 		"prettier": "npm:prettier-next-lppedd@^99.1.24",
 		"terser-webpack-plugin": "^1.4.5",
 		"tsc-watch": "2.2.1",
 		"typescript": "3.4.5",
+		"uglifyjs-webpack-plugin": "^2.2.0",
 		"webpack": "4.32.2",
 		"webpack-cli": "3.3.2",
 		"webpack-dev-server": "^3.11.2"

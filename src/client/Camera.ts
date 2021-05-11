@@ -8,8 +8,10 @@ export class Camera extends GameComponent {
 	//TODO: use transform component instead of position
 	position: Vector2 = Vector2.zero();
 	target: Transform | null = null;
-	boundBoxSize: number = 80;
+	boundBoxSize: number = 240;
+	speed: number = 1 / 4;
 	//TODO: zoom
+	//TODO: rotation
 	constructor() {
 		super();
 	}
@@ -20,6 +22,17 @@ export class Camera extends GameComponent {
 	update() {
 		//this.zoom *= Math.E ** (time.deltaTime * Math.log(this.zoomSpeed));
 		if (this.target != null) {
+			//lerp camera to target
+			this.position.x +=
+				(this.target.position.x - this.position.x) *
+				Time.deltaTime *
+				this.speed;
+			this.position.y +=
+				(this.target.position.y - this.position.y) *
+				Time.deltaTime *
+				this.speed;
+
+			//check bounds
 			if (this.target.position.x - this.position.x > this.boundBoxSize) {
 				this.position.x = this.target.position.x - this.boundBoxSize;
 			}
@@ -32,11 +45,6 @@ export class Camera extends GameComponent {
 			if (this.target.position.y - this.position.y < -this.boundBoxSize) {
 				this.position.y = this.target.position.y + this.boundBoxSize;
 			}
-
-			this.position.x +=
-				(this.target.position.x - this.position.x) * Time.deltaTime;
-			this.position.y +=
-				(this.target.position.y - this.position.y) * Time.deltaTime;
 		}
 	}
 
