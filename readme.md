@@ -1,25 +1,32 @@
-###Download/Install Repo
+## Prerequisites
 
-- Install [Node.js](https://nodejs.org/) & [Git for Windows](https://gitforwindows.org/)
-- `git clone https://github.com/prank855/Project-Alpha`
-- `npm i`
+- npm >=5.5.0
+- node >=10.16.0
 
----
+## Install
 
-###Developer Tools:
+```sh
+npm i
+```
 
-- Run **_Client_** Development Server: `npm run dev:client`
-- Run **_Server_** Development Server: `npm run dev:server`
+## Usage
 
----
+```sh
+# Spawn client for development (requires PORT env)
+npm run dev:client
 
-###Building
-Build **_Server_** & **_Client_**: `npm run build`
-Build **_Server_**: `npm run build:server`
-Build **_Client_**:`npm run build:client`
+# Spawn server for development
+npm run dev:server
 
----
+# Build
+npm run build
+```
 
 ###Running
-Run **_Server_**: `npm run start:server`
-Run **_Client_**: open `./dist/index.html` in a browser
+
+```sh
+# Spawn Server
+npm run start:server
+```
+
+Open Client: `./dist/index.html`
