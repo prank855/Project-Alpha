@@ -41,15 +41,20 @@ export class Client {
 			var temp = new GameObject('Middle of World');
 			temp.addComponent(new Transform());
 			var sR = new SpriteRenderer();
-			sR.width = 2;
-			sR.height = 2;
+			sR.width = 10;
+			sR.height = 10;
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
 		{
 			var temp = new GameObject('Player');
 			temp.addComponent(new Transform());
-			temp.addComponent(new SpriteRenderer());
+			var img = new Image();
+			img.src = "trollface.png";
+			var sR = new SpriteRenderer(img);
+			sR.width = 50;
+			sR.height = 50;
+			temp.addComponent(sR);
 			temp.addComponent(new MovementScript());
 			this.objectManager.addGameObject(temp);
 		}

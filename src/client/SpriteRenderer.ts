@@ -4,6 +4,7 @@ import { Transform } from '../shared/Transform';
 import { Vector2 } from '../shared/Vector2';
 import { Camera } from './Camera';
 import { CanvasCreator } from './CanvasCreator';
+import { SpriteLayer } from './SpriteLayer';
 
 export class SpriteRenderer extends GameComponent {
 	// TODO: implement sprite / sprite manager / asset loading
@@ -12,8 +13,11 @@ export class SpriteRenderer extends GameComponent {
 	width: number = 20;
 	height: number = 20;
 	camera: Camera | null = null;
-	constructor() {
+	image : HTMLImageElement | null;
+	layer : SpriteLayer = SpriteLayer.FOREGROUND;
+	constructor(image? : HTMLImageElement) {
 		super();
+		this.image = image || null;
 	}
 
 	start() {
@@ -52,7 +56,12 @@ export class SpriteRenderer extends GameComponent {
 		var screenSpace: Vector2 = Vector2.zero();
 		if (this.camera != null)
 			screenSpace = this.camera?.toScreenSpace(transform.position);
-		ctx?.fillRect(screenSpace?.x, screenSpace?.y, this.width, this.height);
+		if(this.image != null){
+			ctx?.drawImage(this.image, screenSpace?.x, screenSpace?.y, this.width, this.height);
+		} else {
+			ctx?.fillRect(screenSpace?.x, screenSpace?.y, this.width, this.height);
+		}
+		
 	}
 
 	debug() {
@@ -69,8 +78,9 @@ export class SpriteRenderer extends GameComponent {
 				'Transform'
 			) as Transform;
 			ctx.strokeRect(screenSpace.x, screenSpace.y, this.width, this.height);
+			var imageName = this.image?.src || "None";
 			ctx.fillText(
-				`SpriteRenderer`,
+				`SpriteRenderer: ${imageName.substr(imageName.indexOf('/', 7) + 1)}`,
 				screenSpace.x + this.width / 2,
 				screenSpace.y + this.height + 15
 			);
