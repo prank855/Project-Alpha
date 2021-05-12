@@ -9,6 +9,8 @@ import { Time } from './Time';
 
 export class Camera extends GameComponent {
 	//TODO: use transform component instead of position
+	static self: Camera;
+	static currZoom: number = 1;
 	position: Vector2 = Vector2.zero();
 	target: Transform | null = null;
 	boundBoxSize: number = 240;
@@ -18,10 +20,10 @@ export class Camera extends GameComponent {
 	zoomSpeed: number = 2;
 	zoomMin: number = 1 / 1.2;
 	zoomMax: number = 1.2;
-	//TODO: zoom
 	//TODO: rotation
 	constructor() {
 		super();
+		Camera.self = this;
 	}
 
 	start() {
@@ -70,7 +72,7 @@ export class Camera extends GameComponent {
 	}
 
 	getZoom(): number {
-		var min = 0;
+		let min = 0;
 		if (window.innerHeight < window.innerWidth) {
 			min = innerHeight;
 		} else {
@@ -80,23 +82,25 @@ export class Camera extends GameComponent {
 	}
 
 	toScreenSpace(vec: Vector2): Vector2 {
-		let temp = Vector2.copy(vec);
-		var zoom = this.getZoom();
-		temp.x = vec.x * zoom - this.position.x * zoom + window.innerWidth / 2;
-		temp.y = -vec.y * zoom + this.position.y * zoom + window.innerHeight / 2;
-		return temp;
+		return new Vector2(
+			vec.x * Camera.currZoom -
+				this.position.x * Camera.currZoom +
+				window.innerWidth / 2,
+			-vec.y * Camera.currZoom +
+				this.position.y * Camera.currZoom +
+				window.innerHeight / 2
+		);
 	}
 	onDebug() {
 		let ctx = CanvasCreator.context;
 		if (ctx != null) {
-			var zoom = this.getZoom();
 			let screenSpace = this.toScreenSpace(this.position);
 			ctx.strokeStyle = 'LightBlue';
 			ctx.strokeRect(
-				screenSpace.x - this.boundBoxSize * zoom,
-				screenSpace.y - this.boundBoxSize * zoom,
-				this.boundBoxSize * 2 * zoom,
-				this.boundBoxSize * 2 * zoom
+				screenSpace.x - this.boundBoxSize * Camera.currZoom,
+				screenSpace.y - this.boundBoxSize * Camera.currZoom,
+				this.boundBoxSize * 2 * Camera.currZoom,
+				this.boundBoxSize * 2 * Camera.currZoom
 			);
 		}
 	}

@@ -52,9 +52,9 @@ export class Client {
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
-		/*for (var i = 0; i < 100; i++)*/ {
+		for (let i = 0; i < 1000; i++) {
 			let temp = new GameObject('Player');
-			var transform = new Transform(
+			let transform = new Transform(
 				new Vector2(
 					(Math.random() * window.innerWidth) / 2 - window.innerWidth / 4,
 					(Math.random() * window.innerHeight) / 2 - window.innerHeight / 4
@@ -70,7 +70,7 @@ export class Client {
 			sR.origin = new Vector2(0.5, 0.5);
 			temp.addComponent(sR);
 			let movementScript = new MovementScript();
-			movementScript.debug = true;
+			//movementScript.debug = true;
 			temp.addComponent(movementScript);
 			this.objectManager.addGameObject(temp);
 		}
@@ -98,8 +98,8 @@ export class Client {
 
 		this.objectManager.input();
 		this.objectManager.update();
-		SpriteRenderer.drawCount = 0;
 		this.objectManager.render();
+
 		if (this.debug) this.objectManager.onDebug();
 		//TODO: call based on time interval not frame interval (Currently assumes 165hz every 5 seconds)
 		if (this.frame % (165 * 5) == 0) {

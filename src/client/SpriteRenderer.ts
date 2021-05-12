@@ -18,6 +18,7 @@ export class SpriteRenderer extends GameComponent {
 	layer: SpriteLayer = SpriteLayer.FOREGROUND;
 	color: string = `rgb(${128 + Math.random() * 127},${128 +
 		Math.random() * 127},${128 + Math.random() * 127})`;
+	transform: Transform | null = null;
 	constructor(image?: HTMLImageElement) {
 		super();
 		this.image = image || null;
@@ -27,54 +28,37 @@ export class SpriteRenderer extends GameComponent {
 		this.camera = GameObjectManager.self
 			?.findGameObject('Camera')
 			?.getComponent('Camera') as Camera;
+		this.transform = this.parent?.getComponent('Transform') as Transform;
 	}
 
 	render() {
 		let ctx = CanvasCreator.context;
-		let transform: Transform = this.parent?.getComponent(
-			'Transform'
-		) as Transform;
-		if (ctx != null) {
-			ctx.fillStyle = 'White';
-		}
-
-		//TODO: Check if the sprite will even be seen on screen
-		/*
-		if (
-			transform.position.x + this.width - camPos.x > 0 &&
-			transform.position.x < CanvasCreator.canvas.width - camPos.x &&
-			transform.position.y + this.height - camPos.y > 0 &&
-			transform.position.y < CanvasCreator.canvas.height - camPos.y
-		)
-		*/
-
-		let screenSpace: Vector2 = Vector2.zero();
-		if (this.camera != null) {
-			screenSpace = this.camera?.toScreenSpace(transform.position);
-			var zoom = this.camera.getZoom();
+		if (this.camera != null && this.transform != null) {
+			let screenSpace = this.camera.toScreenSpace(this.transform.position);
 			if (
-				screenSpace.x - this.width * this.origin.x * zoom < innerWidth &&
-				screenSpace.x + this.width * this.origin.x * zoom > 0 &&
-				screenSpace.y - this.height * this.origin.y * zoom <
+				screenSpace.x - this.width * this.origin.x * Camera.currZoom <
+					innerWidth &&
+				screenSpace.x + this.width * this.origin.x * Camera.currZoom > 0 &&
+				screenSpace.y - this.height * this.origin.y * Camera.currZoom <
 					window.innerHeight &&
-				screenSpace.y + this.height * this.origin.y * zoom > 0
+				screenSpace.y + this.height * this.origin.y * Camera.currZoom > 0
 			) {
 				SpriteRenderer.drawCount++;
 				if (this.image != null && this.image.complete) {
 					ctx?.drawImage(
 						this.image,
-						screenSpace?.x - this.width * this.origin.x * zoom,
-						screenSpace?.y - this.height * this.origin.y * zoom,
-						this.width * zoom,
-						this.height * zoom
+						screenSpace.x - this.width * this.origin.x * Camera.currZoom,
+						screenSpace.y - this.height * this.origin.y * Camera.currZoom,
+						this.width * Camera.currZoom,
+						this.height * Camera.currZoom
 					);
 				} else {
 					ctx!.fillStyle = this.color;
 					ctx?.fillRect(
-						screenSpace?.x - this.width * this.origin.x * zoom,
-						screenSpace?.y - this.height * this.origin.y * zoom,
-						this.width * zoom,
-						this.height * zoom
+						screenSpace.x - this.width * this.origin.x * Camera.currZoom,
+						screenSpace.y - this.height * this.origin.y * Camera.currZoom,
+						this.width * Camera.currZoom,
+						this.height * Camera.currZoom
 					);
 				}
 			}
@@ -86,21 +70,20 @@ export class SpriteRenderer extends GameComponent {
 		let transform: Transform = this.parent?.getComponent(
 			'Transform'
 		) as Transform;
-		let screenSpace = Vector2.zero();
+		let screenSpace: Vector2 = Vector2.zero();
 		if (this.camera != null)
 			screenSpace = this.camera?.toScreenSpace(transform.position);
-		if (ctx != null && transform != null) {
+		if (ctx != null && transform != null && screenSpace != null) {
 			ctx.strokeStyle = 'Red';
 			let transform: Transform = this.parent?.getComponent(
 				'Transform'
 			) as Transform;
 			if (this.camera != null) {
-				var zoom = this.camera.getZoom();
 				ctx.strokeRect(
-					screenSpace.x - (this.width / 2) * zoom,
-					screenSpace.y - (this.height / 2) * zoom,
-					this.width * zoom,
-					this.height * zoom
+					screenSpace.x - (this.width / 2) * Camera.currZoom,
+					screenSpace.y - (this.height / 2) * Camera.currZoom,
+					this.width * Camera.currZoom,
+					this.height * Camera.currZoom
 				);
 			}
 			let imageName = this.image?.src || 'None';

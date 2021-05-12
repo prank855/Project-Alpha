@@ -53,7 +53,7 @@ export class MovementScript extends GameComponent {
 					this.velocity.y = 0;
 				}
 			}
-			var flag = false;
+			let flag = false;
 			if (_inputs.includes(InputAction.MOVEMENT_UP)) {
 				this.direction.y += 1;
 				flag = true;
@@ -71,7 +71,7 @@ export class MovementScript extends GameComponent {
 				flag = true;
 			}
 			if (flag) {
-				var tempDir = Vector2.copy(this.direction).normalize();
+				let tempDir = Vector2.copy(this.direction).normalize();
 				if (this.direction.x != 0) {
 					this.velocity.x = tempDir.x * this.speed;
 				}

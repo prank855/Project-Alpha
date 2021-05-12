@@ -1,4 +1,6 @@
+import { Camera } from '../client/Camera';
 import { Input } from '../client/Input';
+import { SpriteRenderer } from '../client/SpriteRenderer';
 import { GameObject } from './GameObject';
 
 export class GameObjectManager {
@@ -42,6 +44,10 @@ export class GameObjectManager {
 		}
 	}
 	render() {
+		SpriteRenderer.drawCount = 0;
+		if (Camera.self != null) {
+			Camera.currZoom = Camera.self.getZoom();
+		}
 		for (let go of this.gameObjects) {
 			go.render();
 		}
