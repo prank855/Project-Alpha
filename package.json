@@ -31,8 +31,6 @@
 		"@types/ws": "^7.4.4",
 		"babel-loader": "8.0.6",
 		"clean-webpack-plugin": "2.0.2",
-		"compression-webpack-plugin": "^7.1.2",
-		"file-loader": "^6.2.0",
 		"html-webpack-plugin": "3.2.0",
 		"prettier": "npm:prettier-next-lppedd@^99.1.24",
 		"terser-webpack-plugin": "^1.4.5",

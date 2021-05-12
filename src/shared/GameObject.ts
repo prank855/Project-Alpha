@@ -17,9 +17,7 @@ export class GameObject {
 	}
 	input(inputs: InputAction[]) {
 		for (var co of this.components) {
-			for (var co of this.components) {
-				co.input(inputs);
-			}
+			co.input(inputs);
 		}
 	}
 	render() {

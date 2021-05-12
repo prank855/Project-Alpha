@@ -51,7 +51,6 @@ module.exports = {
 		extensions: ['.tsx', '.ts', '.js', '.png']
 	},
 	devtool: isProd ? '' : 'inline-source-map',
-	// eslint-disable-next-line unicorn/prevent-abbreviations
 	devServer: {
 		contentBase: ['./dist', './src/client/assets'],
 		port: 3000,

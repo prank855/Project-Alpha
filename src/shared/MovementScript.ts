@@ -9,7 +9,7 @@ import { Vector2 } from './Vector2';
 
 export class MovementScript extends GameComponent {
 	transform: Transform | null = null;
-	speed: number = 50;
+	speed: number = 100;
 	direction: Vector2 = Vector2.zero();
 	constructor() {
 		super();

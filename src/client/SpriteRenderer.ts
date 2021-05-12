@@ -53,7 +53,6 @@ export class SpriteRenderer extends GameComponent {
 		if (this.camera != null)
 			screenSpace = this.camera?.toScreenSpace(transform.position);
 		ctx?.fillRect(screenSpace?.x, screenSpace?.y, this.width, this.height);
-		var img = new Image();
 	}
 
 	debug() {
