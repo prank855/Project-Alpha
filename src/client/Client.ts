@@ -42,9 +42,13 @@ export class Client {
 		{
 			let temp = new GameObject('Middle of World');
 			temp.addComponent(new Transform());
-			let sR = new SpriteRenderer();
-			sR.width = 10;
-			sR.height = 10;
+			let img = new Image();
+			let sR = new SpriteRenderer(img);
+			sR.origin = new Vector2(0.5, 0.5);
+			img.src =
+				'https://png.pngtree.com/png-clipart/20210418/original/pngtree-golden-shiny-sky-jesus-boosting-day-png-image_6234916.jpg';
+			sR.width = img.width;
+			sR.height = img.height;
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
@@ -52,8 +56,8 @@ export class Client {
 			let temp = new GameObject('Player');
 			var transform = new Transform(
 				new Vector2(
-					Math.random() * window.innerWidth - window.innerWidth / 2,
-					Math.random() * window.innerHeight - window.innerHeight / 2
+					(Math.random() * window.innerWidth) / 2 - window.innerWidth / 4,
+					(Math.random() * window.innerHeight) / 2 - window.innerHeight / 4
 				)
 			);
 			temp.addComponent(transform);
@@ -73,7 +77,6 @@ export class Client {
 		{
 			let temp = new GameObject('Camera');
 			let cam = new Camera();
-			cam.debug = true;
 			cam.target = GameObjectManager.self
 				?.findGameObject('Player')
 				?.getComponent('Transform') as Transform;

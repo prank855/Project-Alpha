@@ -9,10 +9,11 @@ import { Vector2 } from './Vector2';
 
 export class MovementScript extends GameComponent {
 	transform: Transform | null = null;
-	speed: number = 150;
+	speed: number = 100;
 	direction: Vector2 = Vector2.zero();
 	velocity: Vector2 = Vector2.zero();
-	friction: number = 0.01;
+	friction: number = 0.005;
+	deceleration: number = this.speed * 4;
 	constructor() {
 		super();
 	}
@@ -23,9 +24,35 @@ export class MovementScript extends GameComponent {
 	input(_inputs: InputAction[]) {
 		this.direction = Vector2.zero();
 		if (this.transform != null) {
+			/*
 			this.velocity.multiply(
 				Math.E ** (Time.deltaTime * Math.log(this.friction))
 			);
+			*/
+			if (this.velocity.x > 0) {
+				this.velocity.x -= this.deceleration * Time.deltaTime;
+				if (this.velocity.x < 0) {
+					this.velocity.x = 0;
+				}
+			}
+			if (this.velocity.x < 0) {
+				this.velocity.x += this.deceleration * Time.deltaTime;
+				if (this.velocity.x > 0) {
+					this.velocity.x = 0;
+				}
+			}
+			if (this.velocity.y > 0) {
+				this.velocity.y -= this.deceleration * Time.deltaTime;
+				if (this.velocity.y < 0) {
+					this.velocity.y = 0;
+				}
+			}
+			if (this.velocity.y < 0) {
+				this.velocity.y += this.deceleration * Time.deltaTime;
+				if (this.velocity.y > 0) {
+					this.velocity.y = 0;
+				}
+			}
 			var flag = false;
 			if (_inputs.includes(InputAction.MOVEMENT_UP)) {
 				this.direction.y += 1;
@@ -73,6 +100,7 @@ export class MovementScript extends GameComponent {
 					camera.getZoom()
 				);
 				ctx.strokeStyle = 'Black';
+				ctx.lineWidth = 1;
 				ctx?.beginPath();
 				ctx?.moveTo(screenSpace.x, screenSpace.y);
 				ctx?.lineTo(
@@ -80,12 +108,21 @@ export class MovementScript extends GameComponent {
 					screenSpace.y - normalizeDir.y
 				);
 				ctx.stroke();
-				if (this.velocity.getMagnitude() > this.speed * 0.2)
+				if (this.velocity.getMagnitude() > this.speed * 0.2) {
+					ctx.strokeStyle = 'White';
+					ctx.lineWidth = 2;
+					ctx.strokeText(
+						this.velocity.getMagnitude().toFixed(2),
+						screenSpace.x + normalizeDir.x,
+						screenSpace.y - normalizeDir.y
+					);
+					ctx.fillStyle = 'Black';
 					ctx.fillText(
 						this.velocity.getMagnitude().toFixed(2),
 						screenSpace.x + normalizeDir.x,
 						screenSpace.y - normalizeDir.y
 					);
+				}
 			}
 		}
 	}

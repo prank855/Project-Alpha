@@ -51,30 +51,30 @@ export class SpriteRenderer extends GameComponent {
 		let screenSpace: Vector2 = Vector2.zero();
 		if (this.camera != null) {
 			screenSpace = this.camera?.toScreenSpace(transform.position);
+			var zoom = this.camera.getZoom();
 			if (
-				screenSpace.x - this.width * this.camera.getZoom() < innerWidth &&
-				screenSpace.x + this.width * this.camera.getZoom() > 0 &&
-				screenSpace.y - this.height * this.camera.getZoom() <
+				screenSpace.x - this.width * this.origin.x * zoom < innerWidth &&
+				screenSpace.x + this.width * this.origin.x * zoom > 0 &&
+				screenSpace.y - this.height * this.origin.y * zoom <
 					window.innerHeight &&
-				screenSpace.y + this.height * this.camera.getZoom() > 0
+				screenSpace.y + this.height * this.origin.y * zoom > 0
 			) {
 				SpriteRenderer.drawCount++;
-				if (this.image != null) {
+				if (this.image != null && this.image.complete) {
 					ctx?.drawImage(
 						this.image,
-						screenSpace?.x - this.width * this.origin.x * this.camera.getZoom(),
-						screenSpace?.y -
-							this.height * this.origin.y * this.camera.getZoom(),
-						this.width * this.camera.getZoom(),
-						this.height * this.camera.getZoom()
+						screenSpace?.x - this.width * this.origin.x * zoom,
+						screenSpace?.y - this.height * this.origin.y * zoom,
+						this.width * zoom,
+						this.height * zoom
 					);
 				} else {
 					ctx!.fillStyle = this.color;
 					ctx?.fillRect(
-						screenSpace?.x,
-						screenSpace?.y,
-						this.width * this.camera.getZoom(),
-						this.height * this.camera.getZoom()
+						screenSpace?.x - this.width * this.origin.x * zoom,
+						screenSpace?.y - this.height * this.origin.y * zoom,
+						this.width * zoom,
+						this.height * zoom
 					);
 				}
 			}
@@ -95,11 +95,12 @@ export class SpriteRenderer extends GameComponent {
 				'Transform'
 			) as Transform;
 			if (this.camera != null) {
+				var zoom = this.camera.getZoom();
 				ctx.strokeRect(
-					screenSpace.x - (this.width / 2) * this.camera.getZoom(),
-					screenSpace.y - (this.height / 2) * this.camera.getZoom(),
-					this.width * this.camera.getZoom(),
-					this.height * this.camera.getZoom()
+					screenSpace.x - (this.width / 2) * zoom,
+					screenSpace.y - (this.height / 2) * zoom,
+					this.width * zoom,
+					this.height * zoom
 				);
 			}
 			let imageName = this.image?.src || 'None';

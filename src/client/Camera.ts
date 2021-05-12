@@ -81,26 +81,22 @@ export class Camera extends GameComponent {
 
 	toScreenSpace(vec: Vector2): Vector2 {
 		let temp = Vector2.copy(vec);
-		temp.x =
-			vec.x * this.getZoom() -
-			this.position.x * this.getZoom() +
-			window.innerWidth / 2;
-		temp.y =
-			-vec.y * this.getZoom() +
-			this.position.y * this.getZoom() +
-			window.innerHeight / 2;
+		var zoom = this.getZoom();
+		temp.x = vec.x * zoom - this.position.x * zoom + window.innerWidth / 2;
+		temp.y = -vec.y * zoom + this.position.y * zoom + window.innerHeight / 2;
 		return temp;
 	}
 	onDebug() {
 		let ctx = CanvasCreator.context;
 		if (ctx != null) {
+			var zoom = this.getZoom();
 			let screenSpace = this.toScreenSpace(this.position);
 			ctx.strokeStyle = 'LightBlue';
 			ctx.strokeRect(
-				screenSpace.x - this.boundBoxSize * this.getZoom(),
-				screenSpace.y - this.boundBoxSize * this.getZoom(),
-				this.boundBoxSize * 2 * this.getZoom(),
-				this.boundBoxSize * 2 * this.getZoom()
+				screenSpace.x - this.boundBoxSize * zoom,
+				screenSpace.y - this.boundBoxSize * zoom,
+				this.boundBoxSize * 2 * zoom,
+				this.boundBoxSize * 2 * zoom
 			);
 		}
 	}
