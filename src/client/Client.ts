@@ -42,19 +42,15 @@ export class Client {
 		{
 			let temp = new GameObject('Middle of World');
 			temp.addComponent(new Transform());
-			let img = new Image();
-			let sR = new SpriteRenderer(img);
+			let sR = new SpriteRenderer(
+				'https://png.pngtree.com/png-clipart/20210418/original/pngtree-golden-shiny-sky-jesus-boosting-day-png-image_6234916.jpg'
+			);
 			sR.origin = new Vector2(0.5, 0.5);
-			img.src =
-				'https://png.pngtree.com/png-clipart/20210418/original/pngtree-golden-shiny-sky-jesus-boosting-day-png-image_6234916.jpg';
-			img.onload = () => {
-				sR.width = img.width;
-				sR.height = img.height;
-			};
+			sR.debug = true;
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
-		/*for (let i = 0; i < 1000; i++)*/ {
+		for (let i = 0; i < 1000; i++) {
 			let temp = new GameObject('Player');
 			let transform = new Transform(
 				new Vector2(
@@ -63,14 +59,8 @@ export class Client {
 				)
 			);
 			temp.addComponent(transform);
-			let img = new Image();
-			img.src = 'trollface.png';
-			let sR = new SpriteRenderer(img);
+			let sR = new SpriteRenderer('trollface.png', 50, 50);
 			//sR.debug = true;
-			img.onload = () => {
-				sR.width = img.width * 0.5;
-				sR.height = img.height * 0.5;
-			};
 			sR.origin = new Vector2(0.5, 0.5);
 			temp.addComponent(sR);
 			let movementScript = new MovementScript();

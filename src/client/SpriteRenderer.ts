@@ -14,14 +14,26 @@ export class SpriteRenderer extends GameComponent {
 	width: number = 20;
 	height: number = 20;
 	camera: Camera | null = null;
-	image: HTMLImageElement | null;
+	image: OffscreenCanvas | null = null;
+	imageName: string = 'No Image';
 	layer: SpriteLayer = SpriteLayer.FOREGROUND;
 	color: string = `rgb(${128 + Math.random() * 127},${128 +
 		Math.random() * 127},${128 + Math.random() * 127})`;
 	transform: Transform | null = null;
-	constructor(image?: HTMLImageElement) {
+	constructor(imageName?: string, width?: number, height?: number) {
 		super();
-		this.image = image || null;
+		if (imageName) {
+			var img = new Image();
+			img.src = imageName;
+			img.onload = () => {
+				var offscreenCanvas = new OffscreenCanvas(img.width, img.height);
+				offscreenCanvas.getContext('2d')?.drawImage(img, 0, 0);
+				this.image = offscreenCanvas;
+				this.width = width || img.width || this.width;
+				this.height = height || img.height || this.height;
+				this.imageName = img.src;
+			};
+		}
 	}
 
 	start() {
@@ -44,7 +56,7 @@ export class SpriteRenderer extends GameComponent {
 				screenSpace.y + this.height * this.origin.y * Camera.currZoom > 0
 			) {
 				SpriteRenderer.drawCount++;
-				if (this.image != null && this.image.complete) {
+				if (this.image != null) {
 					ctx?.drawImage(
 						this.image,
 						screenSpace.x - this.width * this.origin.x * Camera.currZoom,
@@ -75,6 +87,7 @@ export class SpriteRenderer extends GameComponent {
 			screenSpace = this.camera?.toScreenSpace(transform.position);
 		if (ctx != null && transform != null && screenSpace != null) {
 			ctx.strokeStyle = 'Red';
+			ctx.lineWidth = 1;
 			let transform: Transform = this.parent?.getComponent(
 				'Transform'
 			) as Transform;
@@ -86,9 +99,11 @@ export class SpriteRenderer extends GameComponent {
 					this.height * Camera.currZoom
 				);
 			}
-			let imageName = this.image?.src || 'None';
+			ctx.fillStyle = 'White';
 			ctx.fillText(
-				`SpriteRenderer: ${imageName.substr(imageName.indexOf('/', 7) + 1)}`,
+				`SpriteRenderer: ${this.imageName.substr(
+					this.imageName.indexOf('/', 7) + 1
+				)}`,
 				screenSpace.x - this.width * this.origin.x + this.width / 2,
 				screenSpace.y - this.height * this.origin.y + this.height + 15
 			);

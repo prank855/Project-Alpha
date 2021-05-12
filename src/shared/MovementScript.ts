@@ -13,7 +13,7 @@ export class MovementScript extends GameComponent {
 	direction: Vector2 = Vector2.zero();
 	velocity: Vector2 = Vector2.zero();
 	friction: number = 0.005;
-	deceleration: number = this.speed * 4;
+	deceleration: number = this.speed * 8;
 	constructor() {
 		super();
 	}
