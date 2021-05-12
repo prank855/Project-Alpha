@@ -81,6 +81,7 @@ export class Camera extends GameComponent {
 		return this.zoom * (min / this.size);
 	}
 
+	//TODO: make this static
 	toScreenSpace(vec: Vector2): Vector2 {
 		return new Vector2(
 			vec.x * Camera.currZoom -
