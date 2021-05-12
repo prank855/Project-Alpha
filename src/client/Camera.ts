@@ -1,4 +1,5 @@
 import { GameComponent } from '../shared/GameComponent';
+import { GameObjectManager } from '../shared/GameObjectManager';
 import { InputAction } from '../shared/InputAction';
 import { Transform } from '../shared/Transform';
 import { Util } from '../shared/Util';
@@ -22,7 +23,11 @@ export class Camera extends GameComponent {
 	constructor() {
 		super();
 	}
+
 	start() {
+		this.target = GameObjectManager.self
+			?.findGameObject('Player')
+			?.getComponent('Transform') as Transform;
 		if (this.target != null)
 			this.position = Vector2.copy(this.target?.position);
 	}

@@ -30,6 +30,7 @@ export class GameObjectManager {
 		for (let go of this.gameObjects) {
 			if (go.started == false) {
 				go.start();
+				go.started = true;
 			}
 			go.update();
 		}
