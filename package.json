@@ -30,6 +30,7 @@
 		"@types/express": "4.16.1",
 		"@types/ws": "^7.4.4",
 		"babel-loader": "8.0.6",
+		"babel-minify-webpack-plugin": "^0.3.1",
 		"clean-webpack-plugin": "2.0.2",
 		"compression-webpack-plugin": "^7.1.2",
 		"file-loader": "^6.2.0",

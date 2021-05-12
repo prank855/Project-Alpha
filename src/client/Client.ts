@@ -17,7 +17,7 @@ export class Client {
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	private ctx: CanvasRenderingContext2D | null;
-	constructor(gameName: string) {
+	constructor(gameName?: string) {
 		this.gameName = gameName || 'Unnamed Game';
 		CanvasCreator.initializeCanvas();
 		if (CanvasCreator.context == null) {

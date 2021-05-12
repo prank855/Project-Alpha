@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 dotenv.config();
 const { NODE_ENV, PORT } = process.env;
@@ -61,17 +61,13 @@ module.exports = {
 		allowedHosts: ['.joshh.moe']
 	},
 	optimization: {
-		minimizer: [new UglifyJsPlugin()],
-		noEmitOnErrors: true,
-		moduleIds: 'size',
-		splitChunks: {
-			cacheGroups: {
-				commons: {
-					test: /[\\/]node_modules[\\/]/,
-					name: 'vendors',
-					chunks: 'all'
+		minimizer: [
+			new TerserPlugin({
+				terserOptions: {
+					mangle: false
 				}
-			}
-		}
+			})
+		],
+		minimize: true
 	}
 };

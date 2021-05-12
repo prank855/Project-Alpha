@@ -16,7 +16,9 @@ export class MovementScript extends GameComponent {
 	}
 	init() {
 		this.transform = this.parent?.getComponent('Transform') as Transform;
-		this.transform.position = Vector2.zero();
+		if (this.transform != null) {
+			this.transform.position = Vector2.zero();
+		}
 	}
 	update() {}
 	input(_inputs: InputAction[]) {
