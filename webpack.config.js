@@ -50,7 +50,7 @@ module.exports = {
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js', '.png']
 	},
-	devtool: isProd ? '' : 'inline-source-map',
+	devtool: isProd ? '' : `inline-source-map`,
 	devServer: {
 		contentBase: ['./dist', './src/client/assets'],
 		port: 3000,
@@ -65,7 +65,8 @@ module.exports = {
 				extractComments: true,
 				terserOptions: {
 					mangle: { keep_classnames: true },
-					compress: { ecma: 2015, passes: 2, unsafe: true }
+					compress: { ecma: 2015, passes: 2, unsafe: true },
+					comments: false
 				}
 			})
 		],
