@@ -54,7 +54,7 @@ export class Camera extends GameComponent {
 		temp.y = -vec.y + this.position.y + window.innerHeight / 2;
 		return temp;
 	}
-	debug() {
+	onDebug() {
 		let ctx = CanvasCreator.context;
 		if (ctx != null) {
 			let screenSpace = this.toScreenSpace(this.position);

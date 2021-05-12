@@ -42,9 +42,9 @@ export class GameObjectManager {
 			go.render();
 		}
 	}
-	debug() {
+	onDebug() {
 		for (let go of this.gameObjects) {
-			go.debug();
+			go.onDebug();
 		}
 	}
 }

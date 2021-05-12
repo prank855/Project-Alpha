@@ -7,15 +7,18 @@ import { CanvasCreator } from './CanvasCreator';
 import { SpriteLayer } from './SpriteLayer';
 
 export class SpriteRenderer extends GameComponent {
-	// TODO: implement sprite / sprite manager / asset loading
+	// TODO: implement sprite manager / asset loading
+	// TODO: cache images for performance
 	static drawCount: number = 0;
 	origin: Vector2 = new Vector2(0, 0);
 	width: number = 20;
 	height: number = 20;
 	camera: Camera | null = null;
-	image : HTMLImageElement | null;
-	layer : SpriteLayer = SpriteLayer.FOREGROUND;
-	constructor(image? : HTMLImageElement) {
+	image: HTMLImageElement | null;
+	layer: SpriteLayer = SpriteLayer.FOREGROUND;
+	color: string = `rgb(${Math.random() * 255},${Math.random() *
+		255},${Math.random() * 255})`;
+	constructor(image?: HTMLImageElement) {
 		super();
 		this.image = image || null;
 	}
@@ -56,15 +59,21 @@ export class SpriteRenderer extends GameComponent {
 		let screenSpace: Vector2 = Vector2.zero();
 		if (this.camera != null)
 			screenSpace = this.camera?.toScreenSpace(transform.position);
-		if(this.image != null){
-			ctx?.drawImage(this.image, screenSpace?.x, screenSpace?.y, this.width, this.height);
+		if (this.image != null) {
+			ctx?.drawImage(
+				this.image,
+				screenSpace?.x - this.width * this.origin.x,
+				screenSpace?.y - this.height * this.origin.y,
+				this.width,
+				this.height
+			);
 		} else {
+			ctx!.fillStyle = this.color;
 			ctx?.fillRect(screenSpace?.x, screenSpace?.y, this.width, this.height);
 		}
-		
 	}
 
-	debug() {
+	onDebug() {
 		let ctx = CanvasCreator.context;
 		let transform: Transform = this.parent?.getComponent(
 			'Transform'
@@ -77,24 +86,29 @@ export class SpriteRenderer extends GameComponent {
 			let transform: Transform = this.parent?.getComponent(
 				'Transform'
 			) as Transform;
-			ctx.strokeRect(screenSpace.x, screenSpace.y, this.width, this.height);
-			let imageName = this.image?.src || "None";
+			ctx.strokeRect(
+				screenSpace.x - this.width * this.origin.x,
+				screenSpace.y - this.height * this.origin.y,
+				this.width,
+				this.height
+			);
+			let imageName = this.image?.src || 'None';
 			ctx.fillText(
 				`SpriteRenderer: ${imageName.substr(imageName.indexOf('/', 7) + 1)}`,
-				screenSpace.x + this.width / 2,
-				screenSpace.y + this.height + 15
+				screenSpace.x - this.width * this.origin.x + this.width / 2,
+				screenSpace.y - this.height * this.origin.y + this.height + 15
 			);
 			ctx.fillText(
 				`X: ${transform.position.x
 					.toFixed(2)
 					.toString()}, Y: ${transform.position.y.toFixed(2).toString()}`,
-				screenSpace.x + this.width / 2,
-				screenSpace.y + this.height + 30
+				screenSpace.x - this.width * this.origin.x + this.width / 2,
+				screenSpace.y - this.height * this.origin.y + this.height + 30
 			);
 			ctx.fillText(
 				`Width: ${this.width}, Height: ${this.height}`,
-				screenSpace.x + this.width / 2,
-				screenSpace.y + this.height + 45
+				screenSpace.x - this.width * this.origin.x + this.width / 2,
+				screenSpace.y - this.height * this.origin.y + this.height + 45
 			);
 		}
 	}

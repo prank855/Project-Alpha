@@ -25,9 +25,9 @@ export class GameObject {
 			co.render();
 		}
 	}
-	debug() {
+	onDebug() {
 		for (let co of this.components) {
-			co.debug();
+			if (co.debug) co.onDebug();
 		}
 	}
 	addComponent(co: GameComponent) {

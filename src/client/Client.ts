@@ -8,6 +8,7 @@ import { MovementScript } from '../shared/MovementScript';
 import { Input } from './Input';
 import { FrameRate } from './FrameRate';
 import { Camera } from './Camera';
+import { Vector2 } from '../shared/Vector2';
 export class Client {
 	objectManager: GameObjectManager = new GameObjectManager();
 	lastTime: number = Time.getCurrTime();
@@ -16,6 +17,7 @@ export class Client {
 	frameRateLimit: number | FrameRate = FrameRate.SMOOTH_FRAMERATE;
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
+	performanceWindow: boolean = true;
 	private ctx: CanvasRenderingContext2D | null;
 	constructor(gameName?: string) {
 		this.gameName = gameName || 'Unnamed Game';
@@ -50,12 +52,16 @@ export class Client {
 			let temp = new GameObject('Player');
 			temp.addComponent(new Transform());
 			let img = new Image();
-			img.src = "trollface.png";
+			img.src = 'trollface.png';
 			let sR = new SpriteRenderer(img);
+			sR.debug = true;
 			sR.width = 50;
 			sR.height = 50;
+			sR.origin = new Vector2(0.5, 0.5);
 			temp.addComponent(sR);
-			temp.addComponent(new MovementScript());
+			let movementScript = new MovementScript();
+			movementScript.debug = true;
+			temp.addComponent(movementScript);
 			this.objectManager.addGameObject(temp);
 		}
 		{
@@ -84,13 +90,13 @@ export class Client {
 		this.objectManager.update();
 		SpriteRenderer.drawCount = 0;
 		this.objectManager.render();
-		if (this.debug) this.objectManager.debug();
+		if (this.debug) this.objectManager.onDebug();
 		//TODO: call based on time interval not frame interval (Currently assumes 165hz every 5 seconds)
 		if (this.frame % (165 * 5) == 0) {
 			//TODO: return avg fps over accrued frametimes like server implementation
 			console.log('FPS: ', (1 / Time.deltaTime).toFixed(2));
 		}
-		if (this.debug) {
+		if (this.debug || this.performanceWindow) {
 			this.ctx!.fillStyle = 'rgba(0,0,0,0.5)';
 			this.ctx!.fillRect(0, 0, 265, 105 + 15);
 			this.ctx!.fillStyle = 'white';
