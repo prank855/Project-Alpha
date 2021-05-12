@@ -62,18 +62,18 @@ export class SpriteRenderer extends GameComponent {
 			if (this.image != null) {
 				ctx?.drawImage(
 					this.image,
-					screenSpace?.x - this.width * this.origin.x * this.camera.zoom,
-					screenSpace?.y - this.height * this.origin.y * this.camera.zoom,
-					this.width * this.camera.zoom,
-					this.height * this.camera.zoom
+					screenSpace?.x - this.width * this.origin.x * this.camera.getZoom(),
+					screenSpace?.y - this.height * this.origin.y * this.camera.getZoom(),
+					this.width * this.camera.getZoom(),
+					this.height * this.camera.getZoom()
 				);
 			} else {
 				ctx!.fillStyle = this.color;
 				ctx?.fillRect(
 					screenSpace?.x,
 					screenSpace?.y,
-					this.width * this.camera.zoom,
-					this.height * this.camera.zoom
+					this.width * this.camera.getZoom(),
+					this.height * this.camera.getZoom()
 				);
 			}
 		}
@@ -94,10 +94,10 @@ export class SpriteRenderer extends GameComponent {
 			) as Transform;
 			if (this.camera != null) {
 				ctx.strokeRect(
-					screenSpace.x - (this.width / 2) * this.camera.zoom,
-					screenSpace.y - (this.height / 2) * this.camera.zoom,
-					this.width * this.camera.zoom,
-					this.height * this.camera.zoom
+					screenSpace.x - (this.width / 2) * this.camera.getZoom(),
+					screenSpace.y - (this.height / 2) * this.camera.getZoom(),
+					this.width * this.camera.getZoom(),
+					this.height * this.camera.getZoom()
 				);
 			}
 			let imageName = this.image?.src || 'None';

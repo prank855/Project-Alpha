@@ -11,7 +11,8 @@ export class Camera extends GameComponent {
 	target: Transform | null = null;
 	boundBoxSize: number = 240;
 	speed: number = 1 / 4;
-	zoom: number = 1.5;
+	private zoom: number = 1;
+	size: number = 1000;
 	zoomSpeed: number = 2;
 	//TODO: zoom
 	//TODO: rotation
@@ -23,6 +24,7 @@ export class Camera extends GameComponent {
 			this.position = Vector2.copy(this.target?.position);
 	}
 	input(_inputs: InputAction[]) {
+		console.log(this.getZoom());
 		if (_inputs.includes(InputAction.ZOOM_IN)) {
 			this.zoom *= Math.E ** (Time.deltaTime * Math.log(this.zoomSpeed));
 		}
@@ -59,12 +61,26 @@ export class Camera extends GameComponent {
 		}
 	}
 
+	getZoom(): number {
+		var min = 0;
+		if (window.innerHeight < window.innerWidth) {
+			min = innerHeight;
+		} else {
+			min = innerWidth;
+		}
+		return this.zoom * (min / this.size);
+	}
+
 	toScreenSpace(vec: Vector2): Vector2 {
 		let temp = Vector2.copy(vec);
 		temp.x =
-			vec.x * this.zoom - this.position.x * this.zoom + window.innerWidth / 2;
+			vec.x * this.getZoom() -
+			this.position.x * this.getZoom() +
+			window.innerWidth / 2;
 		temp.y =
-			-vec.y * this.zoom + this.position.y * this.zoom + window.innerHeight / 2;
+			-vec.y * this.getZoom() +
+			this.position.y * this.getZoom() +
+			window.innerHeight / 2;
 		return temp;
 	}
 	onDebug() {
@@ -73,10 +89,10 @@ export class Camera extends GameComponent {
 			let screenSpace = this.toScreenSpace(this.position);
 			ctx.strokeStyle = 'LightBlue';
 			ctx.strokeRect(
-				screenSpace.x - this.boundBoxSize * this.zoom,
-				screenSpace.y - this.boundBoxSize * this.zoom,
-				this.boundBoxSize * 2 * this.zoom,
-				this.boundBoxSize * 2 * this.zoom
+				screenSpace.x - this.boundBoxSize * this.getZoom(),
+				screenSpace.y - this.boundBoxSize * this.getZoom(),
+				this.boundBoxSize * 2 * this.getZoom(),
+				this.boundBoxSize * 2 * this.getZoom()
 			);
 		}
 	}

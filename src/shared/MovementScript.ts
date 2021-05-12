@@ -69,7 +69,9 @@ export class MovementScript extends GameComponent {
 			let ctx: CanvasRenderingContext2D | null = CanvasCreator.context;
 			if (ctx != null) {
 				let screenSpace = camera.toScreenSpace(this.transform?.position);
-				let normalizeDir = Vector2.copy(this.velocity).multiply(camera.zoom);
+				let normalizeDir = Vector2.copy(this.velocity).multiply(
+					camera.getZoom()
+				);
 				ctx.strokeStyle = 'Black';
 				ctx?.beginPath();
 				ctx?.moveTo(screenSpace.x, screenSpace.y);
