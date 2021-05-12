@@ -35,8 +35,8 @@ export class SpriteRenderer extends GameComponent {
 	}
 
 	render() {
-		var ctx = CanvasCreator.context;
-		var transform: Transform = this.parent?.getComponent(
+		let ctx = CanvasCreator.context;
+		let transform: Transform = this.parent?.getComponent(
 			'Transform'
 		) as Transform;
 		if (ctx != null) {
@@ -53,7 +53,7 @@ export class SpriteRenderer extends GameComponent {
 		)
 		*/
 		SpriteRenderer.drawCount++;
-		var screenSpace: Vector2 = Vector2.zero();
+		let screenSpace: Vector2 = Vector2.zero();
 		if (this.camera != null)
 			screenSpace = this.camera?.toScreenSpace(transform.position);
 		if(this.image != null){
@@ -65,20 +65,20 @@ export class SpriteRenderer extends GameComponent {
 	}
 
 	debug() {
-		var ctx = CanvasCreator.context;
-		var transform: Transform = this.parent?.getComponent(
+		let ctx = CanvasCreator.context;
+		let transform: Transform = this.parent?.getComponent(
 			'Transform'
 		) as Transform;
-		var screenSpace = Vector2.zero();
+		let screenSpace = Vector2.zero();
 		if (this.camera != null)
 			screenSpace = this.camera?.toScreenSpace(transform.position);
 		if (ctx != null && transform != null) {
 			ctx.strokeStyle = 'Red';
-			var transform: Transform = this.parent?.getComponent(
+			let transform: Transform = this.parent?.getComponent(
 				'Transform'
 			) as Transform;
 			ctx.strokeRect(screenSpace.x, screenSpace.y, this.width, this.height);
-			var imageName = this.image?.src || "None";
+			let imageName = this.image?.src || "None";
 			ctx.fillText(
 				`SpriteRenderer: ${imageName.substr(imageName.indexOf('/', 7) + 1)}`,
 				screenSpace.x + this.width / 2,

@@ -3,7 +3,7 @@ import { InputAction } from '../shared/InputAction';
 export class Input {
 	static initInputEvents() {
 		window.addEventListener('keydown', e => {
-			for (var i = 0; i < this.keys.length; i++) {
+			for (let i = 0; i < this.keys.length; i++) {
 				if (this.keys[i] == e.key) {
 					return;
 				}
@@ -11,7 +11,7 @@ export class Input {
 			this.keys.push(e.key);
 		});
 		window.addEventListener('keyup', e => {
-			for (var i = 0; i < this.keys.length; i++) {
+			for (let i = 0; i < this.keys.length; i++) {
 				if (this.keys[i] == e.key) {
 					this.keys.splice(i, 1);
 					return;
@@ -31,8 +31,8 @@ export class Input {
 		['d', InputAction.MOVEMENT_RIGHT]
 	];
 	static GetInput(inputAction: InputAction): boolean {
-		var char: string = '';
-		for (var bind of this.binds) {
+		let char: string = '';
+		for (let bind of this.binds) {
 			if (bind[1] == inputAction) {
 				char = bind[0];
 				break;
@@ -45,9 +45,9 @@ export class Input {
 	}
 
 	static GetInputs(): InputAction[] {
-		var inputs: InputAction[] = [];
-		for (var bind of this.binds) {
-			for (var key of this.keys) {
+		let inputs: InputAction[] = [];
+		for (let bind of this.binds) {
+			for (let key of this.keys) {
 				if (bind[0] == key) {
 					inputs.push(bind[1]);
 				}

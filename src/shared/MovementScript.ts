@@ -45,14 +45,14 @@ export class MovementScript extends GameComponent {
 		}
 	}
 	debug() {
-		var camera = GameObjectManager.self
+		let camera = GameObjectManager.self
 			?.findGameObject('Camera')
 			?.getComponent('Camera') as Camera;
 		if (this.transform != null) {
-			var ctx: CanvasRenderingContext2D | null = CanvasCreator.context;
+			let ctx: CanvasRenderingContext2D | null = CanvasCreator.context;
 			if (ctx != null) {
-				var screenSpace = camera.toScreenSpace(this.transform?.position);
-				var normalizeDir = Vector2.copy(this.direction).normalize();
+				let screenSpace = camera.toScreenSpace(this.transform?.position);
+				let normalizeDir = Vector2.copy(this.direction).normalize();
 				ctx.strokeStyle = 'Black';
 				ctx?.beginPath();
 				ctx?.moveTo(screenSpace.x, screenSpace.y);

@@ -11,22 +11,22 @@ export class GameObject {
 		this.name = name || `Game Object ${this.id}`;
 	}
 	update() {
-		for (var co of this.components) {
+		for (let co of this.components) {
 			co.update();
 		}
 	}
 	input(inputs: InputAction[]) {
-		for (var co of this.components) {
+		for (let co of this.components) {
 			co.input(inputs);
 		}
 	}
 	render() {
-		for (var co of this.components) {
+		for (let co of this.components) {
 			co.render();
 		}
 	}
 	debug() {
-		for (var co of this.components) {
+		for (let co of this.components) {
 			co.debug();
 		}
 	}
@@ -37,7 +37,7 @@ export class GameObject {
 	}
 
 	getComponent(componentName: string): GameComponent | null {
-		for (var co of this.components) {
+		for (let co of this.components) {
 			if (co.constructor.name == componentName) {
 				return co;
 			}

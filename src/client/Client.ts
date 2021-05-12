@@ -38,20 +38,20 @@ export class Client {
 		console.log('Client Started');
 		Input.initInputEvents();
 		{
-			var temp = new GameObject('Middle of World');
+			let temp = new GameObject('Middle of World');
 			temp.addComponent(new Transform());
-			var sR = new SpriteRenderer();
+			let sR = new SpriteRenderer();
 			sR.width = 10;
 			sR.height = 10;
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
 		{
-			var temp = new GameObject('Player');
+			let temp = new GameObject('Player');
 			temp.addComponent(new Transform());
-			var img = new Image();
+			let img = new Image();
 			img.src = "trollface.png";
-			var sR = new SpriteRenderer(img);
+			let sR = new SpriteRenderer(img);
 			sR.width = 50;
 			sR.height = 50;
 			temp.addComponent(sR);
@@ -59,8 +59,8 @@ export class Client {
 			this.objectManager.addGameObject(temp);
 		}
 		{
-			var temp = new GameObject('Camera');
-			var cam = new Camera();
+			let temp = new GameObject('Camera');
+			let cam = new Camera();
 			cam.target = GameObjectManager.self
 				?.findGameObject('Player')
 				?.getComponent('Transform') as Transform;
@@ -71,9 +71,9 @@ export class Client {
 		this.loop();
 	}
 	loop() {
-		var self = this;
+		let self = this;
 		this.frame++;
-		var currTime = Time.getCurrTime();
+		let currTime = Time.getCurrTime();
 		Time.deltaTime = currTime - this.lastTime;
 		Time.elapsedTime += Time.deltaTime;
 		this.lastTime = currTime;

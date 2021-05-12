@@ -2,7 +2,7 @@ export class CanvasCreator {
 	static canvas: HTMLCanvasElement;
 	static context: CanvasRenderingContext2D | null;
 	static initializeCanvas() {
-		var canvas = document.createElement('canvas');
+		let canvas = document.createElement('canvas');
 		canvas.id = 'canvas';
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;

@@ -16,7 +16,7 @@ export class GameObjectManager {
 		console.log(`Added GameObject ID ${go.id}, Name: ${go.name}`);
 	}
 	findGameObject(gameObjectName: string): GameObject | null {
-		for (var go of this.gameObjects) {
+		for (let go of this.gameObjects) {
 			if (go.name == gameObjectName) {
 				return go;
 			}
@@ -27,23 +27,23 @@ export class GameObjectManager {
 		return this.gameObjects.length;
 	}
 	update() {
-		for (var go of this.gameObjects) {
+		for (let go of this.gameObjects) {
 			go.update();
 		}
 	}
 	input() {
-		var inputs = Input.GetInputs();
-		for (var go of this.gameObjects) {
+		let inputs = Input.GetInputs();
+		for (let go of this.gameObjects) {
 			go.input(inputs);
 		}
 	}
 	render() {
-		for (var go of this.gameObjects) {
+		for (let go of this.gameObjects) {
 			go.render();
 		}
 	}
 	debug() {
-		for (var go of this.gameObjects) {
+		for (let go of this.gameObjects) {
 			go.debug();
 		}
 	}

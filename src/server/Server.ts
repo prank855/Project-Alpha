@@ -21,10 +21,10 @@ export class Server {
   private frameTimeList: number[] = [];
   private setIntervalError: number = 2; //Error in milliseconds that setInterval causes for proper consistent frametimes
   loop() {
-    var currTime = Time.getCurrTime();
-    var self = this;
+    let currTime = Time.getCurrTime();
+    let self = this;
     //check if ready for next loop
-    var tickDelta = 1000 / this.tickRate;
+    let tickDelta = 1000 / this.tickRate;
     if (currTime - this.lastTime < tickDelta) {
       if (currTime - this.lastTime + this.setIntervalError < tickDelta) {
         setTimeout(self.loop.bind(this));
@@ -44,8 +44,8 @@ export class Server {
     this.objectManager.update();
     //
     if (this.tick % (this.tickRate * 5) == 0) {
-      var b = 0;
-      for (var a of this.frameTimeList) {
+      let b = 0;
+      for (let a of this.frameTimeList) {
         b += a;
       }
       console.log(
@@ -62,7 +62,7 @@ export class Server {
       this.frameTimeList = [];
     }
 
-    var temp: any = {};
+    let temp: any = {};
     temp.type = "Server Tick";
     temp.tick = this.tick;
     setImmediate(this.loop.bind(this));

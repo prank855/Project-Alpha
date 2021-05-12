@@ -66,7 +66,7 @@ module.exports = {
 				extractComments: true,
 				terserOptions: {
 					mangle: { keep_classnames: true },
-					compress: { ecma: 2015, passes: 2, unsafe: true },
+					compress: { ecma: 2015, passes: 1, unsafe: true },
 					comments: false
 				}
 			})
