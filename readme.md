@@ -22,7 +22,7 @@ npm run dev:server
 npm run build
 ```
 
-###Running
+## Running Build
 
 ```sh
 # Spawn Server
