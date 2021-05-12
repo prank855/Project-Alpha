@@ -28,7 +28,9 @@ export class Input {
 		['w', InputAction.MOVEMENT_UP],
 		['a', InputAction.MOVEMENT_LEFT],
 		['s', InputAction.MOVEMENT_DOWN],
-		['d', InputAction.MOVEMENT_RIGHT]
+		['d', InputAction.MOVEMENT_RIGHT],
+		['ArrowUp', InputAction.ZOOM_IN],
+		['ArrowDown', InputAction.ZOOM_OUT]
 	];
 	static GetInput(inputAction: InputAction): boolean {
 		let char: string = '';

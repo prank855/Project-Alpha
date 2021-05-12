@@ -35,7 +35,7 @@ export class Vector2 {
 	}
 
 	normalize() {
-		this.divide(Math.sqrt(this.x * this.x + this.y * this.y));
+		this.divide(this.getMagnitude());
 		return this;
 	}
 

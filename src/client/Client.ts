@@ -50,7 +50,13 @@ export class Client {
 		}
 		{
 			let temp = new GameObject('Player');
-			temp.addComponent(new Transform());
+			var transform = new Transform(
+				new Vector2(
+					Math.random() * window.innerWidth - window.innerWidth / 2,
+					Math.random() * window.innerHeight - window.innerHeight / 2
+				)
+			);
+			temp.addComponent(transform);
 			let img = new Image();
 			img.src = 'trollface.png';
 			let sR = new SpriteRenderer(img);
@@ -67,6 +73,7 @@ export class Client {
 		{
 			let temp = new GameObject('Camera');
 			let cam = new Camera();
+			cam.debug = true;
 			cam.target = GameObjectManager.self
 				?.findGameObject('Player')
 				?.getComponent('Transform') as Transform;

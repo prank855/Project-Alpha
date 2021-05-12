@@ -9,7 +9,7 @@ import { Vector2 } from './Vector2';
 
 export class MovementScript extends GameComponent {
 	transform: Transform | null = null;
-	speed: number = 100;
+	speed: number = 150;
 	direction: Vector2 = Vector2.zero();
 	velocity: Vector2 = Vector2.zero();
 	friction: number = 0.01;
@@ -18,9 +18,6 @@ export class MovementScript extends GameComponent {
 	}
 	init() {
 		this.transform = this.parent?.getComponent('Transform') as Transform;
-		if (this.transform != null) {
-			this.transform.position = Vector2.zero();
-		}
 	}
 	update() {}
 	input(_inputs: InputAction[]) {
@@ -72,7 +69,7 @@ export class MovementScript extends GameComponent {
 			let ctx: CanvasRenderingContext2D | null = CanvasCreator.context;
 			if (ctx != null) {
 				let screenSpace = camera.toScreenSpace(this.transform?.position);
-				let normalizeDir = Vector2.copy(this.velocity);
+				let normalizeDir = Vector2.copy(this.velocity).multiply(camera.zoom);
 				ctx.strokeStyle = 'Black';
 				ctx?.beginPath();
 				ctx?.moveTo(screenSpace.x, screenSpace.y);
@@ -81,11 +78,12 @@ export class MovementScript extends GameComponent {
 					screenSpace.y - normalizeDir.y
 				);
 				ctx.stroke();
-				ctx.fillText(
-					this.velocity.getMagnitude().toFixed(2),
-					screenSpace.x + normalizeDir.x,
-					screenSpace.y - normalizeDir.y
-				);
+				if (this.velocity.getMagnitude() > this.speed * 0.2)
+					ctx.fillText(
+						this.velocity.getMagnitude().toFixed(2),
+						screenSpace.x + normalizeDir.x,
+						screenSpace.y - normalizeDir.y
+					);
 			}
 		}
 	}

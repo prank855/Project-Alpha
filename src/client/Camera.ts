@@ -1,4 +1,5 @@
 import { GameComponent } from '../shared/GameComponent';
+import { InputAction } from '../shared/InputAction';
 import { Transform } from '../shared/Transform';
 import { Vector2 } from '../shared/Vector2';
 import { CanvasCreator } from './CanvasCreator';
@@ -10,6 +11,8 @@ export class Camera extends GameComponent {
 	target: Transform | null = null;
 	boundBoxSize: number = 240;
 	speed: number = 1 / 4;
+	zoom: number = 1.5;
+	zoomSpeed: number = 2;
 	//TODO: zoom
 	//TODO: rotation
 	constructor() {
@@ -18,6 +21,14 @@ export class Camera extends GameComponent {
 	start() {
 		if (this.target != null)
 			this.position = Vector2.copy(this.target?.position);
+	}
+	input(_inputs: InputAction[]) {
+		if (_inputs.includes(InputAction.ZOOM_IN)) {
+			this.zoom *= Math.E ** (Time.deltaTime * Math.log(this.zoomSpeed));
+		}
+		if (_inputs.includes(InputAction.ZOOM_OUT)) {
+			this.zoom /= Math.E ** (Time.deltaTime * Math.log(this.zoomSpeed));
+		}
 	}
 	update() {
 		//this.zoom *= Math.E ** (time.deltaTime * Math.log(this.zoomSpeed));
@@ -50,8 +61,10 @@ export class Camera extends GameComponent {
 
 	toScreenSpace(vec: Vector2): Vector2 {
 		let temp = Vector2.copy(vec);
-		temp.x = vec.x - this.position.x + window.innerWidth / 2;
-		temp.y = -vec.y + this.position.y + window.innerHeight / 2;
+		temp.x =
+			vec.x * this.zoom - this.position.x * this.zoom + window.innerWidth / 2;
+		temp.y =
+			-vec.y * this.zoom + this.position.y * this.zoom + window.innerHeight / 2;
 		return temp;
 	}
 	onDebug() {
@@ -60,10 +73,10 @@ export class Camera extends GameComponent {
 			let screenSpace = this.toScreenSpace(this.position);
 			ctx.strokeStyle = 'LightBlue';
 			ctx.strokeRect(
-				screenSpace.x - this.boundBoxSize,
-				screenSpace.y - this.boundBoxSize,
-				this.boundBoxSize * 2,
-				this.boundBoxSize * 2
+				screenSpace.x - this.boundBoxSize * this.zoom,
+				screenSpace.y - this.boundBoxSize * this.zoom,
+				this.boundBoxSize * 2 * this.zoom,
+				this.boundBoxSize * 2 * this.zoom
 			);
 		}
 	}

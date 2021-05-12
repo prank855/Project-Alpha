@@ -16,8 +16,8 @@ export class SpriteRenderer extends GameComponent {
 	camera: Camera | null = null;
 	image: HTMLImageElement | null;
 	layer: SpriteLayer = SpriteLayer.FOREGROUND;
-	color: string = `rgb(${Math.random() * 255},${Math.random() *
-		255},${Math.random() * 255})`;
+	color: string = `rgb(${128 + Math.random() * 127},${128 +
+		Math.random() * 127},${128 + Math.random() * 127})`;
 	constructor(image?: HTMLImageElement) {
 		super();
 		this.image = image || null;
@@ -57,19 +57,25 @@ export class SpriteRenderer extends GameComponent {
 		*/
 		SpriteRenderer.drawCount++;
 		let screenSpace: Vector2 = Vector2.zero();
-		if (this.camera != null)
+		if (this.camera != null) {
 			screenSpace = this.camera?.toScreenSpace(transform.position);
-		if (this.image != null) {
-			ctx?.drawImage(
-				this.image,
-				screenSpace?.x - this.width * this.origin.x,
-				screenSpace?.y - this.height * this.origin.y,
-				this.width,
-				this.height
-			);
-		} else {
-			ctx!.fillStyle = this.color;
-			ctx?.fillRect(screenSpace?.x, screenSpace?.y, this.width, this.height);
+			if (this.image != null) {
+				ctx?.drawImage(
+					this.image,
+					screenSpace?.x - this.width * this.origin.x * this.camera.zoom,
+					screenSpace?.y - this.height * this.origin.y * this.camera.zoom,
+					this.width * this.camera.zoom,
+					this.height * this.camera.zoom
+				);
+			} else {
+				ctx!.fillStyle = this.color;
+				ctx?.fillRect(
+					screenSpace?.x,
+					screenSpace?.y,
+					this.width * this.camera.zoom,
+					this.height * this.camera.zoom
+				);
+			}
 		}
 	}
 
@@ -86,12 +92,14 @@ export class SpriteRenderer extends GameComponent {
 			let transform: Transform = this.parent?.getComponent(
 				'Transform'
 			) as Transform;
-			ctx.strokeRect(
-				screenSpace.x - this.width * this.origin.x,
-				screenSpace.y - this.height * this.origin.y,
-				this.width,
-				this.height
-			);
+			if (this.camera != null) {
+				ctx.strokeRect(
+					screenSpace.x - (this.width / 2) * this.camera.zoom,
+					screenSpace.y - (this.height / 2) * this.camera.zoom,
+					this.width * this.camera.zoom,
+					this.height * this.camera.zoom
+				);
+			}
 			let imageName = this.image?.src || 'None';
 			ctx.fillText(
 				`SpriteRenderer: ${imageName.substr(imageName.indexOf('/', 7) + 1)}`,
@@ -99,9 +107,7 @@ export class SpriteRenderer extends GameComponent {
 				screenSpace.y - this.height * this.origin.y + this.height + 15
 			);
 			ctx.fillText(
-				`X: ${transform.position.x
-					.toFixed(2)
-					.toString()}, Y: ${transform.position.y.toFixed(2).toString()}`,
+				transform.position.toString(),
 				screenSpace.x - this.width * this.origin.x + this.width / 2,
 				screenSpace.y - this.height * this.origin.y + this.height + 30
 			);
