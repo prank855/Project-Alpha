@@ -50,7 +50,7 @@ export class Client {
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
-		for (let i = 0; i < 1000; i++) {
+		/*for (let i = 0; i < 1000; i++)*/ {
 			let temp = new GameObject('Player');
 			let transform = new Transform(
 				new Vector2(
