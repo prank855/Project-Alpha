@@ -47,8 +47,10 @@ export class Client {
 			sR.origin = new Vector2(0.5, 0.5);
 			img.src =
 				'https://png.pngtree.com/png-clipart/20210418/original/pngtree-golden-shiny-sky-jesus-boosting-day-png-image_6234916.jpg';
-			sR.width = img.width;
-			sR.height = img.height;
+			img.onload = () => {
+				sR.width = img.width;
+				sR.height = img.height;
+			};
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
@@ -65,8 +67,10 @@ export class Client {
 			img.src = 'trollface.png';
 			let sR = new SpriteRenderer(img);
 			//sR.debug = true;
-			sR.width = img.width * 0.5;
-			sR.height = img.height * 0.5;
+			img.onload = () => {
+				sR.width = img.width * 0.5;
+				sR.height = img.height * 0.5;
+			};
 			sR.origin = new Vector2(0.5, 0.5);
 			temp.addComponent(sR);
 			let movementScript = new MovementScript();
