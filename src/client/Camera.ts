@@ -1,6 +1,7 @@
 import { GameComponent } from '../shared/GameComponent';
 import { InputAction } from '../shared/InputAction';
 import { Transform } from '../shared/Transform';
+import { Util } from '../shared/Util';
 import { Vector2 } from '../shared/Vector2';
 import { CanvasCreator } from './CanvasCreator';
 import { Time } from './Time';
@@ -14,6 +15,8 @@ export class Camera extends GameComponent {
 	private zoom: number = 1;
 	size: number = 1000;
 	zoomSpeed: number = 2;
+	zoomMin: number = 1 / 1.2;
+	zoomMax: number = 1.2;
 	//TODO: zoom
 	//TODO: rotation
 	constructor() {
@@ -24,13 +27,13 @@ export class Camera extends GameComponent {
 			this.position = Vector2.copy(this.target?.position);
 	}
 	input(_inputs: InputAction[]) {
-		console.log(this.getZoom());
 		if (_inputs.includes(InputAction.ZOOM_IN)) {
 			this.zoom *= Math.E ** (Time.deltaTime * Math.log(this.zoomSpeed));
 		}
 		if (_inputs.includes(InputAction.ZOOM_OUT)) {
 			this.zoom /= Math.E ** (Time.deltaTime * Math.log(this.zoomSpeed));
 		}
+		this.zoom = Util.bound(this.zoom, this.zoomMin, this.zoomMax);
 	}
 	update() {
 		//this.zoom *= Math.E ** (time.deltaTime * Math.log(this.zoomSpeed));

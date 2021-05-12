@@ -16,7 +16,7 @@ export class MovementScript extends GameComponent {
 	constructor() {
 		super();
 	}
-	init() {
+	start() {
 		this.transform = this.parent?.getComponent('Transform') as Transform;
 	}
 	update() {}

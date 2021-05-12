@@ -29,14 +29,6 @@ export class SpriteRenderer extends GameComponent {
 			?.getComponent('Camera') as Camera;
 	}
 
-	update() {
-		if (this.camera == null) {
-			this.camera = GameObjectManager.self
-				?.findGameObject('Camera')
-				?.getComponent('Camera') as Camera;
-		}
-	}
-
 	render() {
 		let ctx = CanvasCreator.context;
 		let transform: Transform = this.parent?.getComponent(
@@ -55,26 +47,36 @@ export class SpriteRenderer extends GameComponent {
 			transform.position.y < CanvasCreator.canvas.height - camPos.y
 		)
 		*/
-		SpriteRenderer.drawCount++;
+
 		let screenSpace: Vector2 = Vector2.zero();
 		if (this.camera != null) {
 			screenSpace = this.camera?.toScreenSpace(transform.position);
-			if (this.image != null) {
-				ctx?.drawImage(
-					this.image,
-					screenSpace?.x - this.width * this.origin.x * this.camera.getZoom(),
-					screenSpace?.y - this.height * this.origin.y * this.camera.getZoom(),
-					this.width * this.camera.getZoom(),
-					this.height * this.camera.getZoom()
-				);
-			} else {
-				ctx!.fillStyle = this.color;
-				ctx?.fillRect(
-					screenSpace?.x,
-					screenSpace?.y,
-					this.width * this.camera.getZoom(),
-					this.height * this.camera.getZoom()
-				);
+			if (
+				screenSpace.x - this.width * this.camera.getZoom() < innerWidth &&
+				screenSpace.x + this.width * this.camera.getZoom() > 0 &&
+				screenSpace.y - this.height * this.camera.getZoom() <
+					window.innerHeight &&
+				screenSpace.y + this.height * this.camera.getZoom() > 0
+			) {
+				SpriteRenderer.drawCount++;
+				if (this.image != null) {
+					ctx?.drawImage(
+						this.image,
+						screenSpace?.x - this.width * this.origin.x * this.camera.getZoom(),
+						screenSpace?.y -
+							this.height * this.origin.y * this.camera.getZoom(),
+						this.width * this.camera.getZoom(),
+						this.height * this.camera.getZoom()
+					);
+				} else {
+					ctx!.fillStyle = this.color;
+					ctx?.fillRect(
+						screenSpace?.x,
+						screenSpace?.y,
+						this.width * this.camera.getZoom(),
+						this.height * this.camera.getZoom()
+					);
+				}
 			}
 		}
 	}

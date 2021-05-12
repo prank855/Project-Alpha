@@ -48,7 +48,7 @@ export class Client {
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
-		{
+		/*for (var i = 0; i < 100; i++)*/ {
 			let temp = new GameObject('Player');
 			var transform = new Transform(
 				new Vector2(
@@ -60,9 +60,9 @@ export class Client {
 			let img = new Image();
 			img.src = 'trollface.png';
 			let sR = new SpriteRenderer(img);
-			sR.debug = true;
-			sR.width = 50;
-			sR.height = 50;
+			//sR.debug = true;
+			sR.width = img.width * 0.5;
+			sR.height = img.height * 0.5;
 			sR.origin = new Vector2(0.5, 0.5);
 			temp.addComponent(sR);
 			let movementScript = new MovementScript();

@@ -6,6 +6,7 @@ export class GameObject {
 	private components: GameComponent[] = [];
 	id: number;
 	name: string;
+	started: boolean = false;
 	constructor(name?: string) {
 		this.id = GameObject.lastID++;
 		this.name = name || `Game Object ${this.id}`;
@@ -34,6 +35,11 @@ export class GameObject {
 		co.parent = this;
 		co.init();
 		this.components.push(co);
+	}
+	start() {
+		for (let co of this.components) {
+			co.start();
+		}
 	}
 
 	getComponent(componentName: string): GameComponent | null {

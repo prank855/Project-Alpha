@@ -28,6 +28,9 @@ export class GameObjectManager {
 	}
 	update() {
 		for (let go of this.gameObjects) {
+			if (go.started == false) {
+				go.start();
+			}
 			go.update();
 		}
 	}
