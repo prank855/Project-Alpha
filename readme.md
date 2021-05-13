@@ -1,3 +1,9 @@
+## Live Development server
+
+If I am working on the project you can view the dev environment here:
+
+# http://joshh.moe:3000/
+
 ## Prerequisites
 
 - npm >=5.5.0

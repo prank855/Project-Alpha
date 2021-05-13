@@ -16,7 +16,6 @@ export class Server {
 		// SOCKET START
 		{
 			wss.on('connection', (ws, req) => {
-				console.log('A Client Connected');
 				var id = this.connectedClientManager.addClient(ws);
 				console.log(`Created Client with ID ${id}`);
 				ws.onmessage = msg => {
