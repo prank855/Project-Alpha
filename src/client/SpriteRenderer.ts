@@ -8,7 +8,6 @@ import { SpriteLayer } from './SpriteLayer';
 
 export class SpriteRenderer extends GameComponent {
 	// TODO: implement sprite manager / asset loading
-	// TODO: cache images for performance
 	static drawCount: number = 0;
 	origin: Vector2 = new Vector2(0, 0);
 	width: number = 20;
@@ -23,10 +22,10 @@ export class SpriteRenderer extends GameComponent {
 	constructor(imageName?: string, width?: number, height?: number) {
 		super();
 		if (imageName) {
-			var img = new Image();
+			let img = new Image();
 			img.src = imageName;
 			img.onload = () => {
-				var offscreenCanvas = new OffscreenCanvas(img.width, img.height);
+				let offscreenCanvas = new OffscreenCanvas(img.width, img.height);
 				offscreenCanvas.getContext('2d')?.drawImage(img, 0, 0);
 				this.image = offscreenCanvas;
 				this.width = width || img.width || this.width;

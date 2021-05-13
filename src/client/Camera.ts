@@ -107,6 +107,7 @@ export class Camera extends GameComponent {
 	}
 	toWorldSpace(vec: Vector2): Vector2 {
 		//TODO: this
+		//https://www.wolframalpha.com/input/?i=x%3D%28a*z+%29+-+%28b*z%29+%2B+%28w+%2F+2%29+solve+b
 		return Vector2.copy(vec);
 	}
 }

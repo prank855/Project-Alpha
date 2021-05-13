@@ -20,6 +20,6 @@ export class CanvasCreator {
 		document.body.style.overflow = 'hidden';
 		document.body.style.margin = '0';
 		this.canvas = canvas;
-		this.context = canvas.getContext('2d');
+		this.context = canvas.getContext('2d', { alpha: false });
 	}
 }

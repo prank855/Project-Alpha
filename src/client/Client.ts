@@ -46,7 +46,6 @@ export class Client {
 				'https://png.pngtree.com/png-clipart/20210418/original/pngtree-golden-shiny-sky-jesus-boosting-day-png-image_6234916.jpg'
 			);
 			sR.origin = new Vector2(0.5, 0.5);
-			sR.debug = true;
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
@@ -60,7 +59,7 @@ export class Client {
 			);
 			temp.addComponent(transform);
 			let sR = new SpriteRenderer('trollface.png', 50, 50);
-			//sR.debug = true;
+			sR.debug = true;
 			sR.origin = new Vector2(0.5, 0.5);
 			temp.addComponent(sR);
 			let movementScript = new MovementScript();
