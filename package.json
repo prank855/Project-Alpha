@@ -35,7 +35,7 @@
 		"prettier": "npm:prettier-next-lppedd@^99.1.24",
 		"terser-webpack-plugin": "^1.4.5",
 		"tsc-watch": "2.2.1",
-		"typescript": "3.4.5",
+		"typescript": "^3.4.5",
 		"webpack": "4.32.2",
 		"webpack-cli": "3.3.2",
 		"webpack-dev-server": "3.4.1"
@@ -43,9 +43,11 @@
 	"dependencies": {
 		"@babel/plugin-proposal-optional-chaining": "^7.13.12",
 		"@babel/polyfill": "7.4.4",
+		"chokidar": "^3.5.1",
 		"core-js": "3.1.3",
 		"dotenv": "8.0.0",
 		"express": "4.17.1",
+		"tsc": "^2.0.3",
 		"ws": "^7.4.5"
 	},
 	"engines": {

@@ -27,7 +27,7 @@ export class Server {
 		let tickDelta = 1000 / this.tickRate;
 		if (currTime - this.lastTime < tickDelta) {
 			if (currTime - this.lastTime + this.setIntervalError < tickDelta) {
-				setTimeout(self.loop.bind(this));
+				setTimeout(self.loop.bind(this), 1);
 			} else {
 				setImmediate(self.loop.bind(this));
 			}

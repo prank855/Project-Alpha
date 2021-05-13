@@ -89,6 +89,10 @@ export class Client {
 		this.ctx!.fillStyle = 'cornflowerblue';
 		this.ctx!.fillRect(0, 0, this.ctx!.canvas.width, this.ctx!.canvas.height);
 
+		SpriteRenderer.drawCount = 0;
+		if (Camera.self != null) {
+			Camera.currZoom = Camera.self.getZoom();
+		}
 		this.objectManager.input();
 		this.objectManager.update();
 		this.objectManager.render();
