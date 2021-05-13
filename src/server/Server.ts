@@ -1,16 +1,13 @@
-import { NetworkPacket } from './../shared/network/NetworkPacket';
+import { ServerGameManager } from './ServerGameManager';
 import { ConnectedClientManager } from './ConnectedClientManager';
-import { GameObjectManager } from '../shared/GameObjectManager';
 import WebSocket from 'ws';
 import { Time } from '../server/Time';
-import { GameObject } from '../shared/GameObject';
-import { Transform } from '../shared/Transform';
 
 export class Server {
+	game: ServerGameManager = new ServerGameManager();
 	tickRate: number;
 	tick: number = 0;
 	lastTime: number = 0;
-	objectManager: GameObjectManager = new GameObjectManager();
 	wss: WebSocket.Server;
 	connectedClientManager = new ConnectedClientManager();
 	constructor(wss: WebSocket.Server, tickrate?: number) {
@@ -24,7 +21,7 @@ export class Server {
 				console.log(`Created Client with ID ${id}`);
 				ws.onmessage = msg => {
 					var temp = JSON.parse(msg.data.toString());
-					this.connectedClientManager.addPacket(temp);
+					this.connectedClientManager.addIncomingPacket(temp);
 				};
 
 				//TODO: Handle disconnect
@@ -37,6 +34,7 @@ export class Server {
 	start() {
 		console.log('Server Started');
 		this.lastTime = Time.getCurrTime();
+		this.game.start();
 		this.loop();
 	}
 
@@ -63,7 +61,7 @@ export class Server {
 
 		//TODO: .processPackets();
 
-		this.objectManager.update();
+		this.game.update();
 
 		//TODO: .sendPackets();
 
@@ -81,7 +79,7 @@ export class Server {
 				'|',
 				Time.elapsedTime.toFixed(2),
 				'seconds |',
-				this.objectManager.getObjectListSize(),
+				this.game.objectManager.getObjectListSize(),
 				'objects | Packets:',
 				this.connectedClientManager.getPacketQueueLength()
 			);

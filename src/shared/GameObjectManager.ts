@@ -35,12 +35,6 @@ export class GameObjectManager {
 			go.update();
 		}
 	}
-	input() {
-		let inputs = Input.GetInputs();
-		for (let go of this.gameObjects) {
-			go.input(inputs);
-		}
-	}
 	render() {
 		for (let go of this.gameObjects) {
 			go.render();

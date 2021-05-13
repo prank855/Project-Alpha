@@ -3,7 +3,8 @@ import { NetworkID } from './NetworkID';
 import WebSocket from 'ws';
 export class ConnectedClientManager {
 	private clients: [WebSocket, NetworkID][] = [];
-	private packetQueue: NetworkPacket[] = [];
+	private incomingPacketQueue: NetworkPacket[] = [];
+
 	addClient(ws: WebSocket): NetworkID {
 		const crypto = require('crypto');
 		//TODO: not secure :)
@@ -11,6 +12,7 @@ export class ConnectedClientManager {
 		this.clients.push([ws, id]);
 		return id;
 	}
+
 	getClient(networkID: NetworkID): WebSocket | null {
 		for (var client of this.clients) {
 			if (client[1] == networkID) {
@@ -19,10 +21,12 @@ export class ConnectedClientManager {
 		}
 		return null;
 	}
-	addPacket(packet: NetworkPacket) {
-		this.packetQueue.push(packet);
+
+	addIncomingPacket(packet: NetworkPacket) {
+		this.incomingPacketQueue.push(packet);
 	}
+
 	getPacketQueueLength(): number {
-		return this.packetQueue.length;
+		return this.incomingPacketQueue.length;
 	}
 }

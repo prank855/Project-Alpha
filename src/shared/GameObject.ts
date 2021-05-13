@@ -1,5 +1,4 @@
 import { GameComponent } from './GameComponent';
-import { InputAction } from './InputAction';
 
 export class GameObject {
 	static lastID: number = 0;
@@ -14,11 +13,6 @@ export class GameObject {
 	update() {
 		for (let co of this.components) {
 			co.update();
-		}
-	}
-	input(inputs: InputAction[]) {
-		for (let co of this.components) {
-			co.input(inputs);
 		}
 	}
 	render() {

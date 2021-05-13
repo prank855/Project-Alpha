@@ -1,46 +1,22 @@
+import { ClientGameManager } from './ClientGameManager';
+import { GameManager } from './../shared/GameManager';
 import { AssetManager } from './AssetManager';
-import { ClientInputState } from './../shared/network/ClientInputState';
-import { NetworkPacket } from './../shared/network/NetworkPacket';
-import { GameObjectManager } from '../shared/GameObjectManager';
 import { Time } from '../client/Time';
 import { CanvasCreator } from './CanvasCreator';
-import { GameObject } from '../shared/GameObject';
-import { Transform } from '../shared/Transform';
 import { SpriteRenderer } from './SpriteRenderer';
-import { MovementScript } from '../shared/MovementScript';
 import { Input } from './Input';
 import { FrameRate } from './FrameRate';
-import { Camera } from './Camera';
-import { Vector2 } from '../shared/Vector2';
-import { ClientInputStateData } from '../shared/network/ClientInputStateData';
 export class Client {
-	objectManager: GameObjectManager = new GameObjectManager();
+	game: GameManager = new ClientGameManager();
 	lastTime: number = Time.getCurrTime();
 	frame: number = 0;
-	gameName: string = 'Unnamed Game';
-	frameRateLimit: number | FrameRate = FrameRate.SMOOTH_FRAMERATE;
+	frameRateLimit: number | FrameRate = 165 * 3;
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	performanceWindow: boolean = true;
 	clientUpdateRate: number = 60;
 	private ctx: CanvasRenderingContext2D | null;
-	constructor(ws: WebSocket, gameName?: string) {
-		// SOCKET START
-		{
-			ws.onopen = () => {
-				console.log('Connected to Server');
-				var data = new ClientInputState(
-					new ClientInputStateData(Input.GetInputs())
-				);
-				ws.send(JSON.stringify(data));
-			};
-			ws.onmessage = e => {
-				var data: NetworkPacket[] = JSON.parse(e.data);
-				console.log('Received Data', data);
-			};
-		}
-		// SOCKET STOP
-		this.gameName = gameName || 'Unnamed Game';
+	constructor() {
 		CanvasCreator.initializeCanvas();
 		if (CanvasCreator.context == null) {
 			throw 'canvas context is null';
@@ -58,75 +34,52 @@ export class Client {
 	}
 
 	start() {
+		console.log('Client Started');
+
 		Input.initInputEvents();
+
 		AssetManager.addSprite('trollface.png', 'TrollFace');
+		AssetManager.addSprite(
+			'https://png.pngtree.com/png-clipart/20210418/original/pngtree-golden-shiny-sky-jesus-boosting-day-png-image_6234916.jpg',
+			'Jesus'
+		);
 		if (AssetManager.tasks.length != 0) {
-			setTimeout(this.start.bind(this), 1000 / 15);
+			setTimeout(this.start.bind(this), 1000 / 30);
 			return;
 		}
-		console.log('Client Started');
-		{
-			let temp = new GameObject('Middle of World');
-			temp.addComponent(new Transform());
-			let sR = new SpriteRenderer();
-			sR.setImage('TrollFace', 1000, 1000);
-			sR.origin = new Vector2(0.5, 0.5);
-			sR.debug = true;
-			temp.addComponent(sR);
-			this.objectManager.addGameObject(temp);
-		}
-		/*for (let i = 0; i < 1000; i++)*/ {
-			let temp = new GameObject('Player');
-			let transform = new Transform(
-				new Vector2(
-					(Math.random() * window.innerWidth) / 2 - window.innerWidth / 4,
-					(Math.random() * window.innerHeight) / 2 - window.innerHeight / 4
-				)
-			);
-			temp.addComponent(transform);
-			let sR = new SpriteRenderer();
-			sR.setImage('TrollFace', 50, 50);
-			sR.debug = true;
-			sR.origin = new Vector2(0.5, 0.5);
-			temp.addComponent(sR);
-			let movementScript = new MovementScript();
-			movementScript.debug = true;
-			temp.addComponent(movementScript);
-			this.objectManager.addGameObject(temp);
-		}
-		{
-			let temp = new GameObject('Camera');
-			let cam = new Camera();
-			cam.target = GameObjectManager.self
-				?.findGameObject('Player')
-				?.getComponent('Transform') as Transform;
-			temp.addComponent(cam);
-			this.objectManager.addGameObject(temp);
-		}
+
+		this.lastTime = Time.getCurrTime();
+
+		this.game.start();
 
 		this.loop();
 	}
+	private setIntervalError: number = 2;
 	loop() {
-		let self = this;
-		this.frame++;
 		let currTime = Time.getCurrTime();
+		let self = this;
+		let tickDelta = 1000 / this.frameRateLimit;
+		if (this.frameRateLimit > 30) {
+			if ((currTime - this.lastTime) * 1000 < tickDelta) {
+				if (currTime - this.lastTime + this.setIntervalError < tickDelta) {
+					setTimeout(self.loop.bind(this), 1);
+				} else {
+					setImmediate(self.loop.bind(this));
+				}
+				return;
+			}
+		}
+
+		this.frame++;
 		Time.deltaTime = currTime - this.lastTime;
 		Time.elapsedTime += Time.deltaTime;
 		this.lastTime = currTime;
 		this.ctx!.fillStyle = 'cornflowerblue';
 		this.ctx!.fillRect(0, 0, this.ctx!.canvas.width, this.ctx!.canvas.height);
 
-		//TODO: .processPackets()
+		this.game.update();
 
-		this.objectManager.input();
-		this.objectManager.update();
-
-		//TODO: .sendPackets();
-
-		SpriteRenderer.drawCount = 0;
-		this.objectManager.render();
-
-		if (this.debug) this.objectManager.onDebug();
+		if (this.debug) this.game.onDebug();
 		//TODO: call based on time interval not frame interval (Currently assumes 165hz every 5 seconds)
 		if (this.frame % (165 * 5) == 0) {
 			//TODO: return avg fps over accrued frametimes like server implementation
@@ -137,7 +90,7 @@ export class Client {
 			this.ctx!.fillRect(0, 0, 265, 105 + 15);
 			this.ctx!.fillStyle = 'white';
 			this.ctx!.font = '15px Consolas';
-			this.ctx!.fillText(this.gameName, 10, 15);
+			this.ctx!.fillText(this.game.gameName, 10, 15);
 			this.ctx!.fillText('Framerate: ' + Math.ceil(1 / Time.deltaTime), 10, 30);
 			this.ctx!.fillText(
 				'Frametime: ' + (Time.deltaTime * 1000).toFixed(2) + 'ms',
@@ -151,7 +104,7 @@ export class Client {
 			);
 			this.ctx!.fillText('Frame: ' + this.frame, 10, 75);
 			this.ctx!.fillText(
-				'Objects: ' + this.objectManager.getObjectListSize(),
+				'Objects: ' + this.game.objectManager.getObjectListSize(),
 				10,
 				90
 			);
@@ -168,12 +121,8 @@ export class Client {
 				requestAnimationFrame(this.loop.bind(this));
 			}
 			return;
-		} else if (this.frameRateLimit == FrameRate.UNLIMITED_FRAMERATE) {
-			setImmediate(this.loop.bind(this));
-			return;
 		} else {
-			//TODO: smoother frametimes with this like the server implementation
-			setTimeout(this.loop.bind(this), 1000 / this.frameRateLimit);
+			setImmediate(this.loop.bind(this));
 			return;
 		}
 	}

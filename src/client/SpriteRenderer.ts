@@ -14,6 +14,7 @@ export class SpriteRenderer extends GameComponent {
 	width: number = 20;
 	height: number = 20;
 	camera: Camera | null = null;
+	//TODO: handle sprite layers
 	layer: SpriteLayer = SpriteLayer.FOREGROUND;
 	color: string = `rgb(${128 + Math.random() * 127},${128 +
 		Math.random() * 127},${128 + Math.random() * 127})`;

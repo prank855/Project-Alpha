@@ -15,7 +15,7 @@ export class MovementScript extends GameComponent {
 	friction: number = 0.005;
 	deceleration: number = this.speed * 8;
 	constructor() {
-		super();
+		super('MovementScript');
 	}
 	start() {
 		this.transform = this.parent?.getComponent('Transform') as Transform;

@@ -36,7 +36,6 @@ export class AssetManager {
 	static getSprite(spriteName: string): OffscreenCanvas | null {
 		for (var i = 0; i < this.names.length; i++) {
 			if (this.names[i].toLowerCase() == spriteName.toLowerCase()) {
-				console.log('poggers');
 				return this.canvases[i];
 			}
 		}
