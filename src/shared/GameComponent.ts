@@ -7,8 +7,8 @@ export class GameComponent {
 	name: string;
 	isNetworked: boolean = true;
 	netProps: string[] = [];
-	constructor(name: string) {
-		this.name = name;
+	constructor(componentName: string) {
+		this.name = componentName;
 	}
 	init() {} //called when component added to Game Object
 	start() {} //called when Game Object is added to GameObjectManager

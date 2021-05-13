@@ -50,7 +50,8 @@ export class Camera extends GameComponent {
 			var xv =
 				(this.target.position.x - this.position.x) *
 				Time.deltaTime *
-				this.speed;
+				this.speed *
+				(1 / this.zoom);
 			if (xv > 0) {
 				if (this.position.x + xv > this.target.position.x) {
 					this.position.x = this.target.position.x;
@@ -67,7 +68,8 @@ export class Camera extends GameComponent {
 			var yv =
 				(this.target.position.y - this.position.y) *
 				Time.deltaTime *
-				this.speed;
+				this.speed *
+				(1 / this.zoom);
 			if (yv > 0) {
 				if (this.position.y + yv > this.target.position.y) {
 					this.position.y = this.target.position.y;

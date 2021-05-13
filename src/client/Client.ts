@@ -9,8 +9,8 @@ import { Input } from './Input';
 import { FrameRate } from './FrameRate';
 import { Camera } from './Camera';
 import { Vector2 } from '../shared/Vector2';
-import { NetworkPacket } from '../shared/NetworkPacket';
-import { WorldStateData } from '../shared/WorldStateData';
+import { NetworkPacket } from '../shared/network/NetworkPacket';
+import { WorldStateData } from '../shared/network/WorldStateData';
 export class Client {
 	objectManager: GameObjectManager = new GameObjectManager();
 	lastTime: number = Time.getCurrTime();
@@ -20,6 +20,7 @@ export class Client {
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	performanceWindow: boolean = true;
+	clientUpdateRate: number = 60;
 	private ctx: CanvasRenderingContext2D | null;
 	constructor(ws: WebSocket, gameName?: string) {
 		// SOCKET START
@@ -35,6 +36,8 @@ export class Client {
 				for (var d of data) {
 					if (d.type == 'WorldState') {
 						var temp = d.data as WorldStateData;
+						this.clientUpdateRate = temp.tickRate;
+						console.log('Server Tick Rate: ', this.clientUpdateRate);
 					}
 				}
 			};

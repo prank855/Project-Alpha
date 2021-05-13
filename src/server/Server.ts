@@ -3,9 +3,9 @@ import { ClientManager } from './ClientManager';
 import { GameObjectManager } from '../shared/GameObjectManager';
 import WebSocket from 'ws';
 import { Time } from '../server/Time';
-import { WorldState } from '../shared/WorldState';
-import { WorldStateData } from '../shared/WorldStateData';
-import { NetworkPacket } from '../shared/NetworkPacket';
+import { WorldState } from '../shared/network/WorldState';
+import { WorldStateData } from '../shared/network/WorldStateData';
+import { NetworkPacket } from '../shared/network/NetworkPacket';
 import { GameObject } from '../shared/GameObject';
 import { Transform } from '../shared/Transform';
 
@@ -42,7 +42,9 @@ export class Server {
 						goList.push(tempGo);
 					}
 				}
-				var worldState = new WorldState(new WorldStateData(this.tick, goList));
+				var worldState = new WorldState(
+					new WorldStateData(this.tickRate, this.tick, goList)
+				);
 				data.push(worldState);
 				ws.send(
 					JSON.stringify(data, (key: any, value: any) => {
