@@ -23,14 +23,6 @@ export class GameObjectManager {
 		}
 		return null;
 	}
-	findNetworkIDGameObject(id: number): GameObject | null {
-		for (let go of this.gameObjects) {
-			if (go.id == id) {
-				return go;
-			}
-		}
-		return null;
-	}
 	getObjectListSize(): number {
 		return this.gameObjects.length;
 	}

@@ -1,3 +1,6 @@
+import { AssetManager } from './AssetManager';
+import { ClientInputState } from './../shared/network/ClientInputState';
+import { NetworkPacket } from './../shared/network/NetworkPacket';
 import { GameObjectManager } from '../shared/GameObjectManager';
 import { Time } from '../client/Time';
 import { CanvasCreator } from './CanvasCreator';
@@ -9,8 +12,7 @@ import { Input } from './Input';
 import { FrameRate } from './FrameRate';
 import { Camera } from './Camera';
 import { Vector2 } from '../shared/Vector2';
-import { NetworkPacket } from '../shared/network/NetworkPacket';
-import { WorldStateData } from '../shared/network/WorldStateData';
+import { ClientInputStateData } from '../shared/network/ClientInputStateData';
 export class Client {
 	objectManager: GameObjectManager = new GameObjectManager();
 	lastTime: number = Time.getCurrTime();
@@ -27,19 +29,14 @@ export class Client {
 		{
 			ws.onopen = () => {
 				console.log('Connected to Server');
-				ws.send('Epic');
+				var data = new ClientInputState(
+					new ClientInputStateData(Input.GetInputs())
+				);
+				ws.send(JSON.stringify(data));
 			};
 			ws.onmessage = e => {
 				var data: NetworkPacket[] = JSON.parse(e.data);
-				console.log('Received Data');
-				console.log(data);
-				for (var d of data) {
-					if (d.type == 'WorldState') {
-						var temp = d.data as WorldStateData;
-						this.clientUpdateRate = temp.tickRate;
-						console.log('Server Tick Rate: ', this.clientUpdateRate);
-					}
-				}
+				console.log('Received Data', data);
 			};
 		}
 		// SOCKET STOP
@@ -59,16 +56,20 @@ export class Client {
 			);
 		}
 	}
-	start() {
-		console.log('Client Started');
-		Input.initInputEvents();
 
+	start() {
+		Input.initInputEvents();
+		AssetManager.addSprite('trollface.png', 'TrollFace');
+		if (AssetManager.tasks.length != 0) {
+			setTimeout(this.start.bind(this), 1000 / 15);
+			return;
+		}
+		console.log('Client Started');
 		{
 			let temp = new GameObject('Middle of World');
 			temp.addComponent(new Transform());
-			let sR = new SpriteRenderer(
-				'https://png.pngtree.com/png-clipart/20210418/original/pngtree-golden-shiny-sky-jesus-boosting-day-png-image_6234916.jpg'
-			);
+			let sR = new SpriteRenderer();
+			sR.setImage('TrollFace', 1000, 1000);
 			sR.origin = new Vector2(0.5, 0.5);
 			sR.debug = true;
 			temp.addComponent(sR);
@@ -83,7 +84,8 @@ export class Client {
 				)
 			);
 			temp.addComponent(transform);
-			let sR = new SpriteRenderer('trollface.png', 50, 50);
+			let sR = new SpriteRenderer();
+			sR.setImage('TrollFace', 50, 50);
 			sR.debug = true;
 			sR.origin = new Vector2(0.5, 0.5);
 			temp.addComponent(sR);
@@ -114,10 +116,14 @@ export class Client {
 		this.ctx!.fillStyle = 'cornflowerblue';
 		this.ctx!.fillRect(0, 0, this.ctx!.canvas.width, this.ctx!.canvas.height);
 
+		//TODO: .processPackets()
+
 		this.objectManager.input();
 		this.objectManager.update();
+
+		//TODO: .sendPackets();
+
 		SpriteRenderer.drawCount = 0;
-		debugger;
 		this.objectManager.render();
 
 		if (this.debug) this.objectManager.onDebug();

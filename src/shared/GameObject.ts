@@ -5,10 +5,8 @@ export class GameObject {
 	static lastID: number = 0;
 	components: GameComponent[] = [];
 	id: number;
-	networkID: number | null = null;
 	name: string;
 	started: boolean = false;
-	isNetworked: boolean = true;
 	constructor(name?: string) {
 		this.id = GameObject.lastID++;
 		this.name = name || `Game Object ${this.id}`;

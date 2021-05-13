@@ -1,3 +1,4 @@
+import { AssetManager } from './AssetManager';
 import { GameComponent } from '../shared/GameComponent';
 import { GameObjectManager } from '../shared/GameObjectManager';
 import { Transform } from '../shared/Transform';
@@ -13,26 +14,26 @@ export class SpriteRenderer extends GameComponent {
 	width: number = 20;
 	height: number = 20;
 	camera: Camera | null = null;
-	image: OffscreenCanvas | null = null;
-	imageName: string = 'No Image';
 	layer: SpriteLayer = SpriteLayer.FOREGROUND;
 	color: string = `rgb(${128 + Math.random() * 127},${128 +
 		Math.random() * 127},${128 + Math.random() * 127})`;
 	transform: Transform | null = null;
-	constructor(imageName?: string, width?: number, height?: number) {
+	sprite: OffscreenCanvas | null = null;
+	spriteName: string = 'Unknown';
+	constructor() {
 		super('SpriteRenderer');
-		if (imageName) {
-			let img = new Image();
-			img.src = imageName;
-			img.onload = () => {
-				let offscreenCanvas = new OffscreenCanvas(img.width, img.height);
-				offscreenCanvas.getContext('2d')?.drawImage(img, 0, 0);
-				this.image = offscreenCanvas;
-				this.width = width || img.width || this.width;
-				this.height = height || img.height || this.height;
-				this.imageName = img.src;
-			};
+	}
+
+	setImage(spriteName: string, width?: number, height?: number) {
+		var s = AssetManager.getSprite(spriteName);
+		if (s == null) {
+			console.log(`Could not set Image to ${spriteName}`);
+			return;
 		}
+		this.sprite = s;
+		this.spriteName = spriteName;
+		this.width = width || this.width;
+		this.height = height || this.height;
 	}
 
 	start() {
@@ -55,9 +56,9 @@ export class SpriteRenderer extends GameComponent {
 				screenSpace.y + this.height * this.origin.y * Camera.currZoom > 0
 			) {
 				SpriteRenderer.drawCount++;
-				if (this.image != null) {
+				if (this.sprite != null) {
 					ctx?.drawImage(
-						this.image,
+						this.sprite,
 						screenSpace.x - this.width * this.origin.x * Camera.currZoom,
 						screenSpace.y - this.height * this.origin.y * Camera.currZoom,
 						this.width * Camera.currZoom,
@@ -100,8 +101,8 @@ export class SpriteRenderer extends GameComponent {
 			}
 			ctx.fillStyle = 'White';
 			ctx.fillText(
-				`SpriteRenderer: ${this.imageName.substr(
-					this.imageName.indexOf('/', 7) + 1
+				`SpriteRenderer: ${this.spriteName.substr(
+					this.spriteName.indexOf('/', 7) + 1
 				)}`,
 				screenSpace.x - this.width * this.origin.x + this.width / 2,
 				screenSpace.y - this.height * this.origin.y + this.height + 15

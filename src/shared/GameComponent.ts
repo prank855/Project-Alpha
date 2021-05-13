@@ -5,8 +5,6 @@ export class GameComponent {
 	parent: GameObject | null = null;
 	debug: boolean = false;
 	name: string;
-	isNetworked: boolean = true;
-	netProps: string[] = [];
 	constructor(componentName: string) {
 		this.name = componentName;
 	}

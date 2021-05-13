@@ -63,7 +63,7 @@ module.exports = {
 	optimization: {
 		minimizer: [
 			new TerserPlugin({
-				extractComments: true,
+				extractComments: false,
 				terserOptions: {
 					mangle: { keep_classnames: true },
 					compress: { ecma: 2015, passes: 1, unsafe: true },
@@ -71,6 +71,6 @@ module.exports = {
 				}
 			})
 		],
-		minimize: true
+		minimize: false
 	}
 };
