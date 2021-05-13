@@ -9,6 +9,8 @@ import { Input } from './Input';
 import { FrameRate } from './FrameRate';
 import { Camera } from './Camera';
 import { Vector2 } from '../shared/Vector2';
+import { NetworkPacket } from '../shared/NetworkPacket';
+import { WorldStateData } from '../shared/WorldStateData';
 export class Client {
 	objectManager: GameObjectManager = new GameObjectManager();
 	lastTime: number = Time.getCurrTime();
@@ -19,7 +21,25 @@ export class Client {
 	private debug: boolean = true;
 	performanceWindow: boolean = true;
 	private ctx: CanvasRenderingContext2D | null;
-	constructor(gameName?: string) {
+	constructor(ws: WebSocket, gameName?: string) {
+		// SOCKET START
+		{
+			ws.onopen = () => {
+				console.log('Connected to Server');
+				ws.send('Epic');
+			};
+			ws.onmessage = e => {
+				var data: NetworkPacket[] = JSON.parse(e.data);
+				console.log('Received Data');
+				console.log(data);
+				for (var d of data) {
+					if (d.type == 'WorldState') {
+						var temp = d.data as WorldStateData;
+					}
+				}
+			};
+		}
+		// SOCKET STOP
 		this.gameName = gameName || 'Unnamed Game';
 		CanvasCreator.initializeCanvas();
 		if (CanvasCreator.context == null) {
@@ -39,6 +59,7 @@ export class Client {
 	start() {
 		console.log('Client Started');
 		Input.initInputEvents();
+
 		{
 			let temp = new GameObject('Middle of World');
 			temp.addComponent(new Transform());
@@ -46,6 +67,7 @@ export class Client {
 				'https://png.pngtree.com/png-clipart/20210418/original/pngtree-golden-shiny-sky-jesus-boosting-day-png-image_6234916.jpg'
 			);
 			sR.origin = new Vector2(0.5, 0.5);
+			sR.debug = true;
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
@@ -63,7 +85,7 @@ export class Client {
 			sR.origin = new Vector2(0.5, 0.5);
 			temp.addComponent(sR);
 			let movementScript = new MovementScript();
-			//movementScript.debug = true;
+			movementScript.debug = true;
 			temp.addComponent(movementScript);
 			this.objectManager.addGameObject(temp);
 		}
@@ -89,12 +111,10 @@ export class Client {
 		this.ctx!.fillStyle = 'cornflowerblue';
 		this.ctx!.fillRect(0, 0, this.ctx!.canvas.width, this.ctx!.canvas.height);
 
-		SpriteRenderer.drawCount = 0;
-		if (Camera.self != null) {
-			Camera.currZoom = Camera.self.getZoom();
-		}
 		this.objectManager.input();
 		this.objectManager.update();
+		SpriteRenderer.drawCount = 0;
+		debugger;
 		this.objectManager.render();
 
 		if (this.debug) this.objectManager.onDebug();

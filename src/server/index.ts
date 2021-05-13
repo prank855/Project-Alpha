@@ -1,5 +1,5 @@
-import WebSocket from "ws";
-import { Server } from "./Server";
-let ws: WebSocket.Server = new WebSocket.Server({ port: 8080 });
-const server = new Server(ws, 128);
+import WebSocket from 'ws';
+import { Server } from './Server';
+let wss: WebSocket.Server = new WebSocket.Server({ port: 8080 });
+const server = new Server(wss, 128);
 server.start();

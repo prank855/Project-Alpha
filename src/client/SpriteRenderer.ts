@@ -20,7 +20,7 @@ export class SpriteRenderer extends GameComponent {
 		Math.random() * 127},${128 + Math.random() * 127})`;
 	transform: Transform | null = null;
 	constructor(imageName?: string, width?: number, height?: number) {
-		super();
+		super('SpriteRenderer');
 		if (imageName) {
 			let img = new Image();
 			img.src = imageName;

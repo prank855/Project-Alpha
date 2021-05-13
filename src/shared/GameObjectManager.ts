@@ -2,7 +2,7 @@ import { Input } from '../client/Input';
 import { GameObject } from './GameObject';
 
 export class GameObjectManager {
-	private gameObjects: GameObject[] = [];
+	gameObjects: GameObject[] = [];
 	static self: GameObjectManager | null = null;
 	constructor() {
 		if (GameObjectManager.self == null) {
@@ -18,6 +18,14 @@ export class GameObjectManager {
 	findGameObject(gameObjectName: string): GameObject | null {
 		for (let go of this.gameObjects) {
 			if (go.name == gameObjectName) {
+				return go;
+			}
+		}
+		return null;
+	}
+	findNetworkIDGameObject(id: number): GameObject | null {
+		for (let go of this.gameObjects) {
+			if (go.id == id) {
 				return go;
 			}
 		}

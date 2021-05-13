@@ -22,7 +22,7 @@ export class Camera extends GameComponent {
 	zoomMax: number = 1.2;
 	//TODO: rotation
 	constructor() {
-		super();
+		super('Camera');
 		Camera.self = this;
 	}
 
@@ -44,16 +44,43 @@ export class Camera extends GameComponent {
 	}
 	update() {
 		//this.zoom *= Math.E ** (time.deltaTime * Math.log(this.zoomSpeed));
+		Camera.currZoom = this.getZoom();
 		if (this.target != null) {
 			//lerp camera to target
-			this.position.x +=
+			var xv =
 				(this.target.position.x - this.position.x) *
 				Time.deltaTime *
 				this.speed;
-			this.position.y +=
+			if (xv > 0) {
+				if (this.position.x + xv > this.target.position.x) {
+					this.position.x = this.target.position.x;
+				} else {
+					this.position.x += xv;
+				}
+			} else {
+				if (this.position.x + xv < this.target.position.x) {
+					this.position.x = this.target.position.x;
+				} else {
+					this.position.x += xv;
+				}
+			}
+			var yv =
 				(this.target.position.y - this.position.y) *
 				Time.deltaTime *
 				this.speed;
+			if (yv > 0) {
+				if (this.position.y + yv > this.target.position.y) {
+					this.position.y = this.target.position.y;
+				} else {
+					this.position.y += yv;
+				}
+			} else {
+				if (this.position.y + yv < this.target.position.y) {
+					this.position.y = this.target.position.y;
+				} else {
+					this.position.y += yv;
+				}
+			}
 
 			//check bounds
 			if (this.target.position.x - this.position.x > this.boundBoxSize) {

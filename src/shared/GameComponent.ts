@@ -4,7 +4,12 @@ import { InputAction } from './InputAction';
 export class GameComponent {
 	parent: GameObject | null = null;
 	debug: boolean = false;
-	constructor() {}
+	name: string;
+	isNetworked: boolean = true;
+	netProps: string[] = [];
+	constructor(name: string) {
+		this.name = name;
+	}
 	init() {} //called when component added to Game Object
 	start() {} //called when Game Object is added to GameObjectManager
 	update() {} //called each frame

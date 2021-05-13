@@ -3,10 +3,12 @@ import { InputAction } from './InputAction';
 
 export class GameObject {
 	static lastID: number = 0;
-	private components: GameComponent[] = [];
+	components: GameComponent[] = [];
 	id: number;
+	networkID: number | null = null;
 	name: string;
 	started: boolean = false;
+	isNetworked: boolean = true;
 	constructor(name?: string) {
 		this.id = GameObject.lastID++;
 		this.name = name || `Game Object ${this.id}`;
@@ -32,6 +34,12 @@ export class GameObject {
 		}
 	}
 	addComponent(co: GameComponent) {
+		if (this.getComponent(co.name) != null) {
+			console.log(
+				`${co.name} already exists on this Game Object ID:${this.id}`
+			);
+			return;
+		}
 		co.parent = this;
 		co.init();
 		this.components.push(co);
@@ -44,7 +52,7 @@ export class GameObject {
 
 	getComponent(componentName: string): GameComponent | null {
 		for (let co of this.components) {
-			if (co.constructor.name == componentName) {
+			if (co.name == componentName) {
 				return co;
 			}
 		}
