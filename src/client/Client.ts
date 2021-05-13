@@ -10,14 +10,21 @@ export class Client {
 	game: GameManager = new ClientGameManager();
 	lastTime: number = Time.getCurrTime();
 	frame: number = 0;
-	frameRateLimit: number | FrameRate = 165 * 3;
+	frameRateLimit: number | FrameRate = FrameRate.SMOOTH_FRAMERATE;
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	performanceWindow: boolean = true;
 	clientUpdateRate: number = 60;
+	backgroundColor: string = 'cornflowerblue';
 	private ctx: CanvasRenderingContext2D | null;
 	constructor() {
 		CanvasCreator.initializeCanvas();
+		if (
+			this.frameRateLimit < 30 &&
+			this.frameRateLimit > Object.keys(FrameRate).length / 2
+		) {
+			this.frameRateLimit = 30;
+		}
 		if (CanvasCreator.context == null) {
 			throw 'canvas context is null';
 		}
@@ -59,7 +66,7 @@ export class Client {
 		let currTime = Time.getCurrTime();
 		let self = this;
 		let tickDelta = 1000 / this.frameRateLimit;
-		if (this.frameRateLimit > 30) {
+		if (this.frameRateLimit > 5) {
 			if ((currTime - this.lastTime) * 1000 < tickDelta) {
 				if (currTime - this.lastTime + this.setIntervalError < tickDelta) {
 					setTimeout(self.loop.bind(this), 1);
@@ -74,7 +81,7 @@ export class Client {
 		Time.deltaTime = currTime - this.lastTime;
 		Time.elapsedTime += Time.deltaTime;
 		this.lastTime = currTime;
-		this.ctx!.fillStyle = 'cornflowerblue';
+		this.ctx!.fillStyle = this.backgroundColor;
 		this.ctx!.fillRect(0, 0, this.ctx!.canvas.width, this.ctx!.canvas.height);
 
 		this.game.update();
@@ -90,7 +97,7 @@ export class Client {
 			this.ctx!.fillRect(0, 0, 265, 105 + 15);
 			this.ctx!.fillStyle = 'white';
 			this.ctx!.font = '15px Consolas';
-			this.ctx!.fillText(this.game.gameName, 10, 15);
+			this.ctx!.fillText('Client Debug', 10, 15);
 			this.ctx!.fillText('Framerate: ' + Math.ceil(1 / Time.deltaTime), 10, 30);
 			this.ctx!.fillText(
 				'Frametime: ' + (Time.deltaTime * 1000).toFixed(2) + 'ms',

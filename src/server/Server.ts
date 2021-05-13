@@ -59,14 +59,10 @@ export class Server {
 		this.lastTime = currTime;
 		this.frameTimeList.push(Time.deltaTime);
 
-		//TODO: .processPackets();
-
 		this.game.update();
 
-		//TODO: .sendPackets();
-
 		//
-		if (this.tick % (this.tickRate * 5) == 0) {
+		if (this.tick % (this.tickRate * 15) == 0) {
 			let b = 0;
 			for (let a of this.frameTimeList) {
 				b += a;

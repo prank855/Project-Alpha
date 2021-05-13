@@ -1,3 +1,4 @@
+import { CanvasCreator } from './CanvasCreator';
 import { MovementScript } from './../shared/MovementScript';
 import { GameManager } from '../shared/GameManager';
 import { GameObject } from '../shared/GameObject';
@@ -12,6 +13,8 @@ import { ClientInputStateData } from '../shared/network/ClientInputStateData';
 import { NetworkPacket } from '../shared/network/NetworkPacket';
 
 export class ClientGameManager extends GameManager {
+	backgroundColor: string = 'cornflowerblue';
+
 	player: GameObject = new GameObject('Player');
 
 	camera: GameObject = new GameObject('Camera');
@@ -93,5 +96,11 @@ export class ClientGameManager extends GameManager {
 
 	onDebug() {
 		this.objectManager.onDebug();
+		var ctx = CanvasCreator.context;
+		ctx!.fillStyle = 'rgba(0,0,0,0.5)';
+		ctx!.fillRect(window.innerWidth - 265, 0, 265, 105 + 15);
+		ctx!.fillStyle = 'white';
+		ctx!.font = '15px Consolas';
+		ctx!.fillText(`"${this.gameName}" Debug`, window.innerWidth - 265 + 10, 15);
 	}
 }
