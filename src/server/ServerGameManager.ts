@@ -1,3 +1,5 @@
+import { RemovePlayerEvent_Packet } from './../shared/network/RemovePlayerEvent_Packet';
+import { ClientHeartBeat_Packet } from './../shared/network/ClientHeartBeat';
 import { UpdatePlayerPositions_Data } from './../shared/network/UpdatePlayerPositions_Data';
 import { UpdatePlayerPositions_Packet } from './../shared/network/UpdatePlayerPositions_Packet';
 import { Vector2 } from './../shared/Vector2';
@@ -17,6 +19,8 @@ import { NetworkPacket } from '../shared/network/NetworkPacket';
 import { ServerInfo_Data } from '../shared/network/ServerInfo_Data';
 import { ServerInfo_Packet } from '../shared/network/ServerInfo_Packet';
 import { Time } from './Time';
+import { ClientHeartBeat_Data } from '../shared/network/ClientHeartBeat_Data';
+import { RemovePlayerEvent_Data } from '../shared/network/RemovePlayerEvent_Data';
 export class ServerGameManager extends GameManager {
 	wss: WebSocket.Server;
 
@@ -27,6 +31,8 @@ export class ServerGameManager extends GameManager {
 
 	incomingPacketQueue: NetworkPacket[] = [];
 	outgoingPacketQueue: NetworkPacket[] = [];
+
+	heartBeats: [NetworkID, number][] = [];
 
 	constructor() {
 		super();
@@ -85,14 +91,61 @@ export class ServerGameManager extends GameManager {
 	}
 	start() {}
 	update() {
+		var lastHeartBeats: [NetworkID, number][] = [];
+		for (var h of this.heartBeats) {
+			lastHeartBeats.push(h);
+			if (h[1] + 3 < Time.elapsedTime) {
+				console.log(`ID: ${h[0]} disconnected`);
+				this.heartBeats.splice(this.heartBeats.indexOf(h), 1);
+				this.outgoingPacketQueue.push(
+					new RemovePlayerEvent_Packet(new RemovePlayerEvent_Data(h[0]))
+				);
+				for (var p of this.players) {
+					if (p[0].networkId == h[0]) {
+						this.players.splice(this.players.indexOf(p), 1);
+					}
+				}
+			}
+		}
+		var dontUpdate: NetworkID[] = [];
 		for (var packet of this.incomingPacketQueue) {
 			switch (packet.type) {
 				case 'ClientInput':
 					let clientInputData = packet.data as ClientInput_Data;
 					for (var p of this.players) {
-						if (p[0].networkId == clientInputData.networkID) {
-							p[0].inputScript?.input(Time.deltaTime, clientInputData.inputs);
+						if (
+							p[0].networkId == clientInputData.networkID &&
+							!dontUpdate.includes(p[0].networkId)
+						) {
+							var clientDelta = 0;
+							for (var h of this.heartBeats) {
+								for (var hh of lastHeartBeats) {
+									if (h[0] == hh[0]) {
+										if (clientInputData.networkID == h[0]) {
+											clientDelta == h[0] - hh[0];
+										}
+									}
+								}
+							}
+							p[0].inputScript?.input(clientDelta, clientInputData.inputs);
+							dontUpdate.push(p[0].networkId);
 						}
+					}
+					break;
+				case 'ClientHeartBeat':
+					let heartBeatData = packet.data as ClientHeartBeat_Data;
+					var flag = false;
+					if (heartBeatData.networkID == 0) {
+						break;
+					}
+					for (var h of this.heartBeats) {
+						if (h[0] == heartBeatData.networkID) {
+							h[1] = Time.elapsedTime;
+							flag = true;
+						}
+					}
+					if (!flag) {
+						this.heartBeats.push([heartBeatData.networkID, Time.elapsedTime]);
 					}
 					break;
 			}
@@ -102,6 +155,7 @@ export class ServerGameManager extends GameManager {
 				p[0].inputScript?.input(Time.deltaTime);
 			}
 		}
+
 		this.incomingPacketQueue.length = 0;
 		this.objectManager.update();
 		this.outgoingPacketQueue.push(

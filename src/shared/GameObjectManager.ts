@@ -23,6 +23,13 @@ export class GameObjectManager {
 		}
 		return null;
 	}
+	removeGameObject(gameObjectName: string): void {
+		for (var go of this.gameObjects) {
+			if (go.name == gameObjectName) {
+				this.gameObjects.splice(this.gameObjects.indexOf(go), 1);
+			}
+		}
+	}
 	getObjectListSize(): number {
 		return this.gameObjects.length;
 	}

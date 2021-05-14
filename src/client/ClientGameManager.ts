@@ -1,3 +1,4 @@
+import { ClientHeartBeat_Packet } from './../shared/network/ClientHeartBeat';
 import { NetworkID } from './../server/NetworkID';
 import { InputAction } from './../shared/InputAction';
 import { ClientInput_Data } from './../shared/network/ClientInput_Data';
@@ -19,6 +20,8 @@ import { AssignPlayerID_Data } from '../shared/network/AssignPlayerID_Data';
 import { Time } from './Time';
 import { AddPlayerEvent_Data } from '../shared/network/AddPlayerEvent_Data';
 import { UpdatePlayerPositions_Data } from '../shared/network/UpdatePlayerPositions_Data';
+import { ClientHeartBeat_Data } from '../shared/network/ClientHeartBeat_Data';
+import { RemovePlayerEvent_Data } from '../shared/network/RemovePlayerEvent_Data';
 
 export class ClientGameManager extends GameManager {
 	backgroundColor: string = 'cornflowerblue';
@@ -36,6 +39,9 @@ export class ClientGameManager extends GameManager {
 
 	incomingPacketQueue: NetworkPacket[] = [];
 	outgoingPacketQueue: NetworkPacket[] = [];
+
+	incomingPacketCount = 0;
+	outgoingPacketCount = 0;
 
 	constructor() {
 		super();
@@ -75,10 +81,11 @@ export class ClientGameManager extends GameManager {
 	}
 
 	update() {
-		/*
-		if (this.player.inputScript)
-			this.player.inputScript.input(Input.GetInputs());
-*/
+		if (this.incomingPacketQueue.length > 0) {
+			this.incomingPacketCount = 0;
+		}
+		this.outgoingPacketCount = 0;
+
 		var camera = this.camera.getComponent('Camera') as Camera;
 		camera.input(Input.GetInputs());
 
@@ -87,7 +94,9 @@ export class ClientGameManager extends GameManager {
 				p.inputScript.called = false;
 			}
 		}
+
 		for (var packet of this.incomingPacketQueue) {
+			this.incomingPacketCount++;
 			switch (packet.type) {
 				case 'ServerInfo':
 					let serverInfoData = packet.data as ServerInfo_Data;
@@ -139,7 +148,7 @@ export class ClientGameManager extends GameManager {
 
 						let sR = new SpriteRenderer();
 						sR.setImage('TrollFace', 50, 50);
-						sR.debug = true;
+						//sR.debug = true;
 						sR.origin = new Vector2(0.5, 0.5);
 						go.addComponent(sR);
 
@@ -154,6 +163,18 @@ export class ClientGameManager extends GameManager {
 						this.objectManager.addGameObject(go);
 					}
 
+					break;
+				case 'RemovePlayerEvent':
+					var removePlayer = packet.data as RemovePlayerEvent_Data;
+					console.log('Remove Player');
+					for (var p of this.players) {
+						if (p.networkId == removePlayer.networkID) {
+							this.objectManager.removeGameObject(
+								`Player ${removePlayer.networkID}`
+							);
+							this.players.splice(this.players.indexOf(p), 1);
+						}
+					}
 					break;
 			}
 		}
@@ -171,6 +192,10 @@ export class ClientGameManager extends GameManager {
 			);
 		}
 
+		this.outgoingPacketQueue.push(
+			new ClientHeartBeat_Packet(new ClientHeartBeat_Data(this.networkID))
+		);
+		this.outgoingPacketCount = this.outgoingPacketQueue.length;
 		if (this.ws.readyState == 1) {
 			this.ws.send(JSON.stringify(this.outgoingPacketQueue));
 			this.outgoingPacketQueue.length = 0;
@@ -201,12 +226,12 @@ export class ClientGameManager extends GameManager {
 			60
 		);
 		ctx!.fillText(
-			`Outgoing Packets: ${this.outgoingPacketQueue.length}`,
+			`Outgoing Packets: ${this.outgoingPacketCount}`,
 			window.innerWidth - 265 + 10,
 			60 + 15
 		);
 		ctx!.fillText(
-			`Incoming Packets: ${this.incomingPacketQueue.length}`,
+			`Incoming Packets: ${this.incomingPacketCount}`,
 			window.innerWidth - 265 + 10,
 			60 + 30
 		);
