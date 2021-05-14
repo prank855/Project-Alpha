@@ -1,3 +1,5 @@
+import { NetworkID } from './../server/NetworkID';
+import { InputAction } from './../shared/InputAction';
 import { ClientInput_Data } from './../shared/network/ClientInput_Data';
 import { ClientInput_Packet } from './../shared/network/ClientInput_Packet';
 import { Player } from './../shared/Player';
@@ -14,20 +16,26 @@ import { SpriteRenderer } from './SpriteRenderer';
 import { NetworkPacket } from '../shared/network/NetworkPacket';
 import { ServerInfo_Data } from '../shared/network/ServerInfo_Data';
 import { AssignPlayerID_Data } from '../shared/network/AssignPlayerID_Data';
+import { Time } from './Time';
+import { AddPlayerEvent_Data } from '../shared/network/AddPlayerEvent_Data';
+import { UpdatePlayerPositions_Data } from '../shared/network/UpdatePlayerPositions_Data';
 
 export class ClientGameManager extends GameManager {
 	backgroundColor: string = 'cornflowerblue';
 
-	player = new Player();
-
 	camera: GameObject = new GameObject('Camera');
 
-	otherPlayers: Player[] = [];
+	players: Player[] = [];
+
+	networkID: NetworkID = 0;
 
 	ws: WebSocket;
 
 	serverTickRate: number = 0;
 	currentServerTick: number = 0;
+
+	incomingPacketQueue: NetworkPacket[] = [];
+	outgoingPacketQueue: NetworkPacket[] = [];
 
 	constructor() {
 		super();
@@ -40,23 +48,10 @@ export class ClientGameManager extends GameManager {
 		ws.onopen = () => {
 			console.warn('Connected to Server');
 		};
-		ws.onmessage = e => {
-			var data: NetworkPacket[] = JSON.parse(e.data) as NetworkPacket[];
-			//console.warn('Raw Packet Data', data);
-			for (var packet of data) {
-				switch (packet.type) {
-					case 'ServerInfo':
-						let serverInfoData = packet.data as ServerInfo_Data;
-						console.warn('Server Info', serverInfoData);
-						this.serverTickRate = serverInfoData.tickrate;
-						this.currentServerTick = serverInfoData.tick;
-						break;
-					case 'AssignPlayerID':
-						let assignPlayerIDData = packet.data as AssignPlayerID_Data;
-						console.warn('Assign Player ID', assignPlayerIDData.networkID);
-						this.player.networkId = assignPlayerIDData.networkID;
-						break;
-				}
+		ws.onmessage = msg => {
+			var data: NetworkPacket[] = JSON.parse(msg.data) as NetworkPacket[];
+			for (var p of data) {
+				this.incomingPacketQueue.push(p);
 			}
 		};
 	}
@@ -74,50 +69,112 @@ export class ClientGameManager extends GameManager {
 			this.objectManager.addGameObject(temp);
 		}
 
-		var playerObj = new GameObject('Player');
-		playerObj.addComponent(
-			new Transform(
-				new Vector2(
-					(Math.random() * window.innerWidth) / 2 - window.innerWidth / 4,
-					(Math.random() * window.innerHeight) / 2 - window.innerHeight / 4
-				)
-			)
-		);
-		let sR = new SpriteRenderer();
-		sR.setImage('TrollFace', 50, 50);
-		sR.debug = true;
-		sR.origin = new Vector2(0.5, 0.5);
-		playerObj.addComponent(sR);
-		let movementScript = new MovementScript();
-		movementScript.debug = true;
-		playerObj.addComponent(movementScript);
-		this.objectManager.addGameObject(playerObj);
-		this.player.inputScript = movementScript;
-
 		let cam = new Camera();
-		cam.target = playerObj.getComponent('Transform') as Transform;
 		this.camera.addComponent(cam);
 		this.objectManager.addGameObject(this.camera);
 	}
 
 	update() {
+		/*
 		if (this.player.inputScript)
 			this.player.inputScript.input(Input.GetInputs());
-
+*/
 		var camera = this.camera.getComponent('Camera') as Camera;
 		camera.input(Input.GetInputs());
 
-		this.player.clearPackets();
+		for (var p of this.players) {
+			if (p.inputScript) {
+				p.inputScript.called = false;
+			}
+		}
+		for (var packet of this.incomingPacketQueue) {
+			switch (packet.type) {
+				case 'ServerInfo':
+					let serverInfoData = packet.data as ServerInfo_Data;
+					//console.warn('Server Info', serverInfoData);
+					this.serverTickRate = serverInfoData.tickrate;
+					this.currentServerTick = serverInfoData.tick;
+					break;
+				case 'AssignPlayerID':
+					let assignPlayerIDData = packet.data as AssignPlayerID_Data;
+					//console.warn('Assign Player ID', assignPlayerIDData.networkID);
+					this.networkID = assignPlayerIDData.networkID;
+					break;
+				case 'UpdatePlayerPositions':
+					let playerPosData = packet.data as UpdatePlayerPositions_Data;
+					for (var o of playerPosData.players) {
+						for (var p of this.players) {
+							if (this.networkID == o[0]) {
+								var cam = this.camera.getComponent('Camera') as Camera;
+								if (p.inputScript) cam.target = p.inputScript.transform;
+							}
+							if (p.networkId == o[0]) {
+								if (p.inputScript?.transform?.position) {
+									p.inputScript.transform.position = Vector2.copy(o[1]);
+								}
+								break;
+							}
+						}
+					}
+					break;
+				case 'AddPlayerEvent':
+					let addPlayerEventData = packet.data as AddPlayerEvent_Data;
+					var flag = false;
+					for (var p of this.players) {
+						if (p.networkId == addPlayerEventData.networkID) {
+							flag = true;
+							break;
+						}
+					}
+
+					if (!flag) {
+						var go = new GameObject(`Player ${addPlayerEventData.networkID}`);
+						var t = new Transform(
+							new Vector2(
+								addPlayerEventData.position.x,
+								addPlayerEventData.position.y
+							)
+						);
+						go.addComponent(t);
+
+						let sR = new SpriteRenderer();
+						sR.setImage('TrollFace', 50, 50);
+						sR.debug = true;
+						sR.origin = new Vector2(0.5, 0.5);
+						go.addComponent(sR);
+
+						var inputScript = new MovementScript();
+						go.addComponent(inputScript);
+
+						var player = new Player();
+						player.networkId = addPlayerEventData.networkID;
+						player.inputScript = inputScript;
+						this.players.push(player);
+
+						this.objectManager.addGameObject(go);
+					}
+
+					break;
+			}
+		}
+		this.incomingPacketQueue.length = 0;
 
 		this.objectManager.update();
 		SpriteRenderer.drawCount = 0;
 		this.objectManager.render();
+
 		if (Input.GetInputs().length != 0) {
-			this.player.addPacket(
-				new ClientInput_Packet(new ClientInput_Data(Input.GetInputs()))
+			this.outgoingPacketQueue.push(
+				new ClientInput_Packet(
+					new ClientInput_Data(Input.GetInputs(), this.networkID)
+				)
 			);
 		}
-		this.player.sendPackets(this.ws);
+
+		if (this.ws.readyState == 1) {
+			this.ws.send(JSON.stringify(this.outgoingPacketQueue));
+			this.outgoingPacketQueue.length = 0;
+		}
 	}
 
 	onDebug() {
@@ -129,7 +186,7 @@ export class ClientGameManager extends GameManager {
 		ctx!.font = '15px Consolas';
 		ctx!.fillText(`"${this.gameName}" Debug`, window.innerWidth - 265 + 10, 15);
 		ctx!.fillText(
-			`NetworkID: ${this.player.networkId}`,
+			`NetworkID: ${this.networkID}`,
 			window.innerWidth - 265 + 10,
 			30
 		);
@@ -144,9 +201,14 @@ export class ClientGameManager extends GameManager {
 			60
 		);
 		ctx!.fillText(
-			`Outgoing Packets: ${this.player.getPacketAmount()}`,
+			`Outgoing Packets: ${this.outgoingPacketQueue.length}`,
 			window.innerWidth - 265 + 10,
 			60 + 15
+		);
+		ctx!.fillText(
+			`Incoming Packets: ${this.incomingPacketQueue.length}`,
+			window.innerWidth - 265 + 10,
+			60 + 30
 		);
 	}
 }

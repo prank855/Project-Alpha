@@ -41,8 +41,6 @@ export class Client {
 	}
 
 	start() {
-		console.log('Client Started');
-
 		Input.initInputEvents();
 
 		AssetManager.addSprite('trollface.png', 'TrollFace');
@@ -54,6 +52,8 @@ export class Client {
 			setTimeout(this.start.bind(this), 1000 / 30);
 			return;
 		}
+
+		console.log('Client Started');
 
 		this.lastTime = Time.getCurrTime();
 

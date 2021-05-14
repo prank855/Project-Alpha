@@ -1,4 +1,7 @@
+import { Transform } from './Transform';
 import { InputAction } from './InputAction';
 export interface InputScript {
-	input(_inputs: InputAction[]): void;
+	called: boolean;
+	transform: Transform | null;
+	input(deltaTime: number, _inputs?: InputAction[]): void;
 }

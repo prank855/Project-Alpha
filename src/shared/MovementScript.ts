@@ -1,6 +1,5 @@
 import { Camera } from '../client/Camera';
 import { CanvasCreator } from '../client/CanvasCreator';
-import { Time } from '../client/Time';
 import { GameComponent } from './GameComponent';
 import { GameObjectManager } from './GameObjectManager';
 import { InputAction } from './InputAction';
@@ -9,6 +8,7 @@ import { Vector2 } from './Vector2';
 import { InputScript } from '../shared/InputScript';
 
 export class MovementScript extends GameComponent implements InputScript {
+	called = false;
 	transform: Transform | null = null;
 	speed: number = 75;
 	direction: Vector2 = Vector2.zero();
@@ -22,7 +22,7 @@ export class MovementScript extends GameComponent implements InputScript {
 		this.transform = this.parent?.getComponent('Transform') as Transform;
 	}
 	update() {}
-	input(_inputs: InputAction[]) {
+	input(deltaTime: number, _inputs?: InputAction[]) {
 		this.direction = Vector2.zero();
 		if (this.transform != null) {
 			/*
@@ -31,61 +31,64 @@ export class MovementScript extends GameComponent implements InputScript {
 			);
 			*/
 			if (this.velocity.x > 0) {
-				this.velocity.x -= this.deceleration * Time.deltaTime;
+				this.velocity.x -= this.deceleration * deltaTime;
 				if (this.velocity.x < 0) {
 					this.velocity.x = 0;
 				}
 			}
 			if (this.velocity.x < 0) {
-				this.velocity.x += this.deceleration * Time.deltaTime;
+				this.velocity.x += this.deceleration * deltaTime;
 				if (this.velocity.x > 0) {
 					this.velocity.x = 0;
 				}
 			}
 			if (this.velocity.y > 0) {
-				this.velocity.y -= this.deceleration * Time.deltaTime;
+				this.velocity.y -= this.deceleration * deltaTime;
 				if (this.velocity.y < 0) {
 					this.velocity.y = 0;
 				}
 			}
 			if (this.velocity.y < 0) {
-				this.velocity.y += this.deceleration * Time.deltaTime;
+				this.velocity.y += this.deceleration * deltaTime;
 				if (this.velocity.y > 0) {
 					this.velocity.y = 0;
 				}
 			}
-			let flag = false;
-			if (_inputs.includes(InputAction.MOVEMENT_UP)) {
-				this.direction.y += 1;
-				flag = true;
-			}
-			if (_inputs.includes(InputAction.MOVEMENT_LEFT)) {
-				this.direction.x += -1;
-				flag = true;
-			}
-			if (_inputs.includes(InputAction.MOVEMENT_DOWN)) {
-				this.direction.y -= 1;
-				flag = true;
-			}
-			if (_inputs.includes(InputAction.MOVEMENT_RIGHT)) {
-				this.direction.x += 1;
-				flag = true;
-			}
-			if (flag) {
-				let tempDir = Vector2.copy(this.direction).normalize();
-				if (this.direction.x != 0) {
-					this.velocity.x = tempDir.x * this.speed;
+			if (_inputs) {
+				let flag = false;
+				if (_inputs.includes(InputAction.MOVEMENT_UP)) {
+					this.direction.y += 1;
+					flag = true;
 				}
-				if (this.direction.y != 0) {
-					this.velocity.y = tempDir.y * this.speed;
+				if (_inputs.includes(InputAction.MOVEMENT_LEFT)) {
+					this.direction.x += -1;
+					flag = true;
+				}
+				if (_inputs.includes(InputAction.MOVEMENT_DOWN)) {
+					this.direction.y -= 1;
+					flag = true;
+				}
+				if (_inputs.includes(InputAction.MOVEMENT_RIGHT)) {
+					this.direction.x += 1;
+					flag = true;
+				}
+				if (flag) {
+					let tempDir = Vector2.copy(this.direction).normalize();
+					if (this.direction.x != 0) {
+						this.velocity.x = tempDir.x * this.speed;
+					}
+					if (this.direction.y != 0) {
+						this.velocity.y = tempDir.y * this.speed;
+					}
 				}
 			}
+
 			if (this.velocity.getMagnitude() > this.speed) {
 				this.velocity.normalize().multiply(this.speed);
 			}
 
 			this.transform.position.add(
-				Vector2.copy(this.velocity).multiply(Time.deltaTime)
+				Vector2.copy(this.velocity).multiply(deltaTime)
 			);
 		}
 	}
