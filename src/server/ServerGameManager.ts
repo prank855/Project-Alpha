@@ -24,7 +24,7 @@ import { RemovePlayerEvent_Data } from '../shared/network/RemovePlayerEvent_Data
 export class ServerGameManager extends GameManager {
 	wss: WebSocket.Server;
 
-	tickRate: number = 20;
+	tickRate: number = 128;
 	tick: number = 0;
 
 	players: [Player, WebSocket][] = [];

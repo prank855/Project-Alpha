@@ -25,7 +25,7 @@ import { Time } from './Time';
 export class ClientGameManager extends GameManager {
 	backgroundColor: string = 'cornflowerblue';
 
-	camera: GameObject = new GameObject('Camera');
+	camera: Camera;
 
 	players: Player[] = [];
 
@@ -75,11 +75,14 @@ export class ClientGameManager extends GameManager {
 		}
 
 		let cam = new Camera();
+		this.camera = cam;
+
+		let camGo = new GameObject('Camera');
 
 		this.lastSend = Time.elapsedTime;
 
-		this.camera.addComponent(cam);
-		this.objectManager.addGameObject(this.camera);
+		camGo.addComponent(cam);
+		this.objectManager.addGameObject(camGo);
 	}
 
 	lastSend = 0;
@@ -89,8 +92,7 @@ export class ClientGameManager extends GameManager {
 		}
 		this.outgoingPacketCount = 0;
 
-		var camera = this.camera.getComponent('Camera') as Camera;
-		camera.input(Input.GetInputs());
+		this.camera.input(Input.GetInputs());
 
 		for (var p of this.players) {
 			if (p.inputScript) {
@@ -145,11 +147,6 @@ export class ClientGameManager extends GameManager {
 							)
 						);
 
-						if (this.networkID == addPlayerEventData.networkID) {
-							var cam = this.camera.getComponent('Camera') as Camera;
-							cam.target = t;
-						}
-
 						go.addComponent(t);
 
 						let sR = new SpriteRenderer();
@@ -188,6 +185,8 @@ export class ClientGameManager extends GameManager {
 
 		for (var p of this.players) {
 			if (p.networkId == this.networkID) {
+				if (p.inputScript) this.camera.target = p.inputScript.transform;
+
 				p.inputScript?.input(Time.deltaTime, Input.GetInputs());
 				if (Input.GetInputs().length != 0) {
 					this.outgoingPacketQueue.push(
