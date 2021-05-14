@@ -59,6 +59,9 @@ export class ClientGameManager extends GameManager {
 				this.incomingPacketQueue.push(p);
 			}
 		};
+		ws.onclose = () => {
+			location.reload();
+		};
 	}
 
 	start() {
@@ -91,7 +94,6 @@ export class ClientGameManager extends GameManager {
 		if (this.incomingPacketQueue.length > 0) {
 			this.incomingPacketCount = 0;
 		}
-		this.outgoingPacketCount = 0;
 
 		this.camera.input(Input.GetInputs());
 
@@ -118,6 +120,8 @@ export class ClientGameManager extends GameManager {
 					break;
 				case 'UpdatePlayerPositions':
 					let playerPosData = packet.data as UpdatePlayerPositions_Data;
+					//TODO: handle self player desync from server
+
 					for (var o of playerPosData.players) {
 						for (var p of this.players) {
 							if (p.networkId == o[0] && this.networkID != o[0]) {
@@ -163,6 +167,9 @@ export class ClientGameManager extends GameManager {
 						var player = new Player();
 						player.networkId = addPlayerEventData.networkID;
 						player.inputScript = inputScript;
+						if (this.networkID == addPlayerEventData.networkID) {
+							inputScript.debug = true;
+						}
 						this.players.push(player);
 
 						this.objectManager.addGameObject(go);

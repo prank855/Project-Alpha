@@ -10,7 +10,7 @@ export class Client {
 	game: GameManager = new ClientGameManager();
 	lastTime: number = Time.getCurrTime();
 	frame: number = 0;
-	frameRateLimit: number | FrameRate = FrameRate.SMOOTH_FRAMERATE;
+	frameRateLimit: number | FrameRate = 240;
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	performanceWindow: boolean = true;
@@ -61,13 +61,13 @@ export class Client {
 
 		this.loop();
 	}
-	private setIntervalError: number = 2;
+	private setIntervalError: number = 3;
 	loop() {
 		let currTime = Time.getCurrTime();
 		let self = this;
-		let tickDelta = 1000 / this.frameRateLimit;
+		let tickDelta = 1 / this.frameRateLimit;
 		if (this.frameRateLimit > 5) {
-			if ((currTime - this.lastTime) * 1000 < tickDelta) {
+			if (currTime - this.lastTime < tickDelta) {
 				if (currTime - this.lastTime + this.setIntervalError < tickDelta) {
 					setTimeout(self.loop.bind(this), 1);
 				} else {
