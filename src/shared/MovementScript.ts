@@ -14,7 +14,7 @@ export class MovementScript extends GameComponent implements InputScript {
 	direction: Vector2 = Vector2.zero();
 	velocity: Vector2 = Vector2.zero();
 	friction: number = 0.005;
-	deceleration: number = this.speed * 8;
+	deceleration: number = this.speed * 7;
 	constructor() {
 		super('MovementScript');
 	}

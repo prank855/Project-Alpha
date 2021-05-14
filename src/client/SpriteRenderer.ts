@@ -19,7 +19,7 @@ export class SpriteRenderer extends GameComponent {
 	color: string = `rgb(${128 + Math.random() * 127},${128 +
 		Math.random() * 127},${128 + Math.random() * 127})`;
 	transform: Transform | null = null;
-	sprite: OffscreenCanvas | null = null;
+	sprite: HTMLCanvasElement | null = null;
 	spriteName: string = 'Unknown';
 	constructor() {
 		super('SpriteRenderer');

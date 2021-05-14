@@ -72,11 +72,6 @@ export class ServerGameManager extends GameManager {
 			this.outgoingPacketQueue.push(
 				new AddPlayerEvent_Packet(new AddPlayerEvent_Data(id, t.position))
 			);
-			data.push(
-				new ServerInfo_Packet(
-					new ServerInfo_Data(this.tickRate, this.tick, Time.elapsedTime)
-				)
-			);
 			data.push(new AssignPlayerID_Packet(new AssignPlayerID_Data(id)));
 			ws.send(JSON.stringify(data));
 			console.log(`Created Client with ID:`, id);
@@ -173,7 +168,12 @@ export class ServerGameManager extends GameManager {
 		this.objectManager.update();
 		this.outgoingPacketQueue.push(
 			new ServerInfo_Packet(
-				new ServerInfo_Data(this.tickRate, this.tick, Time.elapsedTime)
+				new ServerInfo_Data(
+					this.tickRate,
+					this.tick,
+					Time.elapsedTime,
+					Time.deltaTime
+				)
 			)
 		);
 

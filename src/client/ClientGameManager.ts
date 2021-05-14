@@ -85,6 +85,8 @@ export class ClientGameManager extends GameManager {
 	}
 
 	lastSend = 0;
+	serverDeltaTime = 0;
+
 	update() {
 		if (this.incomingPacketQueue.length > 0) {
 			this.incomingPacketCount = 0;
@@ -107,6 +109,7 @@ export class ClientGameManager extends GameManager {
 					//console.warn('Server Info', serverInfoData);
 					this.serverTickRate = serverInfoData.tickrate;
 					this.currentServerTick = serverInfoData.tick;
+					this.serverDeltaTime = serverInfoData.deltaTime;
 					break;
 				case 'AssignPlayerID':
 					let assignPlayerIDData = packet.data as AssignPlayerID_Data;
@@ -181,25 +184,6 @@ export class ClientGameManager extends GameManager {
 		}
 		this.incomingPacketQueue.length = 0;
 
-		for (var p of this.players) {
-			if (p.networkId == this.networkID) {
-				if (p.inputScript) this.camera.target = p.inputScript.transform;
-
-				p.inputScript?.input(Time.deltaTime, Input.GetInputs());
-				if (Input.GetInputs().length != 0) {
-					this.outgoingPacketQueue.push(
-						new ClientInput_Packet(
-							new ClientInput_Data(
-								Input.GetInputs(),
-								this.networkID,
-								Time.deltaTime
-							)
-						)
-					);
-				}
-			}
-		}
-
 		this.objectManager.update();
 		SpriteRenderer.drawCount = 0;
 		this.objectManager.render();
@@ -210,13 +194,33 @@ export class ClientGameManager extends GameManager {
 		if (this.ws.readyState != 1) {
 			this.outgoingPacketQueue.length = 0;
 		}
-		while (this.lastSend < Time.elapsedTime - 1 / this.serverTickRate) {
-			if (this.ws.readyState == 1) {
-				this.ws.send(JSON.stringify(this.outgoingPacketQueue));
-				this.outgoingPacketCount = this.outgoingPacketQueue.length;
-				this.outgoingPacketQueue.length = 0;
+		if (this.serverDeltaTime != 0) {
+			while (this.lastSend < Time.elapsedTime - this.serverDeltaTime) {
+				for (var p of this.players) {
+					if (p.networkId == this.networkID) {
+						if (p.inputScript) this.camera.target = p.inputScript.transform;
+
+						p.inputScript?.input(this.serverDeltaTime, Input.GetInputs());
+						if (Input.GetInputs().length != 0) {
+							this.outgoingPacketQueue.push(
+								new ClientInput_Packet(
+									new ClientInput_Data(
+										Input.GetInputs(),
+										this.networkID,
+										this.serverDeltaTime
+									)
+								)
+							);
+						}
+					}
+				}
+				if (this.ws.readyState == 1) {
+					this.ws.send(JSON.stringify(this.outgoingPacketQueue));
+					this.outgoingPacketCount = this.outgoingPacketQueue.length;
+					this.outgoingPacketQueue.length = 0;
+				}
+				this.lastSend += this.serverDeltaTime;
 			}
-			this.lastSend += 1 / this.serverTickRate;
 		}
 	}
 
@@ -234,7 +238,7 @@ export class ClientGameManager extends GameManager {
 			30
 		);
 		ctx!.fillText(
-			`Server Tick Rate: ${this.serverTickRate}`,
+			`Server Tick Rate: ${(1 / this.serverDeltaTime).toFixed(2)}`,
 			window.innerWidth - 265 + 10,
 			45
 		);
