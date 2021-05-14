@@ -44,10 +44,7 @@ export class Client {
 		Input.initInputEvents();
 
 		AssetManager.addSprite('trollface.png', 'TrollFace');
-		AssetManager.addSprite(
-			'https://png.pngtree.com/png-clipart/20210418/original/pngtree-golden-shiny-sky-jesus-boosting-day-png-image_6234916.jpg',
-			'Jesus'
-		);
+		AssetManager.addSprite('roadmap.png', 'Jesus');
 		if (AssetManager.tasks.length != 0) {
 			setTimeout(this.start.bind(this), 1000 / 30);
 			return;

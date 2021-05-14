@@ -70,9 +70,9 @@ export class ClientGameManager extends GameManager {
 			let temp = new GameObject('Middle of World');
 			temp.addComponent(new Transform());
 			let sR = new SpriteRenderer();
-			sR.setImage('Jesus', 1000, 1000);
+			sR.setImage('Jesus', 0.5);
 			sR.origin = new Vector2(0.5, 0.5);
-			sR.debug = true;
+			//sR.debug = true;
 			temp.addComponent(sR);
 			this.objectManager.addGameObject(temp);
 		}
@@ -156,7 +156,7 @@ export class ClientGameManager extends GameManager {
 						go.addComponent(t);
 
 						let sR = new SpriteRenderer();
-						sR.setImage('TrollFace', 50, 50);
+						sR.setImage('TrollFace', 0.12);
 						//sR.debug = true;
 						sR.origin = new Vector2(0.5, 0.5);
 						go.addComponent(sR);
@@ -206,13 +206,13 @@ export class ClientGameManager extends GameManager {
 				for (var p of this.players) {
 					if (p.networkId == this.networkID) {
 						if (p.inputScript) this.camera.target = p.inputScript.transform;
-
-						p.inputScript?.input(this.serverDeltaTime, Input.GetInputs());
-						if (Input.GetInputs().length != 0) {
+						var inputs = Input.GetInputs();
+						p.inputScript?.input(this.serverDeltaTime, inputs);
+						if (inputs.length != 0) {
 							this.outgoingPacketQueue.push(
 								new ClientInput_Packet(
 									new ClientInput_Data(
-										Input.GetInputs(),
+										inputs,
 										this.networkID,
 										this.serverDeltaTime
 									)

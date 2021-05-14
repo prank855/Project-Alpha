@@ -25,7 +25,7 @@ export class SpriteRenderer extends GameComponent {
 		super('SpriteRenderer');
 	}
 
-	setImage(spriteName: string, width?: number, height?: number) {
+	setImage(spriteName: string, scale: number, width?: number, height?: number) {
 		var s = AssetManager.getSprite(spriteName);
 		if (s == null) {
 			console.log(`Could not set Image to ${spriteName}`);
@@ -33,8 +33,8 @@ export class SpriteRenderer extends GameComponent {
 		}
 		this.sprite = s;
 		this.spriteName = spriteName;
-		this.width = width || this.width;
-		this.height = height || this.height;
+		this.width = width || s.width * scale || this.width;
+		this.height = height || s.height * scale || this.height;
 	}
 
 	start() {
@@ -45,6 +45,7 @@ export class SpriteRenderer extends GameComponent {
 	}
 
 	render() {
+		//TODO: if sprite draw is bigger than canvas only draw from that specific region of image
 		let ctx = CanvasCreator.context;
 		if (this.camera != null && this.transform != null) {
 			let screenSpace = this.camera.toScreenSpace(this.transform.position);

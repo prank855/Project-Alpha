@@ -16,7 +16,7 @@ export class Camera extends GameComponent {
 	boundBoxSize: number = 240;
 	speed: number = 1;
 	private zoom: number = 1;
-	size: number = 1000;
+	size: number = 500;
 	zoomSpeed: number = 2;
 	zoomMin: number = 1 / 1.2;
 	zoomMax: number = 1.2;
