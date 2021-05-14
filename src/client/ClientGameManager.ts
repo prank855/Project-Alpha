@@ -1,6 +1,5 @@
 import { ClientHeartBeat_Packet } from './../shared/network/ClientHeartBeat';
 import { NetworkID } from './../server/NetworkID';
-import { InputAction } from './../shared/InputAction';
 import { ClientInput_Data } from './../shared/network/ClientInput_Data';
 import { ClientInput_Packet } from './../shared/network/ClientInput_Packet';
 import { Player } from './../shared/Player';
@@ -17,11 +16,11 @@ import { SpriteRenderer } from './SpriteRenderer';
 import { NetworkPacket } from '../shared/network/NetworkPacket';
 import { ServerInfo_Data } from '../shared/network/ServerInfo_Data';
 import { AssignPlayerID_Data } from '../shared/network/AssignPlayerID_Data';
-import { Time } from './Time';
 import { AddPlayerEvent_Data } from '../shared/network/AddPlayerEvent_Data';
 import { UpdatePlayerPositions_Data } from '../shared/network/UpdatePlayerPositions_Data';
 import { ClientHeartBeat_Data } from '../shared/network/ClientHeartBeat_Data';
 import { RemovePlayerEvent_Data } from '../shared/network/RemovePlayerEvent_Data';
+import { Time } from './Time';
 
 export class ClientGameManager extends GameManager {
 	backgroundColor: string = 'cornflowerblue';
@@ -76,10 +75,14 @@ export class ClientGameManager extends GameManager {
 		}
 
 		let cam = new Camera();
+
+		this.lastSend = Time.elapsedTime;
+
 		this.camera.addComponent(cam);
 		this.objectManager.addGameObject(this.camera);
 	}
 
+	lastSend = 0;
 	update() {
 		if (this.incomingPacketQueue.length > 0) {
 			this.incomingPacketCount = 0;
@@ -113,15 +116,15 @@ export class ClientGameManager extends GameManager {
 					let playerPosData = packet.data as UpdatePlayerPositions_Data;
 					for (var o of playerPosData.players) {
 						for (var p of this.players) {
-							if (this.networkID == o[0]) {
-								var cam = this.camera.getComponent('Camera') as Camera;
-								if (p.inputScript) cam.target = p.inputScript.transform;
-							}
-							if (p.networkId == o[0]) {
+							if (p.networkId == o[0] && this.networkID != o[0]) {
 								if (p.inputScript?.transform?.position) {
 									p.inputScript.transform.position = Vector2.copy(o[1]);
 								}
 								break;
+							}
+							if (this.networkID == o[0]) {
+								var cam = this.camera.getComponent('Camera') as Camera;
+								if (p.inputScript) cam.target = p.inputScript.transform;
 							}
 						}
 					}
@@ -180,25 +183,39 @@ export class ClientGameManager extends GameManager {
 		}
 		this.incomingPacketQueue.length = 0;
 
+		for (var p of this.players) {
+			if (p.networkId == this.networkID) {
+				p.inputScript?.input(Time.deltaTime, Input.GetInputs());
+
+				this.outgoingPacketQueue.push(
+					new ClientInput_Packet(
+						new ClientInput_Data(
+							Input.GetInputs(),
+							this.networkID,
+							Time.deltaTime
+						)
+					)
+				);
+			}
+		}
+
 		this.objectManager.update();
 		SpriteRenderer.drawCount = 0;
 		this.objectManager.render();
 
-		if (Input.GetInputs().length != 0) {
-			this.outgoingPacketQueue.push(
-				new ClientInput_Packet(
-					new ClientInput_Data(Input.GetInputs(), this.networkID)
-				)
-			);
-		}
-
 		this.outgoingPacketQueue.push(
 			new ClientHeartBeat_Packet(new ClientHeartBeat_Data(this.networkID))
 		);
-		this.outgoingPacketCount = this.outgoingPacketQueue.length;
-		if (this.ws.readyState == 1) {
-			this.ws.send(JSON.stringify(this.outgoingPacketQueue));
+		if (this.ws.readyState != 1) {
 			this.outgoingPacketQueue.length = 0;
+		}
+		while (this.lastSend < Time.elapsedTime - 1 / this.serverTickRate) {
+			if (this.ws.readyState == 1) {
+				this.ws.send(JSON.stringify(this.outgoingPacketQueue));
+				this.outgoingPacketCount = this.outgoingPacketQueue.length;
+				this.outgoingPacketQueue.length = 0;
+			}
+			this.lastSend += 1 / this.serverTickRate;
 		}
 	}
 

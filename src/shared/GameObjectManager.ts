@@ -1,4 +1,3 @@
-import { Input } from '../client/Input';
 import { GameObject } from './GameObject';
 
 export class GameObjectManager {

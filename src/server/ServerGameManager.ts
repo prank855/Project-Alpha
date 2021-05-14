@@ -24,7 +24,7 @@ import { RemovePlayerEvent_Data } from '../shared/network/RemovePlayerEvent_Data
 export class ServerGameManager extends GameManager {
 	wss: WebSocket.Server;
 
-	tickRate: number = 128;
+	tickRate: number = 20;
 	tick: number = 0;
 
 	players: [Player, WebSocket][] = [];
@@ -94,41 +94,18 @@ export class ServerGameManager extends GameManager {
 		var lastHeartBeats: [NetworkID, number][] = [];
 		for (var h of this.heartBeats) {
 			lastHeartBeats.push(h);
-			if (h[1] + 3 < Time.elapsedTime) {
-				console.log(`ID: ${h[0]} disconnected`);
-				this.heartBeats.splice(this.heartBeats.indexOf(h), 1);
-				this.outgoingPacketQueue.push(
-					new RemovePlayerEvent_Packet(new RemovePlayerEvent_Data(h[0]))
-				);
-				for (var p of this.players) {
-					if (p[0].networkId == h[0]) {
-						this.players.splice(this.players.indexOf(p), 1);
-					}
-				}
-			}
 		}
-		var dontUpdate: NetworkID[] = [];
+
 		for (var packet of this.incomingPacketQueue) {
 			switch (packet.type) {
 				case 'ClientInput':
 					let clientInputData = packet.data as ClientInput_Data;
 					for (var p of this.players) {
-						if (
-							p[0].networkId == clientInputData.networkID &&
-							!dontUpdate.includes(p[0].networkId)
-						) {
-							var clientDelta = 0;
-							for (var h of this.heartBeats) {
-								for (var hh of lastHeartBeats) {
-									if (h[0] == hh[0]) {
-										if (clientInputData.networkID == h[0]) {
-											clientDelta == h[0] - hh[0];
-										}
-									}
-								}
-							}
-							p[0].inputScript?.input(clientDelta, clientInputData.inputs);
-							dontUpdate.push(p[0].networkId);
+						if (p[0].networkId == clientInputData.networkID) {
+							p[0].inputScript?.input(
+								clientInputData.deltaTime,
+								clientInputData.inputs
+							);
 						}
 					}
 					break;
@@ -150,9 +127,20 @@ export class ServerGameManager extends GameManager {
 					break;
 			}
 		}
-		for (var p of this.players) {
-			if (!p[0].inputScript?.called) {
-				p[0].inputScript?.input(Time.deltaTime);
+
+		for (var h of this.heartBeats) {
+			lastHeartBeats.push(h);
+			if (h[1] + 3 < Time.elapsedTime) {
+				console.log(`ID: ${h[0]} disconnected`);
+				this.heartBeats.splice(this.heartBeats.indexOf(h), 1);
+				this.outgoingPacketQueue.push(
+					new RemovePlayerEvent_Packet(new RemovePlayerEvent_Data(h[0]))
+				);
+				for (var p of this.players) {
+					if (p[0].networkId == h[0]) {
+						this.players.splice(this.players.indexOf(p), 1);
+					}
+				}
 			}
 		}
 
