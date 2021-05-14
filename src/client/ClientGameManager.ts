@@ -1,3 +1,6 @@
+import { ClientInput_Data } from './../shared/network/ClientInput_Data';
+import { ClientInput_Packet } from './../shared/network/ClientInput_Packet';
+import { Player } from './../shared/Player';
 import { CanvasCreator } from './CanvasCreator';
 import { MovementScript } from './../shared/MovementScript';
 import { GameManager } from '../shared/GameManager';
@@ -8,42 +11,57 @@ import { Vector2 } from '../shared/Vector2';
 import { Camera } from './Camera';
 import { Input } from './Input';
 import { SpriteRenderer } from './SpriteRenderer';
-import { ClientInputState } from '../shared/network/ClientInputState';
-import { ClientInputStateData } from '../shared/network/ClientInputStateData';
 import { NetworkPacket } from '../shared/network/NetworkPacket';
+import { ServerInfo_Data } from '../shared/network/ServerInfo_Data';
+import { AssignPlayerID_Data } from '../shared/network/AssignPlayerID_Data';
 
 export class ClientGameManager extends GameManager {
 	backgroundColor: string = 'cornflowerblue';
 
-	player: GameObject = new GameObject('Player');
+	player = new Player();
 
 	camera: GameObject = new GameObject('Camera');
 
-	otherPlayers: GameObject[] = [];
+	otherPlayers: Player[] = [];
 
-	ws: WebSocket = new WebSocket('ws://joshh.moe:8080');
+	ws: WebSocket;
+
+	serverTickRate: number = 0;
+	currentServerTick: number = 0;
 
 	constructor() {
 		super();
 		this.gameName = 'Project Alpha';
+		this.ws = new WebSocket('ws://joshh.moe:8080');
+		this.initializeSockets(this.ws);
+	}
+
+	initializeSockets(ws: WebSocket) {
+		ws.onopen = () => {
+			console.warn('Connected to Server');
+		};
+		ws.onmessage = e => {
+			var data: NetworkPacket[] = JSON.parse(e.data) as NetworkPacket[];
+			//console.warn('Raw Packet Data', data);
+			for (var packet of data) {
+				switch (packet.type) {
+					case 'ServerInfo':
+						let serverInfoData = packet.data as ServerInfo_Data;
+						console.warn('Server Info', serverInfoData);
+						this.serverTickRate = serverInfoData.tickrate;
+						this.currentServerTick = serverInfoData.tick;
+						break;
+					case 'AssignPlayerID':
+						let assignPlayerIDData = packet.data as AssignPlayerID_Data;
+						console.warn('Assign Player ID', assignPlayerIDData.networkID);
+						this.player.networkId = assignPlayerIDData.networkID;
+						break;
+				}
+			}
+		};
 	}
 
 	start() {
-		this.ws.onopen = () => {
-			console.log('Connected to Server');
-			var data = new ClientInputState(
-				new ClientInputStateData(Input.GetInputs())
-			);
-			this.ws.send(JSON.stringify(data));
-		};
-		this.ws.onmessage = e => {
-			var data: NetworkPacket[] = JSON.parse(e.data);
-			console.log('Received Data', data);
-			for (var p of data) {
-				//this.serverManager.addIncomingPacket(p);
-			}
-		};
-
 		this.createScene(new Scene(), this.objectManager);
 		{
 			let temp = new GameObject('Middle of World');
@@ -56,7 +74,8 @@ export class ClientGameManager extends GameManager {
 			this.objectManager.addGameObject(temp);
 		}
 
-		this.player.addComponent(
+		var playerObj = new GameObject('Player');
+		playerObj.addComponent(
 			new Transform(
 				new Vector2(
 					(Math.random() * window.innerWidth) / 2 - window.innerWidth / 4,
@@ -68,30 +87,37 @@ export class ClientGameManager extends GameManager {
 		sR.setImage('TrollFace', 50, 50);
 		sR.debug = true;
 		sR.origin = new Vector2(0.5, 0.5);
-		this.player.addComponent(sR);
+		playerObj.addComponent(sR);
 		let movementScript = new MovementScript();
 		movementScript.debug = true;
-		this.player.addComponent(movementScript);
-		this.objectManager.addGameObject(this.player);
+		playerObj.addComponent(movementScript);
+		this.objectManager.addGameObject(playerObj);
+		this.player.inputScript = movementScript;
 
 		let cam = new Camera();
-		cam.target = this.player.getComponent('Transform') as Transform;
+		cam.target = playerObj.getComponent('Transform') as Transform;
 		this.camera.addComponent(cam);
 		this.objectManager.addGameObject(this.camera);
 	}
 
 	update() {
-		var movementScript: MovementScript = this.player.getComponent(
-			'MovementScript'
-		) as MovementScript;
-		movementScript.input(Input.GetInputs());
+		if (this.player.inputScript)
+			this.player.inputScript.input(Input.GetInputs());
 
 		var camera = this.camera.getComponent('Camera') as Camera;
 		camera.input(Input.GetInputs());
 
+		this.player.clearPackets();
+
 		this.objectManager.update();
 		SpriteRenderer.drawCount = 0;
 		this.objectManager.render();
+		if (Input.GetInputs().length != 0) {
+			this.player.addPacket(
+				new ClientInput_Packet(new ClientInput_Data(Input.GetInputs()))
+			);
+		}
+		this.player.sendPackets(this.ws);
 	}
 
 	onDebug() {
@@ -102,5 +128,25 @@ export class ClientGameManager extends GameManager {
 		ctx!.fillStyle = 'white';
 		ctx!.font = '15px Consolas';
 		ctx!.fillText(`"${this.gameName}" Debug`, window.innerWidth - 265 + 10, 15);
+		ctx!.fillText(
+			`NetworkID: ${this.player.networkId}`,
+			window.innerWidth - 265 + 10,
+			30
+		);
+		ctx!.fillText(
+			`Server Tick Rate: ${this.serverTickRate}`,
+			window.innerWidth - 265 + 10,
+			45
+		);
+		ctx!.fillText(
+			`Server Tick: ${this.currentServerTick}`,
+			window.innerWidth - 265 + 10,
+			60
+		);
+		ctx!.fillText(
+			`Outgoing Packets: ${this.player.getPacketAmount()}`,
+			window.innerWidth - 265 + 10,
+			60 + 15
+		);
 	}
 }

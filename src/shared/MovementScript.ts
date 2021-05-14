@@ -6,10 +6,11 @@ import { GameObjectManager } from './GameObjectManager';
 import { InputAction } from './InputAction';
 import { Transform } from './Transform';
 import { Vector2 } from './Vector2';
+import { InputScript } from '../shared/InputScript';
 
-export class MovementScript extends GameComponent {
+export class MovementScript extends GameComponent implements InputScript {
 	transform: Transform | null = null;
-	speed: number = 100;
+	speed: number = 75;
 	direction: Vector2 = Vector2.zero();
 	velocity: Vector2 = Vector2.zero();
 	friction: number = 0.005;

@@ -1,6 +1,8 @@
 export class CanvasCreator {
 	static canvas: HTMLCanvasElement;
 	static context: CanvasRenderingContext2D | null;
+	//TODO: refactor into something else
+	//TODO: handle a max aspect ratio or a set aspect ratio aka (16:9, 21:9)
 	static initializeCanvas() {
 		let canvas = document.createElement('canvas');
 		canvas.id = 'canvas';

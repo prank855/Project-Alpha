@@ -87,11 +87,7 @@ export class Client {
 		this.game.update();
 
 		if (this.debug) this.game.onDebug();
-		//TODO: call based on time interval not frame interval (Currently assumes 165hz every 5 seconds)
-		if (this.frame % (165 * 5) == 0) {
-			//TODO: return avg fps over accrued frametimes like server implementation
-			console.log('FPS: ', (1 / Time.deltaTime).toFixed(2));
-		}
+
 		if (this.debug || this.performanceWindow) {
 			this.ctx!.fillStyle = 'rgba(0,0,0,0.5)';
 			this.ctx!.fillRect(0, 0, 265, 105 + 15);

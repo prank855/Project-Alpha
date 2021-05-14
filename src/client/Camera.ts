@@ -14,7 +14,7 @@ export class Camera extends GameComponent {
 	position: Vector2 = Vector2.zero();
 	target: Transform | null = null;
 	boundBoxSize: number = 240;
-	speed: number = 1 / 4;
+	speed: number = 1;
 	private zoom: number = 1;
 	size: number = 1000;
 	zoomSpeed: number = 2;
