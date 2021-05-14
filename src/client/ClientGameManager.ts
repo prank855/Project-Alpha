@@ -122,16 +122,13 @@ export class ClientGameManager extends GameManager {
 								}
 								break;
 							}
-							if (this.networkID == o[0]) {
-								var cam = this.camera.getComponent('Camera') as Camera;
-								if (p.inputScript) cam.target = p.inputScript.transform;
-							}
 						}
 					}
 					break;
 				case 'AddPlayerEvent':
 					let addPlayerEventData = packet.data as AddPlayerEvent_Data;
 					var flag = false;
+
 					for (var p of this.players) {
 						if (p.networkId == addPlayerEventData.networkID) {
 							flag = true;
@@ -147,6 +144,12 @@ export class ClientGameManager extends GameManager {
 								addPlayerEventData.position.y
 							)
 						);
+
+						if (this.networkID == addPlayerEventData.networkID) {
+							var cam = this.camera.getComponent('Camera') as Camera;
+							cam.target = t;
+						}
+
 						go.addComponent(t);
 
 						let sR = new SpriteRenderer();
@@ -186,16 +189,17 @@ export class ClientGameManager extends GameManager {
 		for (var p of this.players) {
 			if (p.networkId == this.networkID) {
 				p.inputScript?.input(Time.deltaTime, Input.GetInputs());
-
-				this.outgoingPacketQueue.push(
-					new ClientInput_Packet(
-						new ClientInput_Data(
-							Input.GetInputs(),
-							this.networkID,
-							Time.deltaTime
+				if (Input.GetInputs().length != 0) {
+					this.outgoingPacketQueue.push(
+						new ClientInput_Packet(
+							new ClientInput_Data(
+								Input.GetInputs(),
+								this.networkID,
+								Time.deltaTime
+							)
 						)
-					)
-				);
+					);
+				}
 			}
 		}
 

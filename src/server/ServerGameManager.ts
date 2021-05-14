@@ -82,26 +82,37 @@ export class ServerGameManager extends GameManager {
 				var data: NetworkPacket[] = JSON.parse(
 					msg.data.toString()
 				) as NetworkPacket[];
-				//console.warn('Raw Packet Data', data);
 				for (var p of data) {
 					this.incomingPacketQueue.push(p);
 				}
 			};
 		});
 	}
-	start() {}
-	update() {
-		var lastHeartBeats: [NetworkID, number][] = [];
-		for (var h of this.heartBeats) {
-			lastHeartBeats.push(h);
-		}
 
+	update() {
+		var clientDeltaTime: [NetworkID, number][] = [];
 		for (var packet of this.incomingPacketQueue) {
 			switch (packet.type) {
 				case 'ClientInput':
 					let clientInputData = packet.data as ClientInput_Data;
 					for (var p of this.players) {
 						if (p[0].networkId == clientInputData.networkID) {
+							var flag = false;
+							for (var cd of clientDeltaTime) {
+								if (cd[0] == clientInputData.networkID) {
+									if (!cd[1]) {
+										cd[1] = 0;
+									}
+									cd[1] += clientInputData.deltaTime;
+									flag = true;
+								}
+							}
+							if (!flag) {
+								clientDeltaTime.push([
+									clientInputData.networkID,
+									clientInputData.deltaTime
+								]);
+							}
 							p[0].inputScript?.input(
 								clientInputData.deltaTime,
 								clientInputData.inputs
@@ -128,8 +139,20 @@ export class ServerGameManager extends GameManager {
 			}
 		}
 
+		var checked: NetworkID[] = [];
+		for (var p of this.players) {
+			for (var cd of clientDeltaTime) {
+				if (p[0].networkId == cd[0]) {
+					p[0].inputScript?.input(Time.deltaTime - cd[1]);
+					checked.push(p[0].networkId);
+				}
+			}
+			if (!checked.includes(p[0].networkId)) {
+				p[0].inputScript?.input(Time.deltaTime);
+			}
+		}
+
 		for (var h of this.heartBeats) {
-			lastHeartBeats.push(h);
 			if (h[1] + 3 < Time.elapsedTime) {
 				console.log(`ID: ${h[0]} disconnected`);
 				this.heartBeats.splice(this.heartBeats.indexOf(h), 1);
