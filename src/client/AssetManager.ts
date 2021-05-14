@@ -1,7 +1,7 @@
 export class AssetManager {
 	static self: AssetManager;
 
-	static canvases: OffscreenCanvas[] = [];
+	static canvases: HTMLCanvasElement[] = [];
 	static names: string[] = [];
 	static tasks: string[] = [];
 	static addSprite(imgSrc: string, spriteName: string) {
@@ -12,7 +12,9 @@ export class AssetManager {
 		img.src = imgSrc;
 		this.tasks.push(spriteName);
 		img.onload = () => {
-			var offscreenCanvas = new OffscreenCanvas(img.width, img.height);
+			var offscreenCanvas = document.createElement('canvas');
+			offscreenCanvas.width = img.width;
+			offscreenCanvas.height = img.height;
 			var ctx = offscreenCanvas.getContext('2d', { alpha: true });
 			if (ctx != null) {
 				ctx.drawImage(img, 0, 0);
@@ -33,7 +35,7 @@ export class AssetManager {
 		}
 		return false;
 	}
-	static getSprite(spriteName: string): OffscreenCanvas | null {
+	static getSprite(spriteName: string): HTMLCanvasElement | null {
 		for (var i = 0; i < this.names.length; i++) {
 			if (this.names[i].toLowerCase() == spriteName.toLowerCase()) {
 				return this.canvases[i];

@@ -25,7 +25,7 @@ import { Time } from './Time';
 export class ClientGameManager extends GameManager {
 	backgroundColor: string = 'cornflowerblue';
 
-	camera: Camera;
+	camera: Camera = new Camera();
 
 	players: Player[] = [];
 
@@ -74,15 +74,14 @@ export class ClientGameManager extends GameManager {
 			this.objectManager.addGameObject(temp);
 		}
 
-		let cam = new Camera();
-		this.camera = cam;
-
-		let camGo = new GameObject('Camera');
+		//Create Camera
+		{
+			let camGo = new GameObject('Camera');
+			camGo.addComponent(this.camera);
+			this.objectManager.addGameObject(camGo);
+		}
 
 		this.lastSend = Time.elapsedTime;
-
-		camGo.addComponent(cam);
-		this.objectManager.addGameObject(camGo);
 	}
 
 	lastSend = 0;
@@ -169,7 +168,6 @@ export class ClientGameManager extends GameManager {
 					break;
 				case 'RemovePlayerEvent':
 					var removePlayer = packet.data as RemovePlayerEvent_Data;
-					console.log('Remove Player');
 					for (var p of this.players) {
 						if (p.networkId == removePlayer.networkID) {
 							this.objectManager.removeGameObject(

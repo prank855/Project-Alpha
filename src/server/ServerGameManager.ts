@@ -34,6 +34,8 @@ export class ServerGameManager extends GameManager {
 
 	heartBeats: [NetworkID, number][] = [];
 
+	kickTime = 10;
+
 	constructor() {
 		super();
 		this.wss = new WebSocket.Server({ port: 8080 });
@@ -153,7 +155,7 @@ export class ServerGameManager extends GameManager {
 		}
 
 		for (var h of this.heartBeats) {
-			if (h[1] + 3 < Time.elapsedTime) {
+			if (h[1] + this.kickTime < Time.elapsedTime) {
 				console.log(`ID: ${h[0]} disconnected`);
 				this.heartBeats.splice(this.heartBeats.indexOf(h), 1);
 				this.outgoingPacketQueue.push(
