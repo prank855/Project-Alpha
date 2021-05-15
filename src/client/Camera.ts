@@ -15,7 +15,7 @@ export class Camera {
 	private static zoom: number = 1;
 	static size: number = 500;
 	static zoomSpeed: number = 1.5;
-	static zoomMin: number = 1 / 1.2;
+	static zoomMin: number = 1 / 8;
 	static zoomMax: number = 1.2;
 	//TODO: rotation
 

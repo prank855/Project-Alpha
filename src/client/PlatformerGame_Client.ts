@@ -11,7 +11,7 @@ import { Sprite } from './Sprite';
 import { Vector2 } from '../shared/Vector2';
 
 export class PlatformerGame_Client extends Game implements NetworkedGameClient {
-	frameRate = FrameRate.SMOOTH_FRAMERATE;
+	frameRate = FrameRate.DYNAMIC_FRAMERATE;
 	gameName = 'Platformer Game';
 
 	websocket = new WebSocket('ws://joshh.moe:8080');

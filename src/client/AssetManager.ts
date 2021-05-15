@@ -18,14 +18,28 @@ export class AssetManager {
 			var mipmapLevels =
 				1 + Math.floor(Math.log2(Math.max(img.width, img.height)));
 
-			for (var i = 1; i < mipmapLevels + 1; i++) {
-				var factor = i ** 2;
+			for (var i = 0; i < mipmapLevels; i++) {
+				var factor = i * 2;
+				if (factor == 0) {
+					factor = 1;
+				}
 				var offscreenCanvas = document.createElement('canvas');
 				offscreenCanvas.width = img.width / factor;
 				offscreenCanvas.height = img.height / factor;
 				var ctx = offscreenCanvas.getContext('2d', { alpha: true });
 				if (ctx) {
-					ctx.drawImage(img, 0, 0, img.width / factor, img.height / factor);
+					if (i != 0) {
+						ctx.drawImage(
+							canvases[i - 1],
+							0,
+							0,
+							img.width / factor,
+							img.height / factor
+						);
+					} else {
+						ctx.drawImage(img, 0, 0, img.width / factor, img.height / factor);
+					}
+
 					canvases.push(offscreenCanvas);
 				}
 			}

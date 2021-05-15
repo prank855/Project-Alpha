@@ -45,11 +45,13 @@ export class Sprite {
 					);
 					if (ctx) {
 						ctx.fillStyle = 'Black';
-						/*ctx?.fillText(
-							`${i} MipMap level`,
+						ctx?.fillText(
+							`${i} MipMap level, ${this.width * Camera.currZoom} ${this.image[
+								i
+							].width / 2}`,
 							screenSpace.x - this.width * this.origin.x * Camera.currZoom,
 							screenSpace.y - this.height * this.origin.y * Camera.currZoom
-						);*/
+						);
 					}
 					return;
 				}

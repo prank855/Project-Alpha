@@ -54,7 +54,8 @@ export class Client {
 		var self = this;
 
 		// dynamically sets framerate to refresh rate
-		if (this.game.frameRate == FrameRate.SMOOTH_FRAMERATE) {
+		if (this.game.frameRate == FrameRate.DYNAMIC_FRAMERATE) {
+			this.game.frameRate = 60;
 			var amount = 20;
 			var t: any[] = [];
 			function animate(now: any) {
@@ -113,7 +114,11 @@ export class Client {
 			this.ctx!.fillStyle = 'white';
 			this.ctx!.font = '15px Consolas';
 			this.ctx!.fillText('Client Debug', 10, 15);
-			this.ctx!.fillText('Framerate: ' + Math.ceil(1 / Time.deltaTime), 10, 30);
+			this.ctx!.fillText(
+				'Framerate: ' + (1 / Time.deltaTime).toFixed(1),
+				10,
+				30
+			);
 			this.ctx!.fillText(
 				'Frametime: ' + (Time.deltaTime * 1000).toFixed(2) + 'ms',
 				10,
