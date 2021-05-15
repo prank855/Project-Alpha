@@ -88,7 +88,7 @@ export class ClientGameManager extends GameManager {
 	}
 
 	lastSend = 0;
-	serverDeltaTime = 0;
+	serverDeltaTimes: number[] = [];
 
 	update() {
 		if (this.incomingPacketQueue.length > 0) {
@@ -115,9 +115,9 @@ export class ClientGameManager extends GameManager {
 						if (this.currentServerTick != 0)
 							console.warn('Packet Loss/Skipped');
 					}
-					this.serverTickRate = serverInfoData.tickrate;
+					this.serverTickRate = 1 / serverInfoData.deltaTime;
 					this.currentServerTick = serverInfoData.tick;
-					this.serverDeltaTime = serverInfoData.deltaTime;
+					this.serverDeltaTimes.push(serverInfoData.deltaTime);
 					break;
 				case 'AssignPlayerID':
 					let assignPlayerIDData = packet.data as AssignPlayerID_Data;
@@ -218,34 +218,28 @@ export class ClientGameManager extends GameManager {
 		if (this.ws.readyState != 1) {
 			this.outgoingPacketQueue.length = 0;
 		}
-		if (this.serverDeltaTime != 0) {
-			while (this.lastSend < Time.elapsedTime - this.serverDeltaTime) {
-				for (var p of this.players) {
-					if (p.networkId == this.networkID) {
-						if (p.inputScript) this.camera.target = p.inputScript.transform;
-						var inputs = Input.GetInputs();
-						p.inputScript?.input(this.serverDeltaTime, inputs);
-						if (inputs.length != 0) {
-							this.outgoingPacketQueue.push(
-								new ClientInput_Packet(
-									new ClientInput_Data(
-										inputs,
-										this.networkID,
-										this.serverDeltaTime
-									)
-								)
-							);
-						}
+		for (var d of this.serverDeltaTimes) {
+			for (var p of this.players) {
+				if (p.networkId == this.networkID) {
+					if (p.inputScript) this.camera.target = p.inputScript.transform;
+					var inputs = Input.GetInputs();
+					p.inputScript?.input(d, inputs);
+					if (inputs.length != 0) {
+						this.outgoingPacketQueue.push(
+							new ClientInput_Packet(
+								new ClientInput_Data(inputs, this.networkID, d)
+							)
+						);
 					}
 				}
-				if (this.ws.readyState == 1) {
-					this.ws.send(JSON.stringify(this.outgoingPacketQueue));
-					this.outgoingPacketCount = this.outgoingPacketQueue.length;
-					this.outgoingPacketQueue.length = 0;
-				}
-				this.lastSend += this.serverDeltaTime;
+			}
+			if (this.ws.readyState == 1) {
+				this.ws.send(JSON.stringify(this.outgoingPacketQueue));
+				this.outgoingPacketCount = this.outgoingPacketQueue.length;
+				this.outgoingPacketQueue.length = 0;
 			}
 		}
+		this.serverDeltaTimes.length = 0;
 	}
 
 	onDebug() {
@@ -262,7 +256,7 @@ export class ClientGameManager extends GameManager {
 			30
 		);
 		ctx!.fillText(
-			`Server Tick Rate: ${(1 / this.serverDeltaTime).toFixed(2)}`,
+			`Server Tick Rate: ${this.serverTickRate.toFixed(2)}`,
 			window.innerWidth - 265 + 10,
 			45
 		);
