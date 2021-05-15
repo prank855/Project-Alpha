@@ -1,15 +1,16 @@
-import { ServerGameManager } from './ServerGameManager';
 import { Time } from '../shared/Time';
+import { Game } from '../shared/Game';
 
 export class Server {
-	game: ServerGameManager = new ServerGameManager();
+	game: Game;
 	lastTime: number = 0;
-	constructor() {
-		console.log('Server Created with tickrate of', this.game.tickRate);
+	constructor(game: Game) {
+		this.game = game;
 	}
 	start() {
 		console.log('Server Started');
 		this.lastTime = Time.getCurrTime();
+		this.game.setupScene();
 		this.game.start();
 		this.loop();
 	}
@@ -17,10 +18,10 @@ export class Server {
 	private frameTimeList: number[] = [];
 	private setIntervalError: number = 2; //Error in milliseconds that setInterval causes for proper consistent frametimes
 	loop() {
-		let currTime = Time.getCurrTime();
 		let self = this;
-		//check if ready for next loop
-		let tickDelta = 1 / this.game.tickRate;
+		let currTime = Time.getCurrTime();
+
+		let tickDelta = 1 / this.game.frameRate;
 		if (currTime - this.lastTime < tickDelta) {
 			if (currTime - this.lastTime + this.setIntervalError / 1000 < tickDelta) {
 				setTimeout(self.loop.bind(this), 1);
@@ -29,31 +30,30 @@ export class Server {
 			}
 			return;
 		}
-		this.game.tick++;
+
 		Time.deltaTime = currTime - this.lastTime;
 		Time.elapsedTime += Time.deltaTime;
 		this.lastTime = currTime;
 		this.frameTimeList.push(Time.deltaTime);
 
+		this.game.frame++;
 		this.game.update();
 
-		//
-		if (this.game.tick % (this.game.tickRate * 15) == 0) {
+		if (this.game.frame % (this.game.frameRate * 15) == 0) {
 			let b = 0;
 			for (let a of this.frameTimeList) {
 				b += a;
 			}
 			console.log(
-				'Tick',
-				this.game.tick,
-				'| Tick Rate:',
+				'Frame',
+				this.game.frame,
+				'| Frame Rate:',
 				parseFloat((1 / (b / this.frameTimeList.length)).toFixed(1)),
 				'|',
 				parseFloat(Time.elapsedTime.toFixed(1)),
 				'seconds |',
-				this.game.objectManager.getObjectListSize(),
-				'objects | Connections: ',
-				this.game.players.length
+				this.game.gameObjectManager.getGameObjectsLength(),
+				'objects'
 			);
 			this.frameTimeList.length = 0;
 		}

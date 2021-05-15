@@ -1,16 +1,13 @@
-import { ClientGameManager } from './ClientGameManager';
-import { GameManager } from './../shared/GameManager';
 import { AssetManager } from './AssetManager';
 import { CanvasCreator } from './CanvasCreator';
 import { SpriteRenderer } from './SpriteRenderer';
 import { Input } from './Input';
 import { FrameRate } from './FrameRate';
 import { Time } from '../shared/Time';
+import { Game } from '../shared/Game';
 export class Client {
-	game: GameManager = new ClientGameManager();
+	game: Game;
 	lastTime: number = Time.getCurrTime();
-	frame: number = 0;
-	frameRateLimit: number | FrameRate = 240;
 	//TODO: use requestAnimFrame to dynamically grab refresh rate
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
@@ -18,13 +15,14 @@ export class Client {
 	clientUpdateRate: number = 60;
 	backgroundColor: string = 'cornflowerblue';
 	private ctx: CanvasRenderingContext2D | null;
-	constructor() {
+	constructor(game: Game) {
+		this.game = game;
 		CanvasCreator.initializeCanvas();
 		if (
-			this.frameRateLimit < 30 &&
-			this.frameRateLimit > Object.keys(FrameRate).length / 2
+			this.game.frameRate < 30 &&
+			this.game.frameRate > Object.keys(FrameRate).length / 2
 		) {
-			this.frameRateLimit = 30;
+			this.game.frameRate = 30;
 		}
 		if (CanvasCreator.context == null) {
 			throw 'canvas context is null';
@@ -33,7 +31,7 @@ export class Client {
 		console.log('Client Created');
 		if (
 			this.blackFrameInsertion &&
-			this.frameRateLimit != FrameRate.SMOOTH_FRAMERATE
+			this.game.frameRate != FrameRate.SMOOTH_FRAMERATE
 		) {
 			console.warn(
 				'You must set frameRateLimit to SMOOTH_FRAMERATE to enable BFI'
@@ -43,19 +41,16 @@ export class Client {
 
 	start() {
 		Input.initInputEvents();
-
-		AssetManager.addSprite('trollface.png', 'TrollFace');
-		AssetManager.addSprite('roadmap.png', 'Jesus');
 		if (AssetManager.tasks.length != 0) {
 			setTimeout(this.start.bind(this), 1000 / 30);
 			return;
 		}
 
-		console.log('Client Started');
+		console.log('Assets Loaded');
+		this.game.setupScene();
+		this.game.start();
 
 		this.lastTime = Time.getCurrTime();
-
-		this.game.start();
 
 		this.loop();
 	}
@@ -63,8 +58,8 @@ export class Client {
 	loop() {
 		let currTime = Time.getCurrTime();
 		let self = this;
-		let tickDelta = 1 / this.frameRateLimit;
-		if (this.frameRateLimit > 5) {
+		let tickDelta = 1 / this.game.frameRate;
+		if (this.game.frameRate > 5) {
 			if (currTime - this.lastTime < tickDelta) {
 				if (
 					currTime - this.lastTime + this.setIntervalError / 1000 <
@@ -78,20 +73,20 @@ export class Client {
 			}
 		}
 
-		this.frame++;
 		Time.deltaTime = currTime - this.lastTime;
 		Time.elapsedTime += Time.deltaTime;
 		this.lastTime = currTime;
+
+		//Clear screen for rendering
 		this.ctx!.fillStyle = this.backgroundColor;
 		this.ctx!.fillRect(0, 0, this.ctx!.canvas.width, this.ctx!.canvas.height);
 
+		this.game.frame++;
 		this.game.update();
-
-		if (this.debug) this.game.onDebug();
 
 		if (this.debug || this.performanceWindow) {
 			this.ctx!.fillStyle = 'rgba(0,0,0,0.5)';
-			this.ctx!.fillRect(0, 0, 265, 105 + 15);
+			this.ctx!.fillRect(0, 0, 265, 105 + 30);
 			this.ctx!.fillStyle = 'white';
 			this.ctx!.font = '15px Consolas';
 			this.ctx!.fillText('Client Debug', 10, 15);
@@ -106,15 +101,20 @@ export class Client {
 				10,
 				60
 			);
-			this.ctx!.fillText('Frame: ' + this.frame, 10, 75);
+			this.ctx!.fillText('Frame: ' + this.game.frame, 10, 75);
 			this.ctx!.fillText(
-				'Objects: ' + this.game.objectManager.getObjectListSize(),
+				'Objects: ' + this.game.gameObjectManager.getGameObjectsLength(),
 				10,
 				90
 			);
 			this.ctx!.fillText('Draw Count: ' + SpriteRenderer.drawCount, 10, 105);
+			this.ctx!.fillText(
+				'Pool Size: ' + this.game.gameObjectManager.getPoolSize(),
+				10,
+				105 + 15
+			);
 		}
-		if (this.frameRateLimit == FrameRate.SMOOTH_FRAMERATE) {
+		if (this.game.frameRate == FrameRate.SMOOTH_FRAMERATE) {
 			if (this.blackFrameInsertion) {
 				requestAnimationFrame(function() {
 					self.ctx!.fillStyle = 'black';

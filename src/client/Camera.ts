@@ -1,106 +1,110 @@
-import { GameComponent } from '../shared/GameComponent';
-import { GameObjectManager } from '../shared/GameObjectManager';
+import { Input } from './Input';
 import { InputAction } from '../shared/InputAction';
 import { Time } from '../shared/Time';
-import { Transform } from '../shared/Transform';
 import { Util } from '../shared/Util';
 import { Vector2 } from '../shared/Vector2';
 import { CanvasCreator } from './CanvasCreator';
+import { GameObject } from '../shared/GameObject';
 
-export class Camera extends GameComponent {
+export class Camera {
 	//TODO: use transform component instead of position
-	static self: Camera;
-	static currZoom: number = 1;
-	position: Vector2 = Vector2.zero();
-	target: Transform | null = null;
-	boundBoxSize: number = 240;
-	speed: number = 1;
-	private zoom: number = 1;
-	size: number = 500;
-	zoomSpeed: number = 2;
-	zoomMin: number = 1 / 1.4;
-	zoomMax: number = 1.2;
-	//TODO: rotation
-	constructor() {
-		super('Camera');
-		Camera.self = this;
-	}
 
-	start() {
-		this.target = GameObjectManager.self
-			?.findGameObject('Player')
-			?.getComponent('Transform') as Transform;
-		if (this.target != null)
-			this.position = Vector2.copy(this.target?.position);
-	}
+	static currZoom: number = 1;
+	static position: Vector2 = Vector2.zero();
+	target: GameObject | null = null;
+	static boundBoxSize: number = 240;
+	static speed: number = 1;
+	private static zoom: number = 1;
+	static size: number = 500;
+	static zoomSpeed: number = 2;
+	static zoomMin: number = 1 / 8;
+	static zoomMax: number = 1.2;
+	//TODO: rotation
+
 	input(_inputs: InputAction[]) {
 		if (_inputs.includes(InputAction.ZOOM_IN)) {
-			this.zoom *= Math.E ** (Time.deltaTime * Math.log(this.zoomSpeed));
+			Camera.zoom *= Math.E ** (Time.deltaTime * Math.log(Camera.zoomSpeed));
 		}
 		if (_inputs.includes(InputAction.ZOOM_OUT)) {
-			this.zoom /= Math.E ** (Time.deltaTime * Math.log(this.zoomSpeed));
+			Camera.zoom /= Math.E ** (Time.deltaTime * Math.log(Camera.zoomSpeed));
 		}
-		this.zoom = Util.bound(this.zoom, this.zoomMin, this.zoomMax);
+		Camera.zoom = Util.bound(Camera.zoom, Camera.zoomMin, Camera.zoomMax);
 	}
 	update() {
-		//this.zoom *= Math.E ** (time.deltaTime * Math.log(this.zoomSpeed));
-		Camera.currZoom = this.getZoom();
+		Camera.currZoom = Camera.getZoom();
+		this.input(Input.GetInputs());
 		if (this.target != null) {
 			//lerp camera to target
 			var xv =
-				(this.target.position.x - this.position.x) *
+				(this.target.transform.position.x - Camera.position.x) *
 				Time.deltaTime *
-				this.speed *
-				(1 / this.zoom);
+				Camera.speed *
+				(1 / Camera.zoom);
 			if (xv > 0) {
-				if (this.position.x + xv > this.target.position.x) {
-					this.position.x = this.target.position.x;
+				if (Camera.position.x + xv > this.target.transform.position.x) {
+					Camera.position.x = this.target.transform.position.x;
 				} else {
-					this.position.x += xv;
+					Camera.position.x += xv;
 				}
 			} else {
-				if (this.position.x + xv < this.target.position.x) {
-					this.position.x = this.target.position.x;
+				if (Camera.position.x + xv < this.target.transform.position.x) {
+					Camera.position.x = this.target.transform.position.x;
 				} else {
-					this.position.x += xv;
+					Camera.position.x += xv;
 				}
 			}
 			var yv =
-				(this.target.position.y - this.position.y) *
+				(this.target.transform.position.y - Camera.position.y) *
 				Time.deltaTime *
-				this.speed *
-				(1 / this.zoom);
+				Camera.speed *
+				(1 / Camera.zoom);
 			if (yv > 0) {
-				if (this.position.y + yv > this.target.position.y) {
-					this.position.y = this.target.position.y;
+				if (Camera.position.y + yv > this.target.transform.position.y) {
+					Camera.position.y = this.target.transform.position.y;
 				} else {
-					this.position.y += yv;
+					Camera.position.y += yv;
 				}
 			} else {
-				if (this.position.y + yv < this.target.position.y) {
-					this.position.y = this.target.position.y;
+				if (Camera.position.y + yv < this.target.transform.position.y) {
+					Camera.position.y = this.target.transform.position.y;
 				} else {
-					this.position.y += yv;
+					Camera.position.y += yv;
 				}
 			}
 
 			//check bounds
-			if (this.target.position.x - this.position.x > this.boundBoxSize) {
-				this.position.x = this.target.position.x - this.boundBoxSize;
+			if (
+				this.target.transform.position.x - Camera.position.x >
+				Camera.boundBoxSize
+			) {
+				Camera.position.x =
+					this.target.transform.position.x - Camera.boundBoxSize;
 			}
-			if (this.target.position.x - this.position.x < -this.boundBoxSize) {
-				this.position.x = this.target.position.x + this.boundBoxSize;
+			if (
+				this.target.transform.position.x - Camera.position.x <
+				-Camera.boundBoxSize
+			) {
+				Camera.position.x =
+					this.target.transform.position.x + Camera.boundBoxSize;
 			}
-			if (this.target.position.y - this.position.y > this.boundBoxSize) {
-				this.position.y = this.target.position.y - this.boundBoxSize;
+			if (
+				this.target.transform.position.y - Camera.position.y >
+				Camera.boundBoxSize
+			) {
+				Camera.position.y =
+					this.target.transform.position.y - Camera.boundBoxSize;
 			}
-			if (this.target.position.y - this.position.y < -this.boundBoxSize) {
-				this.position.y = this.target.position.y + this.boundBoxSize;
+			if (
+				this.target.transform.position.y - Camera.position.y <
+				-Camera.boundBoxSize
+			) {
+				Camera.position.y =
+					this.target.transform.position.y + Camera.boundBoxSize;
 			}
 		}
 	}
 
-	getZoom(): number {
+	static getZoom(): number {
 		let min = 0;
 		if (window.innerHeight < window.innerWidth) {
 			min = innerHeight;
@@ -110,8 +114,7 @@ export class Camera extends GameComponent {
 		return this.zoom * (min / this.size);
 	}
 
-	//TODO: make this static
-	toScreenSpace(vec: Vector2): Vector2 {
+	static toScreenSpace(vec: Vector2): Vector2 {
 		return new Vector2(
 			vec.x * Camera.currZoom -
 				this.position.x * Camera.currZoom +
@@ -124,17 +127,17 @@ export class Camera extends GameComponent {
 	onDebug() {
 		let ctx = CanvasCreator.context;
 		if (ctx != null) {
-			let screenSpace = this.toScreenSpace(this.position);
+			let screenSpace = Camera.toScreenSpace(Camera.position);
 			ctx.strokeStyle = 'LightBlue';
 			ctx.strokeRect(
-				screenSpace.x - this.boundBoxSize * Camera.currZoom,
-				screenSpace.y - this.boundBoxSize * Camera.currZoom,
-				this.boundBoxSize * 2 * Camera.currZoom,
-				this.boundBoxSize * 2 * Camera.currZoom
+				screenSpace.x - Camera.boundBoxSize * Camera.currZoom,
+				screenSpace.y - Camera.boundBoxSize * Camera.currZoom,
+				Camera.boundBoxSize * 2 * Camera.currZoom,
+				Camera.boundBoxSize * 2 * Camera.currZoom
 			);
 		}
 	}
-	toWorldSpace(vec: Vector2): Vector2 {
+	static toWorldSpace(vec: Vector2): Vector2 {
 		//TODO: this
 		//https://www.wolframalpha.com/input/?i=x%3D%28a*z+%29+-+%28b*z%29+%2B+%28w+%2F+2%29+solve+b
 		return Vector2.copy(vec);

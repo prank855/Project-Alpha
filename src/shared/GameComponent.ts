@@ -3,6 +3,7 @@ import { GameObject } from './GameObject';
 //TODO: make abstract?
 export class GameComponent {
 	parent: GameObject | null = null;
+	isActive: boolean = true;
 	debug: boolean = false;
 	readonly name: string;
 	constructor(componentName: string) {
@@ -15,6 +16,4 @@ export class GameComponent {
 	init() {} //called when component added to Game Object
 	start() {} //called when Game Object is added to GameObjectManager
 	update() {} //called each frame
-	render() {} //called each frame
-	onDebug() {} // called each frame if this.debug is set to True
 }

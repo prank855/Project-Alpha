@@ -1,46 +1,55 @@
 export class AssetManager {
 	static self: AssetManager;
 
-	static canvases: HTMLCanvasElement[] = [];
+	static mipMapLevels = 3;
+	static canvases: HTMLCanvasElement[][] = [];
 	static names: string[] = [];
 	static tasks: string[] = [];
-	static addSprite(imgSrc: string, spriteName: string) {
-		if (this.tasks.includes(spriteName) || AssetManager.hasSprite(spriteName)) {
+	static loadImage(imgSrc: string, imageName: string) {
+		if (this.tasks.includes(imageName) || AssetManager.hasImage(imageName)) {
 			return;
 		}
 		var img = new Image();
 		img.src = imgSrc;
-		this.tasks.push(spriteName);
+		this.tasks.push(imageName);
 		img.onload = () => {
-			var offscreenCanvas = document.createElement('canvas');
-			offscreenCanvas.width = img.width;
-			offscreenCanvas.height = img.height;
-			var ctx = offscreenCanvas.getContext('2d', { alpha: true });
-			if (ctx != null) {
-				ctx.drawImage(img, 0, 0);
-				this.canvases.push(offscreenCanvas);
-				this.names.push(spriteName);
-				console.log(`Added ${spriteName} to Asset Manager`);
-				this.tasks.splice(this.tasks.indexOf(spriteName), 1);
-			} else {
-				console.log('Offscreen Canvas Context is null');
+			var canvases: HTMLCanvasElement[] = [];
+			var mipmapLevels =
+				1 + Math.floor(Math.log2(Math.max(img.width, img.height)));
+			console.log(mipmapLevels);
+			for (var i = 1; i < mipmapLevels + 1; i++) {
+				var factor = i ** 2;
+				var offscreenCanvas = document.createElement('canvas');
+				offscreenCanvas.width = img.width / factor;
+				offscreenCanvas.height = img.height / factor;
+				var ctx = offscreenCanvas.getContext('2d', { alpha: true });
+				if (ctx) {
+					ctx.drawImage(img, 0, 0, img.width / factor, img.height / factor);
+					canvases.push(offscreenCanvas);
+				}
 			}
+			this.canvases.push(canvases);
+			this.names.push(imageName);
+			console.log(
+				`Added ${imageName} to Asset Manager, with ${mipmapLevels} levels of MipMap`
+			);
+			this.tasks.splice(this.tasks.indexOf(imageName), 1);
 		};
 	}
-	static hasSprite(spriteName: string): boolean {
+	static hasImage(imageName: string): boolean {
 		for (var i = 0; i < this.names.length; i++) {
-			if (this.names[i] == spriteName) {
+			if (this.names[i] == imageName) {
 				return true;
 			}
 		}
 		return false;
 	}
-	static getSprite(spriteName: string): HTMLCanvasElement | null {
+	static getImage(imageName: string): HTMLCanvasElement[] {
 		for (var i = 0; i < this.names.length; i++) {
-			if (this.names[i].toLowerCase() == spriteName.toLowerCase()) {
+			if (this.names[i].toLowerCase() == imageName.toLowerCase()) {
 				return this.canvases[i];
 			}
 		}
-		return null;
+		throw `Image of name ${imageName} does not exist. Either import it or request a different image`;
 	}
 }

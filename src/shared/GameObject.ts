@@ -1,30 +1,30 @@
+import { GameObjectManager } from './GameObjectManager';
 import { GameComponent } from './GameComponent';
+import { Transform } from './Transform';
 
 export class GameObject {
 	static lastID: number = 0;
+	isActive: boolean = true;
+	gameObjectManager: GameObjectManager;
+	transform = new Transform();
 	components: GameComponent[] = [];
-	id: number;
-	name: string;
+	id: number = 0;
+	name: string = 'Unnamed Game Object';
 	started: boolean = false;
-	constructor(name?: string) {
-		this.id = GameObject.lastID++;
-		this.name = name || `Game Object ${this.id}`;
+
+	delete: boolean = false;
+
+	constructor(gameObjectManager: GameObjectManager) {
+		this.gameObjectManager = gameObjectManager;
 	}
 	update() {
 		for (let co of this.components) {
-			co.update();
+			if (co.isActive) {
+				co.update();
+			}
 		}
 	}
-	render() {
-		for (let co of this.components) {
-			co.render();
-		}
-	}
-	onDebug() {
-		for (let co of this.components) {
-			if (co.debug) co.onDebug();
-		}
-	}
+
 	addComponent(co: GameComponent) {
 		if (this.getComponent(co.name) != null) {
 			console.log(
@@ -36,6 +36,7 @@ export class GameObject {
 		co.init();
 		this.components.push(co);
 	}
+
 	start() {
 		for (let co of this.components) {
 			co.start();
