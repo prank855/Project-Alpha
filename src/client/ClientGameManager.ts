@@ -140,6 +140,7 @@ export class ClientGameManager extends GameManager {
 								} else {
 									// basic rubberbanding
 									if (
+										Input.GetInputs().length == 0 &&
 										p.inputScript?.transform?.position &&
 										Vector2.Distance(o[1], p.inputScript.transform.position) >
 											10

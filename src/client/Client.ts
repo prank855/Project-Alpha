@@ -11,6 +11,7 @@ export class Client {
 	lastTime: number = Time.getCurrTime();
 	frame: number = 0;
 	frameRateLimit: number | FrameRate = 240;
+	//TODO: use requestAnimFrame to dynamically grab refresh rate
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	performanceWindow: boolean = true;
