@@ -97,6 +97,12 @@ export class ServerGameManager extends GameManager {
 							var flag = false;
 							for (var cd of clientDeltaTime) {
 								if (cd[0] == clientInputData.networkID) {
+									if (clientInputData.deltaTime < 1 / this.tickRate) {
+										console.log(
+											`Cheating detected, ID:${clientInputData.networkID}`
+										);
+										clientInputData.deltaTime == 1 / this.tickRate;
+									}
 									if (!cd[1]) {
 										cd[1] = 0;
 									}

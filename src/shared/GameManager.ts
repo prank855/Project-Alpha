@@ -5,9 +5,7 @@ export class GameManager {
 	objectManager: GameObjectManager = new GameObjectManager();
 	gameName: string = 'Unnamed Game';
 
-	start() {
-		console.log('EPIC');
-	}
+	start() {}
 	update() {}
 	createScene(scene: Scene, objectManager: GameObjectManager) {
 		this.currentScene = scene;
