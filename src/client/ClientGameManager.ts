@@ -27,6 +27,7 @@ export class ClientGameManager extends GameManager {
 
 	camera: Camera = new Camera();
 
+	player: Player | null = null;
 	players: Player[] = [];
 
 	networkID: NetworkID = 0;
@@ -186,6 +187,7 @@ export class ClientGameManager extends GameManager {
 						player.inputScript = inputScript;
 						if (this.networkID == addPlayerEventData.networkID) {
 							inputScript.debug = true;
+							this.player = player;
 						}
 						this.players.push(player);
 
@@ -218,21 +220,20 @@ export class ClientGameManager extends GameManager {
 		if (this.ws.readyState != 1) {
 			this.outgoingPacketQueue.length = 0;
 		}
-		for (var d of this.serverDeltaTimes) {
-			for (var p of this.players) {
-				if (p.networkId == this.networkID) {
-					if (p.inputScript) this.camera.target = p.inputScript.transform;
-					var inputs = Input.GetInputs();
-					p.inputScript?.input(d, inputs);
-					if (inputs.length != 0) {
-						this.outgoingPacketQueue.push(
-							new ClientInput_Packet(
-								new ClientInput_Data(inputs, this.networkID, d)
-							)
-						);
-					}
-				}
+		for (var deltaTime of this.serverDeltaTimes) {
+			var inputs = Input.GetInputs();
+			if (this.player) {
+				this.player.inputScript?.input(deltaTime, inputs);
+				this.camera.target = this.player.inputScript!.transform;
 			}
+			if (inputs.length != 0) {
+				this.outgoingPacketQueue.push(
+					new ClientInput_Packet(
+						new ClientInput_Data(inputs, this.networkID, deltaTime)
+					)
+				);
+			}
+
 			if (this.ws.readyState == 1) {
 				this.ws.send(JSON.stringify(this.outgoingPacketQueue));
 				this.outgoingPacketCount = this.outgoingPacketQueue.length;
