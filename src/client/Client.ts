@@ -10,7 +10,7 @@ export class Client {
 	game: GameManager = new ClientGameManager();
 	lastTime: number = Time.getCurrTime();
 	frame: number = 0;
-	frameRateLimit: number | FrameRate = 128;
+	frameRateLimit: number | FrameRate = 240;
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	performanceWindow: boolean = true;

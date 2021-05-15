@@ -108,7 +108,12 @@ export class ClientGameManager extends GameManager {
 			switch (packet.type) {
 				case 'ServerInfo':
 					let serverInfoData = packet.data as ServerInfo_Data;
-					//console.warn('Server Info', serverInfoData);
+					if (
+						serverInfoData.tick > this.currentServerTick + 1 ||
+						serverInfoData.tick < this.currentServerTick
+					) {
+						console.warn('Packet Loss/Skipped');
+					}
 					this.serverTickRate = serverInfoData.tickrate;
 					this.currentServerTick = serverInfoData.tick;
 					this.serverDeltaTime = serverInfoData.deltaTime;
