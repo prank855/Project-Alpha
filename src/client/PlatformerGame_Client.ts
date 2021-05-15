@@ -50,7 +50,7 @@ export class PlatformerGame_Client extends Game implements NetworkedGameClient {
 		background.addComponent(sr);
 		this.gameObjectManager.addGameObject(background);
 
-		{
+		for (var i = 0; i < 1; i++) {
 			var player = this.gameObjectManager.createGameObject('Player');
 			player.transform.position = new Vector2(
 				Math.random() * 400,

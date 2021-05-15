@@ -43,16 +43,16 @@ export class Sprite {
 						this.width * Camera.currZoom,
 						this.height * Camera.currZoom
 					);
+					/*
 					if (ctx) {
 						ctx.fillStyle = 'Black';
 						ctx?.fillText(
-							`${i} MipMap level, ${this.width * Camera.currZoom} ${this.image[
-								i
-							].width / 2}`,
+							`${i} MipMap level`,
 							screenSpace.x - this.width * this.origin.x * Camera.currZoom,
 							screenSpace.y - this.height * this.origin.y * Camera.currZoom
 						);
 					}
+					*/
 					return;
 				}
 			}
