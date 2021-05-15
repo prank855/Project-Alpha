@@ -9,9 +9,11 @@ export class Server {
 	}
 	start() {
 		console.log('Server Started');
+
 		this.lastTime = Time.getCurrTime();
 		this.game.setupScene();
 		this.game.start();
+
 		this.loop();
 	}
 
@@ -24,7 +26,7 @@ export class Server {
 		let tickDelta = 1 / this.game.frameRate;
 		if (currTime - this.lastTime < tickDelta) {
 			if (currTime - this.lastTime + this.setIntervalError / 1000 < tickDelta) {
-				setTimeout(self.loop.bind(this), 1);
+				setTimeout(self.loop.bind(this));
 			} else {
 				setImmediate(self.loop.bind(this));
 			}

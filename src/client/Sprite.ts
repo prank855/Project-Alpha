@@ -9,16 +9,13 @@ export class Sprite {
 	height: number;
 	image: HTMLCanvasElement[];
 	position: Vector2 = Vector2.zero();
-	layer: SpriteLayer;
+	layer: SpriteLayer = SpriteLayer.FOREGROUND;
 	constructor(
 		image: HTMLCanvasElement[],
 		layer: SpriteLayer,
 		origin: Vector2,
-		scale?: number
+		scale: number
 	) {
-		if (!scale) {
-			scale = 1;
-		}
 		this.image = image;
 		this.width = image[0].width * scale;
 		this.height = image[0].height * scale;

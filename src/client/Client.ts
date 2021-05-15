@@ -12,7 +12,6 @@ export class Client {
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	performanceWindow: boolean = true;
-	clientUpdateRate: number = 60;
 	backgroundColor: string = 'cornflowerblue';
 	private ctx: CanvasRenderingContext2D | null;
 	constructor(game: Game) {
@@ -47,13 +46,35 @@ export class Client {
 		}
 
 		console.log('Assets Loaded');
+
+		this.lastTime = Time.getCurrTime();
 		this.game.setupScene();
 		this.game.start();
 
-		this.lastTime = Time.getCurrTime();
+		var self = this;
 
+		// dynamically sets framerate to refresh rate
+		if (this.game.frameRate == FrameRate.SMOOTH_FRAMERATE) {
+			var amount = 20;
+			var t: any[] = [];
+			function animate(now: any) {
+				t.unshift(now);
+				if (t.length > 10) {
+					var t0 = t.pop();
+					var fps = Math.ceil((1000 * 10) / (now - t0));
+					amount--;
+					if (amount == 0) {
+						self.game.frameRate = fps;
+						console.log(`Dynamically set framerate to ${fps}`);
+					}
+				}
+				if (amount != 0) window.requestAnimationFrame(animate);
+			}
+			window.requestAnimationFrame(animate);
+		}
 		this.loop();
 	}
+
 	private setIntervalError: number = 2;
 	loop() {
 		let currTime = Time.getCurrTime();
@@ -65,11 +86,13 @@ export class Client {
 					currTime - this.lastTime + this.setIntervalError / 1000 <
 					tickDelta
 				) {
-					setTimeout(self.loop.bind(this), 1);
+					setTimeout(self.loop.bind(this));
 				} else {
 					setImmediate(self.loop.bind(this));
 				}
 				return;
+			} else {
+				//console.log(currTime - this.lastTime);
 			}
 		}
 

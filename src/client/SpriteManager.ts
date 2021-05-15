@@ -8,7 +8,7 @@ export class SpriteManager {
 		Object.keys(SpriteLayer).length / 2
 	)
 		.fill(undefined)
-		.map(a => {
+		.map(() => {
 			return document.createElement('canvas');
 		});
 
