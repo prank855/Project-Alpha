@@ -45,11 +45,11 @@ export class PlatformerGame_Client extends Game implements NetworkedGameClient {
 		background.addComponent(sr);
 		this.gameObjectManager.addGameObject(background);
 
-		for (var i = 0; i < 2000; i++) {
+		{
 			var player = this.gameObjectManager.createGameObject('Player');
 			player.transform.position = new Vector2(
-				Math.random() * 1000,
-				Math.random() * 1000
+				Math.random() * 400,
+				Math.random() * 400
 			);
 			var image = AssetManager.getImage('TrollFace');
 			var b = new SpriteRenderer();

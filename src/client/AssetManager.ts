@@ -13,10 +13,11 @@ export class AssetManager {
 		img.src = imgSrc;
 		this.tasks.push(imageName);
 		img.onload = () => {
+			//TODO: implement better resizing method
 			var canvases: HTMLCanvasElement[] = [];
 			var mipmapLevels =
 				1 + Math.floor(Math.log2(Math.max(img.width, img.height)));
-			console.log(mipmapLevels);
+
 			for (var i = 1; i < mipmapLevels + 1; i++) {
 				var factor = i ** 2;
 				var offscreenCanvas = document.createElement('canvas');
