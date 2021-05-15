@@ -20,7 +20,7 @@ export class Server {
 		let currTime = Time.getCurrTime();
 		let self = this;
 		//check if ready for next loop
-		let tickDelta = 1000 / this.game.tickRate;
+		let tickDelta = 1 / this.game.tickRate;
 		if (currTime - this.lastTime < tickDelta) {
 			if (currTime - this.lastTime + this.setIntervalError < tickDelta) {
 				setTimeout(self.loop.bind(this), 1);
@@ -30,7 +30,7 @@ export class Server {
 			return;
 		}
 		this.game.tick++;
-		Time.deltaTime = (currTime - this.lastTime) / 1000;
+		Time.deltaTime = currTime - this.lastTime;
 		Time.elapsedTime += Time.deltaTime;
 		this.lastTime = currTime;
 		this.frameTimeList.push(Time.deltaTime);
