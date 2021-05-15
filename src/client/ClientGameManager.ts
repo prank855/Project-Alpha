@@ -130,11 +130,22 @@ export class ClientGameManager extends GameManager {
 
 					for (var o of playerPosData.players) {
 						for (var p of this.players) {
-							if (p.networkId == o[0] && this.networkID != o[0]) {
-								if (p.inputScript?.transform?.position) {
-									p.inputScript.transform.position = Vector2.copy(o[1]);
+							if (p.networkId == o[0]) {
+								if (this.networkID != o[0]) {
+									if (p.inputScript?.transform?.position) {
+										p.inputScript.transform.position = Vector2.copy(o[1]);
+									}
+									break;
+								} else {
+									// basic rubberbanding
+									if (
+										p.inputScript?.transform?.position &&
+										Vector2.Distance(o[1], p.inputScript.transform.position) >
+											10
+									) {
+										p.inputScript.transform.position = Vector2.copy(o[1]);
+									}
 								}
-								break;
 							}
 						}
 					}

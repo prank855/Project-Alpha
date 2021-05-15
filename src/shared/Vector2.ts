@@ -47,6 +47,10 @@ export class Vector2 {
 		return Math.sqrt(this.x ** 2 + this.y ** 2);
 	}
 
+	static Distance(a: Vector2, b: Vector2): number {
+		return Math.hypot(b.x - a.x, b.y - a.y);
+	}
+
 	static copy(vec: Vector2): Vector2 {
 		return new Vector2(vec.x, vec.y);
 	}

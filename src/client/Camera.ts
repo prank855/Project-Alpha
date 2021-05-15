@@ -18,7 +18,7 @@ export class Camera extends GameComponent {
 	private zoom: number = 1;
 	size: number = 500;
 	zoomSpeed: number = 2;
-	zoomMin: number = 1 / 1.2;
+	zoomMin: number = 1 / 1.4;
 	zoomMax: number = 1.2;
 	//TODO: rotation
 	constructor() {
