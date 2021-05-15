@@ -1,5 +1,5 @@
 import { ServerGameManager } from './ServerGameManager';
-import { Time } from '../server/Time';
+import { Time } from '../shared/Time';
 
 export class Server {
 	game: ServerGameManager = new ServerGameManager();

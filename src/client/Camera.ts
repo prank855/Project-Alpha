@@ -1,11 +1,11 @@
 import { GameComponent } from '../shared/GameComponent';
 import { GameObjectManager } from '../shared/GameObjectManager';
 import { InputAction } from '../shared/InputAction';
+import { Time } from '../shared/Time';
 import { Transform } from '../shared/Transform';
 import { Util } from '../shared/Util';
 import { Vector2 } from '../shared/Vector2';
 import { CanvasCreator } from './CanvasCreator';
-import { Time } from './Time';
 
 export class Camera extends GameComponent {
 	//TODO: use transform component instead of position

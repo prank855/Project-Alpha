@@ -20,7 +20,7 @@ import { AddPlayerEvent_Data } from '../shared/network/AddPlayerEvent_Data';
 import { UpdatePlayerPositions_Data } from '../shared/network/UpdatePlayerPositions_Data';
 import { ClientHeartBeat_Data } from '../shared/network/ClientHeartBeat_Data';
 import { RemovePlayerEvent_Data } from '../shared/network/RemovePlayerEvent_Data';
-import { Time } from './Time';
+import { Time } from '../shared/Time';
 
 export class ClientGameManager extends GameManager {
 	backgroundColor: string = 'cornflowerblue';

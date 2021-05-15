@@ -1,11 +1,11 @@
 import { ClientGameManager } from './ClientGameManager';
 import { GameManager } from './../shared/GameManager';
 import { AssetManager } from './AssetManager';
-import { Time } from '../client/Time';
 import { CanvasCreator } from './CanvasCreator';
 import { SpriteRenderer } from './SpriteRenderer';
 import { Input } from './Input';
 import { FrameRate } from './FrameRate';
+import { Time } from '../shared/Time';
 export class Client {
 	game: GameManager = new ClientGameManager();
 	lastTime: number = Time.getCurrTime();

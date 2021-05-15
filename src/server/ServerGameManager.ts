@@ -18,7 +18,7 @@ import { AssignPlayerID_Packet } from '../shared/network/AssignPlayerID_Packet';
 import { NetworkPacket } from '../shared/network/NetworkPacket';
 import { ServerInfo_Data } from '../shared/network/ServerInfo_Data';
 import { ServerInfo_Packet } from '../shared/network/ServerInfo_Packet';
-import { Time } from './Time';
+import { Time } from '../shared/Time';
 import { ClientHeartBeat_Data } from '../shared/network/ClientHeartBeat_Data';
 import { RemovePlayerEvent_Data } from '../shared/network/RemovePlayerEvent_Data';
 export class ServerGameManager extends GameManager {
