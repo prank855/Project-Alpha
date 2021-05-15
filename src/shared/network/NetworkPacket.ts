@@ -1,6 +1,5 @@
-import { NetworkData } from './NetworkData';
+import { NetworkEvent } from './NetworkData';
 
 export interface NetworkPacket {
-	type: string;
-	data: NetworkData;
+	events: NetworkEvent[];
 }

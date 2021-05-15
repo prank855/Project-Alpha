@@ -1,3 +1,4 @@
+import { FrameRate } from './FrameRate';
 import { MovementScript } from './../shared/MovementScript';
 import { SpriteRenderer } from './SpriteRenderer';
 import { Camera } from './Camera';
@@ -8,7 +9,7 @@ import { Sprite } from './Sprite';
 import { Vector2 } from '../shared/Vector2';
 
 export class PlatformerGame_Client extends Game implements NetworkedGameClient {
-	frameRate = 240;
+	frameRate = FrameRate.SMOOTH_FRAMERATE;
 	gameName = 'Platformer Game';
 
 	websocket = new WebSocket('ws://joshh.moe:8080');
@@ -57,7 +58,7 @@ export class PlatformerGame_Client extends Game implements NetworkedGameClient {
 			player.addComponent(b);
 			player.addComponent(new MovementScript());
 			this.gameObjectManager.addGameObject(player);
-
+			Camera.position = Vector2.copy(player.transform.position);
 			this.camera.target = player;
 		}
 	}

@@ -1,1 +1,3 @@
-export interface NetworkData {}
+export interface NetworkEvent {
+	type: string;
+}

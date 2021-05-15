@@ -7,8 +7,6 @@ import { CanvasCreator } from './CanvasCreator';
 import { GameObject } from '../shared/GameObject';
 
 export class Camera {
-	//TODO: use transform component instead of position
-
 	static currZoom: number = 1;
 	static position: Vector2 = Vector2.zero();
 	target: GameObject | null = null;
@@ -16,8 +14,8 @@ export class Camera {
 	static speed: number = 1;
 	private static zoom: number = 1;
 	static size: number = 500;
-	static zoomSpeed: number = 2;
-	static zoomMin: number = 1 / 8;
+	static zoomSpeed: number = 1.5;
+	static zoomMin: number = 1 / 1.2;
 	static zoomMax: number = 1.2;
 	//TODO: rotation
 

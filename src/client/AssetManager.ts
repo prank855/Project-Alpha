@@ -13,7 +13,7 @@ export class AssetManager {
 		img.src = imgSrc;
 		this.tasks.push(imageName);
 		img.onload = () => {
-			//TODO: implement better resizing method
+			//TODO: implement better downscale method for better quality
 			var canvases: HTMLCanvasElement[] = [];
 			var mipmapLevels =
 				1 + Math.floor(Math.log2(Math.max(img.width, img.height)));
