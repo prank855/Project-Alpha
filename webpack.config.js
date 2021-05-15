@@ -42,9 +42,15 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.tsx?$/,
-				exclude: /node_modules/,
-				loaders: ['babel-loader']
+				test: /\.m?ts$/,
+				exclude: /(node_modules|bower_components)/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: ['@babel/preset-env'],
+						plugins: ['@babel/plugin-transform-runtime']
+					}
+				}
 			}
 		]
 	},
@@ -64,7 +70,7 @@ module.exports = {
 	optimization: {
 		minimizer: [
 			new TerserPlugin({
-				extractComments: false,
+				extractComments: true,
 				terserOptions: {
 					mangle: { keep_classnames: true },
 					compress: { ecma: 2015, passes: 1, unsafe: true },
