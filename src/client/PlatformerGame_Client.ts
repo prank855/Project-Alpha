@@ -1,3 +1,5 @@
+import { SpriteLayer } from './SpriteLayer';
+import { SpriteManager } from './SpriteManager';
 import { FrameRate } from './FrameRate';
 import { MovementScript } from './../shared/MovementScript';
 import { SpriteRenderer } from './SpriteRenderer';
@@ -42,7 +44,9 @@ export class PlatformerGame_Client extends Game implements NetworkedGameClient {
 		var background = this.gameObjectManager.createGameObject('Background');
 		var bgImage = AssetManager.getImage('Background');
 		var sr = new SpriteRenderer();
-		sr.setSprite(new Sprite(bgImage, new Vector2(0.5, 0.5), 0.5));
+		sr.setSprite(
+			new Sprite(bgImage, SpriteLayer.BACKGROUND, new Vector2(0.5, 0.5), 0.5)
+		);
 		background.addComponent(sr);
 		this.gameObjectManager.addGameObject(background);
 
@@ -54,7 +58,9 @@ export class PlatformerGame_Client extends Game implements NetworkedGameClient {
 			);
 			var image = AssetManager.getImage('TrollFace');
 			var b = new SpriteRenderer();
-			b.setSprite(new Sprite(image, new Vector2(0.5, 0.5), 0.1));
+			b.setSprite(
+				new Sprite(image, SpriteLayer.FOREGROUND, new Vector2(0.5, 0.5), 0.1)
+			);
 			player.addComponent(b);
 			player.addComponent(new MovementScript());
 			this.gameObjectManager.addGameObject(player);
@@ -66,7 +72,9 @@ export class PlatformerGame_Client extends Game implements NetworkedGameClient {
 
 	update() {
 		SpriteRenderer.drawCount = 0;
+		SpriteManager.sprites.length = 0;
 		this.camera.update();
 		this.gameObjectManager.update();
+		SpriteManager.render();
 	}
 }

@@ -1,3 +1,4 @@
+import { SpriteManager } from './SpriteManager';
 import { GameComponent } from '../shared/GameComponent';
 import { Sprite } from './Sprite';
 
@@ -15,9 +16,9 @@ export class SpriteRenderer extends GameComponent {
 	}
 
 	update() {
+		if (this.sprite) SpriteManager.sprites.push(this.sprite);
 		if (this.sprite && this.parent) {
 			this.sprite.position = this.parent?.transform.position;
-			this.sprite.render();
 		}
 	}
 }

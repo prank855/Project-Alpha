@@ -1,6 +1,6 @@
+import { SpriteLayer } from './SpriteLayer';
 import { Vector2 } from '../shared/Vector2';
 import { Camera } from './Camera';
-import { CanvasCreator } from './CanvasCreator';
 import { SpriteRenderer } from './SpriteRenderer';
 
 export class Sprite {
@@ -9,7 +9,13 @@ export class Sprite {
 	height: number;
 	image: HTMLCanvasElement[];
 	position: Vector2 = Vector2.zero();
-	constructor(image: HTMLCanvasElement[], origin: Vector2, scale?: number) {
+	layer: SpriteLayer;
+	constructor(
+		image: HTMLCanvasElement[],
+		layer: SpriteLayer,
+		origin: Vector2,
+		scale?: number
+	) {
 		if (!scale) {
 			scale = 1;
 		}
@@ -17,10 +23,10 @@ export class Sprite {
 		this.width = image[0].width * scale;
 		this.height = image[0].height * scale;
 		this.origin = origin;
+		this.layer = layer;
 	}
-	render() {
+	render(ctx: CanvasRenderingContext2D) {
 		//TODO: if sprite draw is bigger than canvas only draw from that specific region of image
-		let ctx = CanvasCreator.context;
 		let screenSpace = Camera.toScreenSpace(this.position);
 		if (
 			screenSpace.x - this.width * this.origin.x * Camera.currZoom <
