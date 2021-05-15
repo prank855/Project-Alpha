@@ -15,14 +15,14 @@ export class Server {
 	}
 
 	private frameTimeList: number[] = [];
-	private setIntervalError: number = 3; //Error in milliseconds that setInterval causes for proper consistent frametimes
+	private setIntervalError: number = 2; //Error in milliseconds that setInterval causes for proper consistent frametimes
 	loop() {
 		let currTime = Time.getCurrTime();
 		let self = this;
 		//check if ready for next loop
 		let tickDelta = 1 / this.game.tickRate;
 		if (currTime - this.lastTime < tickDelta) {
-			if (currTime - this.lastTime + this.setIntervalError < tickDelta) {
+			if (currTime - this.lastTime + this.setIntervalError / 1000 < tickDelta) {
 				setTimeout(self.loop.bind(this), 1);
 			} else {
 				setImmediate(self.loop.bind(this));
