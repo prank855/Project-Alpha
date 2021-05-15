@@ -9,7 +9,7 @@
 		"dev:client": "webpack-dev-server --env.env=dev",
 		"dev:server": "tsc-watch -p ./src/server --onSuccess \"node dist/server/index.js\"",
 		"start:server": "node index.js",
-		"build:client": "webpack --config './PROD.webpack.config.js' --env.env=prod && cp -r ./src/client/assets/* ./dist",
+		"build:client": "webpack --env.env=prod && cp -r ./src/client/assets/* ./dist",
 		"build:server": "tsc -p ./src/server",
 		"build": "npm run build:client && npm run build:server",
 		"test": "echo \"Error: no test specified\" && exit 1"
