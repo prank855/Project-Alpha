@@ -112,7 +112,8 @@ export class ClientGameManager extends GameManager {
 						serverInfoData.tick > this.currentServerTick + 1 ||
 						serverInfoData.tick < this.currentServerTick
 					) {
-						console.warn('Packet Loss/Skipped');
+						if (this.currentServerTick != 0)
+							console.warn('Packet Loss/Skipped');
 					}
 					this.serverTickRate = serverInfoData.tickrate;
 					this.currentServerTick = serverInfoData.tick;
