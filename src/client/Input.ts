@@ -31,19 +31,26 @@ export class Input {
 		window.addEventListener('mouseup', () => {
 			this.mouseDown = false;
 		});
+		window.addEventListener('touchmove', e => {
+			this.mousePos.x = e.touches[0].clientX;
+			this.mousePos.y = e.touches[0].clientY;
+		});
 		window.addEventListener('touchstart', () => {
+			this.isMobile = true;
 			this.mouseDown = true;
 		});
 		window.addEventListener('touchend', () => {
 			this.mouseDown = false;
 		});
-		document.addEventListener('visibilitychange', e => {
+		document.addEventListener('visibilitychange', () => {
 			if (document.visibilityState === 'hidden') {
 				this.mouseDown = false;
 				this.keys = [];
 			}
 		});
 	}
+
+	static isMobile = false;
 
 	static mousePos: Vector2 = Vector2.zero();
 	static mouseDown: boolean = false;
