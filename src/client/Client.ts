@@ -13,7 +13,7 @@ export class Client {
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	performanceWindow: boolean = true;
-	backgroundColor: string = 'cornflowerblue';
+	backgroundColor: string = 'Black';
 	private ctx: CanvasRenderingContext2D | null;
 	constructor(game: Game) {
 		this.game = game;
@@ -111,7 +111,7 @@ export class Client {
 
 		if (this.debug || this.performanceWindow) {
 			this.ctx!.fillStyle = 'rgba(0,0,0,0.5)';
-			this.ctx!.fillRect(0, 0, 265, 105 + 30);
+			this.ctx!.fillRect(0, 0, 265, 150);
 			this.ctx!.fillStyle = 'white';
 			this.ctx!.font = '15px Consolas';
 			this.ctx!.fillText('Client Debug', 10, 15);
@@ -138,6 +138,11 @@ export class Client {
 			);
 			this.ctx!.fillText('Draw Count: ' + SpriteRenderer.drawCount, 10, 105);
 			this.ctx!.fillText('Pool Size: ' + Scene.getPoolSize(), 10, 105 + 15);
+			this.ctx!.fillText(
+				'Current Scene: ' + this.game.currentScene.sceneName,
+				10,
+				105 + 30
+			);
 		}
 		if (this.game.frameRate == FrameRate.SMOOTH_FRAMERATE) {
 			if (this.blackFrameInsertion) {

@@ -25,7 +25,15 @@ export class SpriteManager {
 		if (cam) {
 			for (var s of this.sprites) {
 				var ctx = this.layers[s.layer].getContext('2d');
-				if (ctx) s.render(ctx, cam);
+				if (ctx) {
+					if (s.antialias) {
+						s.render(ctx, cam);
+					} else {
+						ctx.imageSmoothingEnabled = false;
+						s.render(ctx, cam);
+						ctx.imageSmoothingEnabled = true;
+					}
+				}
 			}
 			for (var i = 0; i < this.layers.length; i++) {
 				CanvasCreator.context?.drawImage(this.layers[i], 0, 0);

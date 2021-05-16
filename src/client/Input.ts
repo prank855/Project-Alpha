@@ -25,9 +25,16 @@ export class Input {
 			this.mousePos.x = e.clientX;
 			this.mousePos.y = e.clientY;
 		});
+		window.addEventListener('mousedown', () => {
+			this.mouseDown = true;
+		});
+		window.addEventListener('mouseup', () => {
+			this.mouseDown = false;
+		});
 	}
 
 	static mousePos: Vector2 = Vector2.zero();
+	static mouseDown: boolean = false;
 
 	private static keys: string[] = [];
 

@@ -10,17 +10,22 @@ export class Sprite {
 	image: HTMLCanvasElement[];
 	position: Vector2 = Vector2.zero();
 	layer: SpriteLayer = SpriteLayer.FOREGROUND;
+	antialias: boolean = true;
 	constructor(
 		image: HTMLCanvasElement[],
 		layer: SpriteLayer,
 		origin: Vector2,
-		scale: number
+		scale: number,
+		antialias?: boolean
 	) {
 		this.image = image;
 		this.width = image[0].width * scale;
 		this.height = image[0].height * scale;
 		this.origin = origin;
 		this.layer = layer;
+		if (antialias != null) {
+			this.antialias = antialias;
+		}
 	}
 	render(ctx: CanvasRenderingContext2D, camera: Camera) {
 		//TODO: if sprite draw is bigger than canvas only draw from that specific region of image
@@ -43,16 +48,18 @@ export class Sprite {
 						this.width * camera.currZoom,
 						this.height * camera.currZoom
 					);
+
 					/*
 					if (ctx) {
-						ctx.fillStyle = 'Black';
+						ctx.fillStyle = 'White';
 						ctx?.fillText(
 							`${i} MipMap level`,
-							screenSpace.x - this.width * this.origin.x * Camera.currZoom,
-							screenSpace.y - this.height * this.origin.y * Camera.currZoom
+							screenSpace.x - this.width * this.origin.x * camera.currZoom,
+							screenSpace.y - this.height * this.origin.y * camera.currZoom
 						);
 					}
 					*/
+
 					return;
 				}
 			}

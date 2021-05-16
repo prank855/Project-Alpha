@@ -1,10 +1,10 @@
-import { Vector2 } from './../shared/Vector2';
+import { Vector2 } from '../shared/Vector2';
 import { CanvasCreator } from './CanvasCreator';
 import { GameComponent } from '../shared/GameComponent';
 import { Camera } from './Camera';
 import { Input } from './Input';
 
-export class ButtonRenderer extends GameComponent {
+export class GuiButton extends GameComponent {
 	width: number = 20;
 	height: number = 20;
 	fillColor: string = 'Black';
@@ -12,10 +12,12 @@ export class ButtonRenderer extends GameComponent {
 	textColor: string = 'White';
 	textSize: number = 12;
 	font: string = 'Georgia';
+	hoverColor: string = '';
+	hoverStrokeSize: number = 1;
 
 	camera: Camera | null = null;
 	constructor() {
-		super('ButtonRenderer');
+		super('GuiButton');
 	}
 	update() {
 		if (!this.camera) {
@@ -39,6 +41,7 @@ export class ButtonRenderer extends GameComponent {
 					this.width * this.camera.currZoom,
 					this.height * this.camera.currZoom
 				);
+				ctx.fillStyle = this.fillColor;
 				ctx.fillRect(boxPos.x, boxPos.y, boxSize.x, boxSize.y);
 				ctx.fillStyle = this.textColor;
 				ctx.font = `${this.textSize * this.camera.currZoom}px ${this.font}`;
@@ -61,8 +64,16 @@ export class ButtonRenderer extends GameComponent {
 					mousePos.y > boxPos.y &&
 					mousePos.y < boxPos.y + boxSize.y
 				) {
-					ctx.fillRect(mousePos.x, mousePos.y, 5, 5);
-					this.onHover();
+					if (Input.mouseDown) {
+						this.onClick();
+					} else {
+						if (this.hoverColor != '') {
+							ctx.strokeStyle = this.hoverColor;
+							ctx.lineWidth = this.hoverStrokeSize * this.camera.currZoom;
+							ctx.strokeRect(boxPos.x, boxPos.y, boxSize.x, boxSize.y);
+						}
+						this.onHover();
+					}
 				}
 			}
 		}
@@ -71,11 +82,7 @@ export class ButtonRenderer extends GameComponent {
 		//this.onClick();
 	}
 
-	onHover() {
-		console.log('Button Hovered!');
-	}
+	onHover() {}
 
-	onClick() {
-		console.log('Button Clicked!');
-	}
+	onClick() {}
 }
