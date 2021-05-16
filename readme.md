@@ -7,7 +7,7 @@ If I am working on the project you can view the dev environment here:
 ## Prerequisites
 
 - npm >=5.5.0
-- node >=10.16.0
+- node >=16.0.0
 
 ## Install
 

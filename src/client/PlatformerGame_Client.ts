@@ -45,31 +45,34 @@ export class PlatformerGame_Client extends Game {
 			gameScene.addGameObject(background);
 
 			{
-				let player = Scene.createGameObject('Player');
-				player.transform.position = new Vector2(
-					Math.random() * 400,
-					Math.random() * 400
-				);
-				let image = AssetManager.getImage('Smiley');
-				let b = new SpriteRenderer();
-				b.setSprite(
-					new Sprite(
-						image,
-						SpriteLayer.FOREGROUND,
-						new Vector2(0.5, 0.5),
-						2,
-						false
-					)
-				);
-				player.addComponent(b);
-				player.addComponent(new MovementScript());
-				gameScene.addGameObject(player);
 				let camera = Scene.createGameObject('Camera');
 				let cam = new Camera();
 				cam.controller = new PlatformerCameraController();
-				cam.target = player;
-				cam.position = Vector2.copy(player.transform.position);
 				camera.addComponent(cam);
+				for (var i = 0; i < 1; i++) {
+					let player = Scene.createGameObject('Player');
+					player.transform.position = new Vector2(
+						Math.random() * 400,
+						Math.random() * 400
+					);
+					let image = AssetManager.getImage('Smiley');
+					let b = new SpriteRenderer();
+					b.setSprite(
+						new Sprite(
+							image,
+							SpriteLayer.FOREGROUND,
+							new Vector2(0.5, 0.5),
+							2,
+							false
+						)
+					);
+					player.addComponent(b);
+					player.addComponent(new MovementScript());
+					gameScene.addGameObject(player);
+					cam.target = player;
+					cam.position = Vector2.copy(player.transform.position);
+				}
+
 				let cursor = Scene.createGameObject('Cursor');
 				cursor.addComponent(new CursorManager());
 				let cursorSpriteRender = new SpriteRenderer();
