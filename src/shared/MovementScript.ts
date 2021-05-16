@@ -7,7 +7,7 @@ import { Input } from '../client/Input';
 
 export class MovementScript extends GameComponent implements InputScript {
 	called = false;
-	speed: number = 120;
+	speed: number = 100;
 	direction: Vector2 = Vector2.zero();
 	velocity: Vector2 = Vector2.zero();
 	friction: number = 0.005;

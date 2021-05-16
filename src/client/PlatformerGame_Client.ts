@@ -107,9 +107,23 @@ export class PlatformerGame_Client extends Game {
 				this.setScene('Game');
 			};
 
+			var menuImage = Scene.createGameObject('Menu Image');
+			let sr = new SpriteRenderer();
+			menuImage.addComponent(sr);
+			sr.setSprite(
+				new Sprite(
+					AssetManager.getImage('Smiley'),
+					SpriteLayer.GUI,
+					new Vector2(0.5, 0.5),
+					5,
+					false
+				)
+			);
+			menuImage.transform.position.y = 100;
+			gui.addChildGameObject(menuImage);
+
 			button.addComponent(bRenderer);
 			gui.addChildGameObject(button);
-
 			this.addScene(mainMenu);
 		}
 		this.setScene('Main Menu');
@@ -128,17 +142,23 @@ export class PlatformerGame_Client extends Game {
 
 	drawSceneHierarchy() {
 		var fontSize = 15;
-		var height = 4 + this.currentScene.getGameObjectsLength();
+		var buffer = 5;
+		var height = buffer + this.currentScene.getGameObjectsLength();
 
 		var ctx = CanvasCreator.context;
 		if (ctx) {
 			var pos = new Vector2(0, innerHeight - height * fontSize);
-			ctx.fillStyle = 'rgba(128,127,255,0.5)';
+			ctx.fillStyle = 'rgba(128,127,255,0.8)';
 			ctx.fillRect(pos.x, pos.y, 200, innerHeight - height * fontSize);
 			ctx.font = `${fontSize}px Consolas`;
 			ctx.fillStyle = 'White';
 			ctx.fillText('Scene Hierarchy', pos.x + fontSize, pos.y + fontSize * 2);
-			var line = 4;
+			ctx.fillText(
+				`"${this.currentScene.sceneName}"`,
+				pos.x + fontSize,
+				pos.y + fontSize * 3
+			);
+			var line = buffer;
 			for (var go of this.currentScene.getGameObjects()) {
 				var text = `${go.name}`;
 				if (go.children.length > 0) {

@@ -14,7 +14,11 @@ export class PlatformerCameraController extends CameraController {
 		if (_inputs.includes(InputAction.ZOOM_OUT)) {
 			camera.zoom /= Math.E ** (Time.deltaTime * Math.log(camera.zoomSpeed));
 		}
-		camera.zoom = Util.bound(camera.zoom, camera.zoomMin, camera.zoomMax);
+		camera.zoom = Util.bound(
+			camera.zoom,
+			1 / camera.zoomFactor,
+			camera.zoomFactor
+		);
 		if (camera.target != null) {
 			//lerp camera to target
 			var xv =

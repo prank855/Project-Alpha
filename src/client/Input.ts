@@ -31,6 +31,12 @@ export class Input {
 		window.addEventListener('mouseup', () => {
 			this.mouseDown = false;
 		});
+		window.addEventListener('touchstart', () => {
+			this.mouseDown = true;
+		});
+		window.addEventListener('touchend', () => {
+			this.mouseDown = false;
+		});
 	}
 
 	static mousePos: Vector2 = Vector2.zero();
