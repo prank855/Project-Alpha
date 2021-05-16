@@ -21,6 +21,7 @@ export class CanvasCreator {
 			});
 		document.body.style.overflow = 'hidden';
 		document.body.style.margin = '0';
+		document.body.style.cursor = 'none';
 		this.canvas = canvas;
 		this.context = canvas.getContext('2d', { alpha: false });
 	}

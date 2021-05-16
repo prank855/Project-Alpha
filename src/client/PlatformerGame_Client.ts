@@ -14,6 +14,7 @@ import { Vector2 } from '../shared/Vector2';
 import { Scene } from '../shared/Scene';
 import { CanvasCreator } from './CanvasCreator';
 import { DynamicMenuMovement } from './DynamicMenuMovement';
+import { CursorManager } from './CursorManager';
 
 export class PlatformerGame_Client extends Game {
 	frameRate = FrameRate.DYNAMIC_FRAMERATE;
@@ -28,6 +29,7 @@ export class PlatformerGame_Client extends Game {
 		AssetManager.loadImage('trollface.png', 'TrollFace');
 		AssetManager.loadImage('roadmap.png', 'Background');
 		AssetManager.loadImage('smiley.png', 'Smiley');
+		AssetManager.loadImage('cursor.png', 'Cursor');
 	}
 
 	setupScenes() {
@@ -68,6 +70,21 @@ export class PlatformerGame_Client extends Game {
 				cam.target = player;
 				cam.position = Vector2.copy(player.transform.position);
 				camera.addComponent(cam);
+				var cursor = Scene.createGameObject('Cursor');
+				cursor.addComponent(new CursorManager());
+				let cursorSpriteRender = new SpriteRenderer();
+				cursorSpriteRender.setSprite(
+					new Sprite(
+						AssetManager.getImage('Cursor'),
+						SpriteLayer.GUI,
+						new Vector2(0, 0),
+						0.5,
+						true,
+						true
+					)
+				);
+				cursor.addComponent(cursorSpriteRender);
+				gameScene.addGameObject(cursor);
 				gameScene.addGameObject(camera);
 			}
 			this.addScene(gameScene);
@@ -75,6 +92,22 @@ export class PlatformerGame_Client extends Game {
 		{
 			var mainMenu = new Scene('Main Menu');
 
+			var cursor = Scene.createGameObject('Cursor');
+			cursor.addComponent(new CursorManager());
+			let cursorSpriteRender = new SpriteRenderer();
+			cursorSpriteRender.setSprite(
+				new Sprite(
+					AssetManager.getImage('Cursor'),
+					SpriteLayer.GUI,
+					new Vector2(0, 0),
+					0.5,
+					true,
+					true
+				)
+			);
+			cursor.addComponent(cursorSpriteRender);
+
+			mainMenu.addGameObject(cursor);
 			//make cam
 			let camera = Scene.createGameObject('Camera');
 			let cam = new Camera();
@@ -119,7 +152,7 @@ export class PlatformerGame_Client extends Game {
 			sr.setSprite(
 				new Sprite(
 					AssetManager.getImage('Smiley'),
-					SpriteLayer.GUI,
+					SpriteLayer.FOREGROUND,
 					new Vector2(0.5, 0.5),
 					5,
 					false

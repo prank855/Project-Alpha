@@ -5,7 +5,9 @@ export class AssetManager {
 	static canvases: HTMLCanvasElement[][] = [];
 	static names: string[] = [];
 	static tasks: string[] = [];
+	static assetCount = 0;
 	static loadImage(imgSrc: string, imageName: string) {
+		this.assetCount++;
 		if (this.tasks.includes(imageName) || AssetManager.hasImage(imageName)) {
 			return;
 		}

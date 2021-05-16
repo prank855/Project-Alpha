@@ -41,6 +41,28 @@ export class Client {
 
 	start() {
 		Input.initInputEvents();
+		var ctx = CanvasCreator.context;
+
+		if (ctx) {
+			ctx.fillStyle = this.backgroundColor;
+			ctx.fillRect(0, 0, this.ctx!.canvas.width, this.ctx!.canvas.height);
+			ctx.fillStyle = 'White';
+			ctx.font = '75px Consolas';
+			var text = `Loading Assets ${(
+				((AssetManager.assetCount - AssetManager.tasks.length) /
+					AssetManager.assetCount) *
+				100
+			).toFixed(1)}%`;
+			var measureText = ctx.measureText(text);
+			ctx.fillText(
+				text,
+				innerWidth / 2 - measureText.width / 2,
+				innerHeight / 2 -
+					(measureText.actualBoundingBoxAscent +
+						measureText.actualBoundingBoxDescent) /
+						2
+			);
+		}
 		if (AssetManager.tasks.length != 0) {
 			setTimeout(this.start.bind(this), 1000 / 30);
 			return;
@@ -66,6 +88,9 @@ export class Client {
 					var fps = Math.ceil((1000 * 10) / (now - t0));
 					amount--;
 					if (amount == 0) {
+						if (fps < 60) {
+							fps = 60;
+						}
 						self.game.frameRate = fps;
 						console.log(`Dynamically set framerate to ${fps}`);
 					}
@@ -136,7 +161,11 @@ export class Client {
 				10,
 				90
 			);
-			this.ctx!.fillText('Draw Count: ' + SpriteRenderer.drawCount, 10, 105);
+			this.ctx!.fillText(
+				'Sprite Draw Count: ' + SpriteRenderer.drawCount,
+				10,
+				105
+			);
 			this.ctx!.fillText('Pool Size: ' + Scene.getPoolSize(), 10, 105 + 15);
 			this.ctx!.fillText(
 				'Current Scene: ' + this.game.currentScene.sceneName,

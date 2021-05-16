@@ -11,12 +11,14 @@ export class Sprite {
 	position: Vector2 = Vector2.zero();
 	layer: SpriteLayer = SpriteLayer.FOREGROUND;
 	antialias: boolean = true;
+	screenSpace: boolean = false;
 	constructor(
 		image: HTMLCanvasElement[],
 		layer: SpriteLayer,
 		origin: Vector2,
 		scale: number,
-		antialias?: boolean
+		antialias?: boolean,
+		screenSpace?: boolean
 	) {
 		this.image = image;
 		this.width = image[0].width * scale;
@@ -26,10 +28,18 @@ export class Sprite {
 		if (antialias != null) {
 			this.antialias = antialias;
 		}
+		if (screenSpace != null) {
+			this.screenSpace = screenSpace;
+		}
 	}
 	render(ctx: CanvasRenderingContext2D, camera: Camera) {
 		//TODO: if sprite draw is bigger than canvas only draw from that specific region of image
-		let screenSpace = camera.toScreenSpace(this.position);
+		let screenSpace: Vector2;
+		if (!this.screenSpace) {
+			screenSpace = camera.toScreenSpace(this.position);
+		} else {
+			screenSpace = Vector2.copy(this.position);
+		}
 		if (
 			screenSpace.x - this.width * this.origin.x * camera.currZoom <
 				innerWidth &&
