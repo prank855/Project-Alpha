@@ -1,3 +1,4 @@
+import { Vector2 } from './../shared/Vector2';
 import { InputAction } from '../shared/InputAction';
 
 export class Input {
@@ -19,8 +20,14 @@ export class Input {
 			}
 		});
 		//TODO: Mouse Events
-		//TODO: handle unfocus event
+		window.addEventListener('mousemove', e => {
+			//console.log(e);
+			this.mousePos.x = e.clientX;
+			this.mousePos.y = e.clientY;
+		});
 	}
+
+	static mousePos: Vector2 = Vector2.zero();
 
 	private static keys: string[] = [];
 

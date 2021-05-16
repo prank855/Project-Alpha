@@ -55,6 +55,8 @@ export class PlatformerGame_Client extends Game {
 				let camera = Scene.createGameObject('Camera');
 				let cam = new Camera();
 				cam.controller = new PlatformerCameraController();
+				cam.target = player;
+				cam.position = Vector2.copy(player.transform.position);
 				camera.addComponent(cam);
 				gameScene.addGameObject(camera);
 			}
@@ -76,6 +78,9 @@ export class PlatformerGame_Client extends Game {
 			bRenderer.text = 'Start Game';
 			bRenderer.textSize = 15;
 			bRenderer.width = 240;
+			bRenderer.onHover = () => {
+				this.setScene('Game');
+			};
 
 			button.addComponent(bRenderer);
 			mainMenu.addGameObject(button);
