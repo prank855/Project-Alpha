@@ -22,6 +22,7 @@ export class GuiButton extends GameComponent {
 	constructor() {
 		super('GuiButton');
 	}
+	private lastMouseInput: boolean = false;
 	update() {
 		if (!this.camera) {
 			this.camera = this.parent?.scene
@@ -80,7 +81,7 @@ export class GuiButton extends GameComponent {
 					mousePos.y > boxPos.y &&
 					mousePos.y < boxPos.y + boxSize.y
 				) {
-					if (Input.mouseDown) {
+					if (!Input.mouseDown && this.lastMouseInput) {
 						this.onClick();
 					} else {
 						if (this.hoverColor != '') {
@@ -92,6 +93,7 @@ export class GuiButton extends GameComponent {
 					}
 				}
 			}
+			this.lastMouseInput = Input.mouseDown;
 		}
 
 		//TODO: check if box clicked

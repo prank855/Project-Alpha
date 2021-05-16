@@ -34,10 +34,10 @@ export class PlatformerGame_Client extends Game {
 
 	setupScenes() {
 		{
-			var gameScene = new Scene('Game');
-			var background = Scene.createGameObject('Background');
-			var bgImage = AssetManager.getImage('Background');
-			var sr = new SpriteRenderer();
+			let gameScene = new Scene('Game');
+			let background = Scene.createGameObject('Background');
+			let bgImage = AssetManager.getImage('Background');
+			let sr = new SpriteRenderer();
 			sr.setSprite(
 				new Sprite(bgImage, SpriteLayer.BACKGROUND, new Vector2(0.5, 0.5), 0.5)
 			);
@@ -45,13 +45,13 @@ export class PlatformerGame_Client extends Game {
 			gameScene.addGameObject(background);
 
 			{
-				var player = Scene.createGameObject('Player');
+				let player = Scene.createGameObject('Player');
 				player.transform.position = new Vector2(
 					Math.random() * 400,
 					Math.random() * 400
 				);
-				var image = AssetManager.getImage('Smiley');
-				var b = new SpriteRenderer();
+				let image = AssetManager.getImage('Smiley');
+				let b = new SpriteRenderer();
 				b.setSprite(
 					new Sprite(
 						image,
@@ -70,16 +70,16 @@ export class PlatformerGame_Client extends Game {
 				cam.target = player;
 				cam.position = Vector2.copy(player.transform.position);
 				camera.addComponent(cam);
-				var cursor = Scene.createGameObject('Cursor');
+				let cursor = Scene.createGameObject('Cursor');
 				cursor.addComponent(new CursorManager());
 				let cursorSpriteRender = new SpriteRenderer();
 				cursorSpriteRender.setSprite(
 					new Sprite(
 						AssetManager.getImage('Cursor'),
-						SpriteLayer.GUI,
+						SpriteLayer.CURSOR,
 						new Vector2(0, 0),
-						0.5,
-						true,
+						0.75,
+						false,
 						true
 					)
 				);
@@ -90,18 +90,18 @@ export class PlatformerGame_Client extends Game {
 			this.addScene(gameScene);
 		}
 		{
-			var mainMenu = new Scene('Main Menu');
+			let mainMenu = new Scene('Main Menu');
 
-			var cursor = Scene.createGameObject('Cursor');
+			let cursor = Scene.createGameObject('Cursor');
 			cursor.addComponent(new CursorManager());
 			let cursorSpriteRender = new SpriteRenderer();
 			cursorSpriteRender.setSprite(
 				new Sprite(
 					AssetManager.getImage('Cursor'),
-					SpriteLayer.GUI,
+					SpriteLayer.CURSOR,
 					new Vector2(0, 0),
-					0.5,
-					true,
+					0.75,
+					false,
 					true
 				)
 			);
@@ -115,44 +115,71 @@ export class PlatformerGame_Client extends Game {
 			camera.addComponent(cam);
 			mainMenu.addGameObject(camera);
 
-			var gui = Scene.createGameObject('GUI');
+			let gui = Scene.createGameObject('GUI');
 			gui.addComponent(new DynamicMenuMovement());
 			mainMenu.addGameObject(gui);
 
-			var menuBox = Scene.createGameObject('Menu');
-
-			var guiBox = new GuiBox();
+			let menuBox = Scene.createGameObject('Menu');
+			let guiBox = new GuiBox();
 			guiBox.fillColor = 'Cornsilk';
 			guiBox.width = 240 * 1.5;
 			guiBox.height = 20 * 20;
 			menuBox.addComponent(guiBox);
 			gui.addChildGameObject(menuBox);
 
-			//make button
-			var button = Scene.createGameObject('Button');
-			var bRenderer = new GuiButton();
-			bRenderer.text = 'Start Game';
-			bRenderer.font = 'Impact';
-			bRenderer.textSize = 15;
-			bRenderer.width = 200;
-			bRenderer.hoverColor = 'DarkMagenta	';
-			bRenderer.fillColor = 'Plum';
-			bRenderer.textColor = 'White ';
-			bRenderer.texStroke = true;
-			bRenderer.textStrokeStyle = 'Black';
-			bRenderer.textStrokeSize = 2;
-			bRenderer.hoverStrokeSize = 2;
-			bRenderer.onClick = () => {
-				this.setScene('Game');
-			};
+			//MAKES BUTTON
+			{
+				let button = Scene.createGameObject('Button');
+				let bRenderer = new GuiButton();
+				bRenderer.text = 'Start Game';
+				bRenderer.font = 'Impact';
+				bRenderer.textSize = 15;
+				bRenderer.width = 200;
+				bRenderer.hoverColor = 'DarkMagenta	';
+				bRenderer.fillColor = 'Plum';
+				bRenderer.textColor = 'White ';
+				bRenderer.texStroke = true;
+				bRenderer.textStrokeStyle = 'Black';
+				bRenderer.textStrokeSize = 2;
+				bRenderer.hoverStrokeSize = 2;
+				bRenderer.onClick = () => {
+					this.setScene('Game');
+				};
 
-			var menuImage = Scene.createGameObject('Menu Image');
+				button.addComponent(bRenderer);
+				gui.addChildGameObject(button);
+			}
+			//MAKES BUTTON
+			{
+				let a = Scene.createGameObject('Button');
+				a.transform.position.y = -40;
+				let bRendererA = new GuiButton();
+				bRendererA.text = 'Open GitHub Page';
+				bRendererA.font = 'Impact';
+				bRendererA.textSize = 15;
+				bRendererA.width = 200;
+				bRendererA.hoverColor = 'DarkMagenta	';
+				bRendererA.fillColor = 'Red';
+				bRendererA.textColor = 'White ';
+				bRendererA.texStroke = true;
+				bRendererA.textStrokeStyle = 'Black';
+				bRendererA.textStrokeSize = 2;
+				bRendererA.hoverStrokeSize = 2;
+				bRendererA.onClick = () => {
+					window.open('https://github.com/prank855/Project-Alpha', '_blank');
+				};
+
+				a.addComponent(bRendererA);
+				gui.addChildGameObject(a);
+			}
+
+			let menuImage = Scene.createGameObject('Menu Image');
 			let sr = new SpriteRenderer();
 			menuImage.addComponent(sr);
 			sr.setSprite(
 				new Sprite(
 					AssetManager.getImage('Smiley'),
-					SpriteLayer.FOREGROUND,
+					SpriteLayer.GUI,
 					new Vector2(0.5, 0.5),
 					5,
 					false
@@ -161,12 +188,6 @@ export class PlatformerGame_Client extends Game {
 			menuImage.transform.position.y = 100;
 			gui.addChildGameObject(menuImage);
 
-			var dynMove = new DynamicMenuMovement();
-			dynMove.distance = 2;
-			dynMove.rotateSpeed = (-2 * Math.PI) / 16;
-			button.addComponent(dynMove);
-			button.addComponent(bRenderer);
-			gui.addChildGameObject(button);
 			this.addScene(mainMenu);
 		}
 		this.setScene('Main Menu');
@@ -184,13 +205,13 @@ export class PlatformerGame_Client extends Game {
 	}
 
 	drawSceneHierarchy() {
-		var fontSize = 15;
-		var buffer = 5;
-		var height = buffer + this.currentScene.getGameObjectsLength();
+		let fontSize = 15;
+		let buffer = 5;
+		let height = buffer + this.currentScene.getGameObjectsLength();
 
-		var ctx = CanvasCreator.context;
+		let ctx = CanvasCreator.context;
 		if (ctx) {
-			var pos = new Vector2(0, innerHeight - height * fontSize);
+			let pos = new Vector2(0, innerHeight - height * fontSize);
 			ctx.fillStyle = 'rgba(128,127,255,0.8)';
 			ctx.fillRect(pos.x, pos.y, 200, innerHeight - height * fontSize);
 			ctx.font = `${fontSize}px Consolas`;
@@ -201,9 +222,9 @@ export class PlatformerGame_Client extends Game {
 				pos.x + fontSize,
 				pos.y + fontSize * 3
 			);
-			var line = buffer;
-			for (var go of this.currentScene.getGameObjects()) {
-				var text = `${go.name}`;
+			let line = buffer;
+			for (let go of this.currentScene.getGameObjects()) {
+				let text = `${go.name}`;
 				if (go.children.length > 0) {
 					text += ` + ${go.children.length} Children`;
 				}

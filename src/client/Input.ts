@@ -37,6 +37,12 @@ export class Input {
 		window.addEventListener('touchend', () => {
 			this.mouseDown = false;
 		});
+		document.addEventListener('visibilitychange', e => {
+			if (document.visibilityState === 'hidden') {
+				this.mouseDown = false;
+				this.keys = [];
+			}
+		});
 	}
 
 	static mousePos: Vector2 = Vector2.zero();
