@@ -1,3 +1,4 @@
+import { Vector2 } from './Vector2';
 import { Scene } from './Scene';
 import { GameComponent } from './GameComponent';
 import { Transform } from './Transform';
@@ -12,15 +13,42 @@ export class GameObject {
 	name: string = 'Unnamed Game Object';
 	started: boolean = false;
 
+	children: GameObject[] = [];
+	parent: GameObject | null = null;
+
 	delete: boolean = false;
 
 	constructor() {}
 	update() {
+		for (let go of this.children) {
+			go.update();
+		}
 		for (let co of this.components) {
 			if (co.isActive) {
 				co.update();
 			}
 		}
+	}
+
+	getTransform(): Transform {
+		if (this.parent == null) {
+			return this.transform;
+		} else {
+			return new Transform(
+				Vector2.copy(this.parent.getTransform().position).add(
+					this.transform.position
+				)
+			);
+		}
+	}
+
+	addChildGameObject(go: GameObject) {
+		if (this.scene == null) {
+			throw 'Game Object needs to be added to the scene before adding children.';
+		}
+		go.parent = this;
+		go.scene = this.scene;
+		this.children.push(go);
 	}
 
 	addComponent(co: GameComponent) {

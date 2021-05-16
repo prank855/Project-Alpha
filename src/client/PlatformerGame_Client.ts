@@ -80,13 +80,16 @@ export class PlatformerGame_Client extends Game {
 			camera.addComponent(cam);
 			mainMenu.addGameObject(camera);
 
+			var gui = Scene.createGameObject('GUI');
+			mainMenu.addGameObject(gui);
+
 			var menuBox = Scene.createGameObject('Menu');
 			var guiBox = new GuiBox();
 			guiBox.fillColor = 'Grey';
 			guiBox.width = 240 * 1.5;
 			guiBox.height = 20 * 20;
 			menuBox.addComponent(guiBox);
-			mainMenu.addGameObject(menuBox);
+			gui.addChildGameObject(menuBox);
 
 			//make button
 			var button = Scene.createGameObject('Button');
@@ -104,7 +107,9 @@ export class PlatformerGame_Client extends Game {
 			};
 
 			button.addComponent(bRenderer);
-			mainMenu.addGameObject(button);
+			gui.addChildGameObject(button);
+
+			console.log(mainMenu);
 
 			this.addScene(mainMenu);
 		}

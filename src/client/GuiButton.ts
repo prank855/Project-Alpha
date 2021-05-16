@@ -30,7 +30,7 @@ export class GuiButton extends GameComponent {
 			var ctx = CanvasCreator.context;
 			if (ctx) {
 				var screenSpace = this.camera.toScreenSpace(
-					this.parent.transform.position
+					this.parent.getTransform().position
 				);
 				ctx.fillStyle = this.fillColor;
 				var boxPos = new Vector2(
