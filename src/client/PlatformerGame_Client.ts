@@ -200,8 +200,10 @@ export class PlatformerGame_Client extends Game {
 		if (this.currentScene) {
 			this.currentScene.update();
 		}
-		SpriteManager.render();
-		this.drawSceneHierarchy();
+		if (document.visibilityState == 'visible') {
+			SpriteManager.render();
+			this.drawSceneHierarchy();
+		}
 	}
 
 	drawSceneHierarchy() {
