@@ -13,6 +13,7 @@ import { Sprite } from './Sprite';
 import { Vector2 } from '../shared/Vector2';
 import { Scene } from '../shared/Scene';
 import { CanvasCreator } from './CanvasCreator';
+import { DynamicMenuMovement } from './DynamicMenuMovement';
 
 export class PlatformerGame_Client extends Game {
 	frameRate = FrameRate.DYNAMIC_FRAMERATE;
@@ -82,11 +83,13 @@ export class PlatformerGame_Client extends Game {
 			mainMenu.addGameObject(camera);
 
 			var gui = Scene.createGameObject('GUI');
+			gui.addComponent(new DynamicMenuMovement());
 			mainMenu.addGameObject(gui);
 
 			var menuBox = Scene.createGameObject('Menu');
+
 			var guiBox = new GuiBox();
-			guiBox.fillColor = 'Grey';
+			guiBox.fillColor = 'Cornsilk';
 			guiBox.width = 240 * 1.5;
 			guiBox.height = 20 * 20;
 			menuBox.addComponent(guiBox);
@@ -99,9 +102,12 @@ export class PlatformerGame_Client extends Game {
 			bRenderer.font = 'Impact';
 			bRenderer.textSize = 15;
 			bRenderer.width = 200;
-			bRenderer.hoverColor = 'red';
-			bRenderer.fillColor = 'lightblue';
-			bRenderer.textColor = 'black';
+			bRenderer.hoverColor = 'DarkMagenta	';
+			bRenderer.fillColor = 'Plum';
+			bRenderer.textColor = 'White ';
+			bRenderer.texStroke = true;
+			bRenderer.textStrokeStyle = 'Black';
+			bRenderer.textStrokeSize = 2;
 			bRenderer.hoverStrokeSize = 2;
 			bRenderer.onClick = () => {
 				this.setScene('Game');
@@ -122,6 +128,10 @@ export class PlatformerGame_Client extends Game {
 			menuImage.transform.position.y = 100;
 			gui.addChildGameObject(menuImage);
 
+			var dynMove = new DynamicMenuMovement();
+			dynMove.distance = 2;
+			dynMove.rotateSpeed = (-2 * Math.PI) / 16;
+			button.addComponent(dynMove);
 			button.addComponent(bRenderer);
 			gui.addChildGameObject(button);
 			this.addScene(mainMenu);

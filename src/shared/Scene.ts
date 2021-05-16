@@ -33,6 +33,7 @@ export class Scene {
 		go.scene = null;
 		go.id = GameObject.lastID++;
 		go.components.length = 0;
+		go.children.length = 0;
 		go.transform = new Transform();
 		go.name = gameObjectName;
 
