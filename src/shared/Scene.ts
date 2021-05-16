@@ -8,7 +8,7 @@ export class Scene {
 	private gameObjects: GameObject[] = [];
 	private static filledPool: boolean = false;
 	private static gameObjectPool: GameObject[] = [];
-	private initialPoolSize: number = 1000;
+	private initialPoolSize: number = 500;
 	constructor(sceneName: string) {
 		this.sceneName = sceneName;
 		if (!Scene.filledPool) {
@@ -65,6 +65,10 @@ export class Scene {
 
 	getGameObjectsLength(): number {
 		return this.gameObjects.length;
+	}
+
+	getGameObjects() {
+		return this.gameObjects;
 	}
 
 	update() {

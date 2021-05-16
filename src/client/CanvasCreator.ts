@@ -11,7 +11,7 @@ export class CanvasCreator {
 		window.addEventListener('resize', () => {
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
-			console.log(`Window resized to ${canvas.width}x${canvas.height}`);
+			//console.log(`Window resized to ${canvas.width}x${canvas.height}`);
 		});
 		document.body.appendChild(canvas);
 		document

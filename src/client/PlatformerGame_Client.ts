@@ -12,6 +12,7 @@ import { AssetManager } from './AssetManager';
 import { Sprite } from './Sprite';
 import { Vector2 } from '../shared/Vector2';
 import { Scene } from '../shared/Scene';
+import { CanvasCreator } from './CanvasCreator';
 
 export class PlatformerGame_Client extends Game {
 	frameRate = FrameRate.DYNAMIC_FRAMERATE;
@@ -109,8 +110,6 @@ export class PlatformerGame_Client extends Game {
 			button.addComponent(bRenderer);
 			gui.addChildGameObject(button);
 
-			console.log(mainMenu);
-
 			this.addScene(mainMenu);
 		}
 		this.setScene('Main Menu');
@@ -124,5 +123,30 @@ export class PlatformerGame_Client extends Game {
 			this.currentScene.update();
 		}
 		SpriteManager.render();
+		this.drawSceneHierarchy();
+	}
+
+	drawSceneHierarchy() {
+		var fontSize = 15;
+		var height = 4 + this.currentScene.getGameObjectsLength();
+
+		var ctx = CanvasCreator.context;
+		if (ctx) {
+			var pos = new Vector2(0, innerHeight - height * fontSize);
+			ctx.fillStyle = 'rgba(128,127,255,0.5)';
+			ctx.fillRect(pos.x, pos.y, 200, innerHeight - height * fontSize);
+			ctx.font = `${fontSize}px Consolas`;
+			ctx.fillStyle = 'White';
+			ctx.fillText('Scene Hierarchy', pos.x + fontSize, pos.y + fontSize * 2);
+			var line = 4;
+			for (var go of this.currentScene.getGameObjects()) {
+				var text = `${go.name}`;
+				if (go.children.length > 0) {
+					text += ` + ${go.children.length} Children`;
+				}
+				ctx.fillText(text, pos.x + fontSize, pos.y + fontSize * line);
+				line++;
+			}
+		}
 	}
 }
