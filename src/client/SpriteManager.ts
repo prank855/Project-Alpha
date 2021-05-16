@@ -1,6 +1,8 @@
 import { SpriteLayer } from './SpriteLayer';
 import { Sprite } from './Sprite';
 import { CanvasCreator } from './CanvasCreator';
+import { Game } from '../shared/Game';
+import { Camera } from './Camera';
 
 export class SpriteManager {
 	static sprites: Sprite[] = [];
@@ -17,13 +19,17 @@ export class SpriteManager {
 			l.width = innerWidth;
 			l.height = innerHeight;
 		}
-
-		for (var s of this.sprites) {
-			var ctx = this.layers[s.layer].getContext('2d');
-			if (ctx) s.render(ctx);
-		}
-		for (var i = 0; i < this.layers.length; i++) {
-			CanvasCreator.context?.drawImage(this.layers[i], 0, 0);
+		var cam = Game.singleton.currentScene
+			.findGameObjectByName('Camera')
+			?.getComponent('Camera') as Camera;
+		if (cam) {
+			for (var s of this.sprites) {
+				var ctx = this.layers[s.layer].getContext('2d');
+				if (ctx) s.render(ctx, cam);
+			}
+			for (var i = 0; i < this.layers.length; i++) {
+				CanvasCreator.context?.drawImage(this.layers[i], 0, 0);
+			}
 		}
 	}
 }

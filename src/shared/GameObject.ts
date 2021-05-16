@@ -1,11 +1,11 @@
-import { GameObjectManager } from './GameObjectManager';
+import { Scene } from './Scene';
 import { GameComponent } from './GameComponent';
 import { Transform } from './Transform';
 
 export class GameObject {
 	static lastID: number = 0;
 	isActive: boolean = true;
-	gameObjectManager: GameObjectManager;
+	scene: Scene | null = null;
 	transform = new Transform();
 	components: GameComponent[] = [];
 	id: number = 0;
@@ -14,9 +14,7 @@ export class GameObject {
 
 	delete: boolean = false;
 
-	constructor(gameObjectManager: GameObjectManager) {
-		this.gameObjectManager = gameObjectManager;
-	}
+	constructor() {}
 	update() {
 		for (let co of this.components) {
 			if (co.isActive) {

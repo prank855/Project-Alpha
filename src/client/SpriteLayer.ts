@@ -1,4 +1,5 @@
 export enum SpriteLayer {
 	BACKGROUND,
-	FOREGROUND
+	FOREGROUND,
+	GUI
 }

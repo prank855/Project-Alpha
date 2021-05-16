@@ -16,11 +16,11 @@ export class PlatformerGame_Server extends Game implements NetworkedGameServer {
 
 	initializeWebSocket() {}
 
-	setupScene() {}
+	setupScenes() {}
 
 	start() {}
 
 	update() {
-		this.gameObjectManager.update();
+		this.currentScene.update();
 	}
 }

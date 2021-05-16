@@ -22,26 +22,26 @@ export class Sprite {
 		this.origin = origin;
 		this.layer = layer;
 	}
-	render(ctx: CanvasRenderingContext2D) {
+	render(ctx: CanvasRenderingContext2D, camera: Camera) {
 		//TODO: if sprite draw is bigger than canvas only draw from that specific region of image
-		let screenSpace = Camera.toScreenSpace(this.position);
+		let screenSpace = camera.toScreenSpace(this.position);
 		if (
-			screenSpace.x - this.width * this.origin.x * Camera.currZoom <
+			screenSpace.x - this.width * this.origin.x * camera.currZoom <
 				innerWidth &&
-			screenSpace.x + this.width * this.origin.x * Camera.currZoom > 0 &&
-			screenSpace.y - this.height * this.origin.y * Camera.currZoom <
+			screenSpace.x + this.width * this.origin.x * camera.currZoom > 0 &&
+			screenSpace.y - this.height * this.origin.y * camera.currZoom <
 				window.innerHeight &&
-			screenSpace.y + this.height * this.origin.y * Camera.currZoom > 0
+			screenSpace.y + this.height * this.origin.y * camera.currZoom > 0
 		) {
 			for (var i = this.image.length - 1; i >= 0; i--) {
-				if (this.width * Camera.currZoom < this.image[i].width / 2) {
+				if (this.width * camera.currZoom < this.image[i].width / 2) {
 					SpriteRenderer.drawCount++;
 					ctx?.drawImage(
 						this.image[i],
-						screenSpace.x - this.width * this.origin.x * Camera.currZoom,
-						screenSpace.y - this.height * this.origin.y * Camera.currZoom,
-						this.width * Camera.currZoom,
-						this.height * Camera.currZoom
+						screenSpace.x - this.width * this.origin.x * camera.currZoom,
+						screenSpace.y - this.height * this.origin.y * camera.currZoom,
+						this.width * camera.currZoom,
+						this.height * camera.currZoom
 					);
 					/*
 					if (ctx) {
@@ -60,10 +60,10 @@ export class Sprite {
 			SpriteRenderer.drawCount++;
 			ctx?.drawImage(
 				this.image[0],
-				screenSpace.x - this.width * this.origin.x * Camera.currZoom,
-				screenSpace.y - this.height * this.origin.y * Camera.currZoom,
-				this.width * Camera.currZoom,
-				this.height * Camera.currZoom
+				screenSpace.x - this.width * this.origin.x * camera.currZoom,
+				screenSpace.y - this.height * this.origin.y * camera.currZoom,
+				this.width * camera.currZoom,
+				this.height * camera.currZoom
 			);
 		}
 	}

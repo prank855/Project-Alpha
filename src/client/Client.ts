@@ -5,6 +5,7 @@ import { Input } from './Input';
 import { FrameRate } from './FrameRate';
 import { Time } from '../shared/Time';
 import { Game } from '../shared/Game';
+import { Scene } from '../shared/Scene';
 export class Client {
 	game: Game;
 	lastTime: number = Time.getCurrTime();
@@ -48,7 +49,7 @@ export class Client {
 		console.log('Assets Loaded');
 
 		this.lastTime = Time.getCurrTime();
-		this.game.setupScene();
+		this.game.setupScenes();
 		this.game.start();
 
 		var self = this;
@@ -131,16 +132,12 @@ export class Client {
 			);
 			this.ctx!.fillText('Frame: ' + this.game.frame, 10, 75);
 			this.ctx!.fillText(
-				'Objects: ' + this.game.gameObjectManager.getGameObjectsLength(),
+				'Objects: ' + this.game.currentScene.getGameObjectsLength(),
 				10,
 				90
 			);
 			this.ctx!.fillText('Draw Count: ' + SpriteRenderer.drawCount, 10, 105);
-			this.ctx!.fillText(
-				'Pool Size: ' + this.game.gameObjectManager.getPoolSize(),
-				10,
-				105 + 15
-			);
+			this.ctx!.fillText('Pool Size: ' + Scene.getPoolSize(), 10, 105 + 15);
 		}
 		if (this.game.frameRate == FrameRate.SMOOTH_FRAMERATE) {
 			if (this.blackFrameInsertion) {

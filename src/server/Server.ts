@@ -11,7 +11,7 @@ export class Server {
 		console.log('Server Started');
 
 		this.lastTime = Time.getCurrTime();
-		this.game.setupScene();
+		this.game.setupScenes();
 		this.game.start();
 
 		this.loop();
@@ -54,7 +54,7 @@ export class Server {
 				'|',
 				parseFloat(Time.elapsedTime.toFixed(1)),
 				'seconds |',
-				this.game.gameObjectManager.getGameObjectsLength(),
+				this.game.currentScene!.getGameObjectsLength(),
 				'objects'
 			);
 			this.frameTimeList.length = 0;
