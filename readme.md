@@ -2,7 +2,7 @@
 
 If I am working on the project you can view the dev environment here:
 
-# http://joshh.moe:3000/
+# http://game.joshh.moe
 
 ## Prerequisites
 
