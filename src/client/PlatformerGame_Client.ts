@@ -116,7 +116,9 @@ export class PlatformerGame_Client extends Game {
 			mainMenu.addGameObject(camera);
 
 			let gui = Scene.createGameObject('GUI');
-			gui.addComponent(new DynamicMenuMovement());
+			let dynMenu = new DynamicMenuMovement();
+			dynMenu.scale = new Vector2(2, 0.5);
+			gui.addComponent(dynMenu);
 			mainMenu.addGameObject(gui);
 
 			let menuBox = Scene.createGameObject('Menu');
