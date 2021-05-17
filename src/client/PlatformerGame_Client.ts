@@ -1,6 +1,5 @@
-import { GuiBox } from './GuiBox';
+import { GuiBox } from './GUI/GuiBox';
 import { PlatformerCameraController } from './PlatformerCameraController';
-import { GuiButton } from './GuiButton';
 import { SpriteLayer } from './SpriteLayer';
 import { SpriteManager } from './SpriteManager';
 import { FrameRate } from './FrameRate';
@@ -15,6 +14,9 @@ import { Scene } from '../shared/Scene';
 import { CanvasCreator } from './CanvasCreator';
 import { DynamicMenuMovement } from './DynamicMenuMovement';
 import { CursorManager } from './CursorManager';
+import { GuiButton } from './GUI/GuiButton';
+import { Align } from './GUI/Align';
+import { GuiText } from './GUI/GuiText';
 
 export class PlatformerGame_Client extends Game {
 	frameRate = FrameRate.DYNAMIC_FRAMERATE;
@@ -39,7 +41,7 @@ export class PlatformerGame_Client extends Game {
 			let bgImage = AssetManager.getImage('Background');
 			let sr = new SpriteRenderer();
 			sr.setSprite(
-				new Sprite(bgImage, SpriteLayer.BACKGROUND, new Vector2(0.5, 0.5), 0.5)
+				new Sprite(bgImage, SpriteLayer.BACKGROUND, Align.CENTER, 0.5)
 			);
 			background.addComponent(sr);
 			gameScene.addGameObject(background);
@@ -51,6 +53,9 @@ export class PlatformerGame_Client extends Game {
 				camera.addComponent(cam);
 				for (var i = 0; i < 1; i++) {
 					let player = Scene.createGameObject('Player');
+					var playerName = new GuiText();
+					playerName.text = 'You :D';
+					player.addComponent(playerName);
 					player.transform.position = new Vector2(
 						Math.random() * 400,
 						Math.random() * 400
@@ -58,13 +63,7 @@ export class PlatformerGame_Client extends Game {
 					let image = AssetManager.getImage('Smiley');
 					let b = new SpriteRenderer();
 					b.setSprite(
-						new Sprite(
-							image,
-							SpriteLayer.FOREGROUND,
-							new Vector2(0.5, 0.5),
-							2,
-							false
-						)
+						new Sprite(image, SpriteLayer.FOREGROUND, Align.CENTER, 2, false)
 					);
 					player.addComponent(b);
 					player.addComponent(new MovementScript());
@@ -80,7 +79,7 @@ export class PlatformerGame_Client extends Game {
 					new Sprite(
 						AssetManager.getImage('Cursor'),
 						SpriteLayer.CURSOR,
-						new Vector2(0, 0),
+						Align.CENTER,
 						0.75,
 						false,
 						true
@@ -102,7 +101,7 @@ export class PlatformerGame_Client extends Game {
 				new Sprite(
 					AssetManager.getImage('Cursor'),
 					SpriteLayer.CURSOR,
-					new Vector2(0, 0),
+					Align.CENTER,
 					0.75,
 					false,
 					true
@@ -185,13 +184,22 @@ export class PlatformerGame_Client extends Game {
 				new Sprite(
 					AssetManager.getImage('Smiley'),
 					SpriteLayer.GUI,
-					new Vector2(0.5, 0.5),
+					Align.CENTER,
 					5,
 					false
 				)
 			);
 			menuImage.transform.position.y = 100;
 			gui.addChildGameObject(menuImage);
+
+			var testText = Scene.createGameObject('Game Title');
+			var text = new GuiText();
+			text.text = 'Project Alpha';
+			text.textColor = 'Yellow';
+			text.textStroke = true;
+			testText.transform.position.y = 45;
+			testText.addComponent(text);
+			gui.addChildGameObject(testText);
 
 			this.addScene(mainMenu);
 		}

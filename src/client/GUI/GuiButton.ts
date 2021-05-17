@@ -1,10 +1,15 @@
-import { Vector2 } from '../shared/Vector2';
-import { CanvasCreator } from './CanvasCreator';
-import { GameComponent } from '../shared/GameComponent';
-import { Camera } from './Camera';
-import { Input } from './Input';
+import { isGUI } from './isGUI';
+import { GameComponent } from '../../shared/GameComponent';
+import { Vector2 } from '../../shared/Vector2';
+import { Camera } from '../Camera';
 
-export class GuiButton extends GameComponent {
+import { Input } from '../Input';
+import { Align } from './Align';
+import { SpriteManager } from '../SpriteManager';
+import { SpriteLayer } from '../SpriteLayer';
+
+export class GuiButton extends GameComponent implements isGUI {
+	//TODO: move text aspect of this to seperate GuiText
 	width: number = 20;
 	height: number = 20;
 	fillColor: string = 'Black';
@@ -17,6 +22,9 @@ export class GuiButton extends GameComponent {
 	font: string = 'Georgia';
 	hoverColor: string = '';
 	hoverStrokeSize: number = 1;
+
+	//TODO: this
+	align = Align.CENTER;
 
 	camera: Camera | null = null;
 	constructor() {
@@ -31,7 +39,7 @@ export class GuiButton extends GameComponent {
 			return;
 		}
 		if (this.parent) {
-			var ctx = CanvasCreator.context;
+			var ctx = SpriteManager.layers[SpriteLayer.GUI].getContext('2d');
 			if (ctx) {
 				var screenSpace = this.camera.toScreenSpace(
 					this.parent.getTransform().position

@@ -2,9 +2,10 @@ import { SpriteLayer } from './SpriteLayer';
 import { Vector2 } from '../shared/Vector2';
 import { Camera } from './Camera';
 import { SpriteRenderer } from './SpriteRenderer';
+import { Align } from './GUI/Align';
 
 export class Sprite {
-	origin: Vector2;
+	align: Align;
 	width: number;
 	height: number;
 	image: HTMLCanvasElement[];
@@ -15,7 +16,7 @@ export class Sprite {
 	constructor(
 		image: HTMLCanvasElement[],
 		layer: SpriteLayer,
-		origin: Vector2,
+		align: Align,
 		scale: number,
 		antialias?: boolean,
 		screenSpace?: boolean
@@ -23,7 +24,7 @@ export class Sprite {
 		this.image = image;
 		this.width = image[0].width * scale;
 		this.height = image[0].height * scale;
-		this.origin = origin;
+		this.align = align;
 		this.layer = layer;
 		if (antialias != null) {
 			this.antialias = antialias;
@@ -40,21 +41,21 @@ export class Sprite {
 		} else {
 			screenSpace = Vector2.copy(this.position);
 		}
+		var origin = Vector2.Align(this.align);
 		if (
-			screenSpace.x - this.width * this.origin.x * camera.currZoom <
-				innerWidth &&
-			screenSpace.x + this.width * this.origin.x * camera.currZoom > 0 &&
-			screenSpace.y - this.height * this.origin.y * camera.currZoom <
+			screenSpace.x - this.width * origin.x * camera.currZoom < innerWidth &&
+			screenSpace.x + this.width * origin.x * camera.currZoom > 0 &&
+			screenSpace.y - this.height * origin.y * camera.currZoom <
 				window.innerHeight &&
-			screenSpace.y + this.height * this.origin.y * camera.currZoom > 0
+			screenSpace.y + this.height * origin.y * camera.currZoom > 0
 		) {
 			for (var i = this.image.length - 1; i >= 0; i--) {
 				if (this.width * camera.currZoom < this.image[i].width / 2) {
 					SpriteRenderer.drawCount++;
 					ctx?.drawImage(
 						this.image[i],
-						screenSpace.x - this.width * this.origin.x * camera.currZoom,
-						screenSpace.y - this.height * this.origin.y * camera.currZoom,
+						screenSpace.x - this.width * origin.x * camera.currZoom,
+						screenSpace.y - this.height * origin.y * camera.currZoom,
 						this.width * camera.currZoom,
 						this.height * camera.currZoom
 					);
@@ -64,8 +65,8 @@ export class Sprite {
 						ctx.fillStyle = 'White';
 						ctx?.fillText(
 							`${i} MipMap level`,
-							screenSpace.x - this.width * this.origin.x * camera.currZoom,
-							screenSpace.y - this.height * this.origin.y * camera.currZoom
+							screenSpace.x - this.width * origin.x * camera.currZoom,
+							screenSpace.y - this.height * origin.y * camera.currZoom
 						);
 					}
 					*/
@@ -77,8 +78,8 @@ export class Sprite {
 			SpriteRenderer.drawCount++;
 			ctx?.drawImage(
 				this.image[0],
-				screenSpace.x - this.width * this.origin.x * camera.currZoom,
-				screenSpace.y - this.height * this.origin.y * camera.currZoom,
+				screenSpace.x - this.width * origin.x * camera.currZoom,
+				screenSpace.y - this.height * origin.y * camera.currZoom,
 				this.width * camera.currZoom,
 				this.height * camera.currZoom
 			);

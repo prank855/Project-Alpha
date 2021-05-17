@@ -15,10 +15,6 @@ export class SpriteManager {
 		});
 
 	static render() {
-		for (var l of this.layers) {
-			l.width = innerWidth;
-			l.height = innerHeight;
-		}
 		var cam = Game.singleton.currentScene
 			.findGameObjectByName('Camera')
 			?.getComponent('Camera') as Camera;
@@ -38,6 +34,10 @@ export class SpriteManager {
 			for (var i = 0; i < this.layers.length; i++) {
 				CanvasCreator.context?.drawImage(this.layers[i], 0, 0);
 			}
+		}
+		for (var l of this.layers) {
+			l.width = innerWidth;
+			l.height = innerHeight;
 		}
 	}
 }

@@ -1,3 +1,5 @@
+import { Align } from '../client/GUI/Align';
+
 export class Vector2 {
 	x: number;
 	y: number;
@@ -60,5 +62,37 @@ export class Vector2 {
 	}
 	static multiply(a: Vector2, b: Vector2): Vector2 {
 		return new Vector2(a.x * b.x, a.y * b.y);
+	}
+	static Align(align: Align): Vector2 {
+		var out = Vector2.zero();
+		switch (align) {
+			case Align.TOP_LEFT:
+				break;
+			case Align.CENTER:
+				out = new Vector2(0.5, 0.5);
+				break;
+			case Align.TOP_RIGHT:
+				out = new Vector2(1, 0);
+				break;
+			case Align.TOP:
+				out = new Vector2(0.5, 0);
+				break;
+			case Align.LEFT:
+				out = new Vector2(0, 0.5);
+				break;
+			case Align.RIGHT:
+				out = new Vector2(1, 0.5);
+				break;
+			case Align.BOTTOM_LEFT:
+				out = new Vector2(0, 1);
+				break;
+			case Align.BOTTOM:
+				out = new Vector2(0.5, 1);
+				break;
+			case Align.BOTTOM_RIGHT:
+				out = new Vector2(1, 1);
+				break;
+		}
+		return out;
 	}
 }
