@@ -18,6 +18,8 @@ export class GuiText extends GameComponent implements isGUI {
 	camera: Camera | null = null;
 	align = Align.CENTER;
 
+	//TODO: cache text to canvas for performance :)
+
 	constructor() {
 		super('GuiText');
 	}

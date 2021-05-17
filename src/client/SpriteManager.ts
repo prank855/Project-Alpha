@@ -31,13 +31,15 @@ export class SpriteManager {
 					}
 				}
 			}
+
 			for (var i = 0; i < this.layers.length; i++) {
 				CanvasCreator.context?.drawImage(this.layers[i], 0, 0);
 			}
-		}
-		for (var l of this.layers) {
-			l.width = innerWidth;
-			l.height = innerHeight;
+
+			for (var l of this.layers) {
+				l.width = innerWidth;
+				l.height = innerHeight;
+			}
 		}
 	}
 }

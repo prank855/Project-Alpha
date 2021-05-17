@@ -35,6 +35,7 @@ export class Sprite {
 	}
 	render(ctx: CanvasRenderingContext2D, camera: Camera) {
 		//TODO: if sprite draw is bigger than canvas only draw from that specific region of image
+
 		let screenSpace: Vector2;
 		if (!this.screenSpace) {
 			screenSpace = camera.toScreenSpace(this.position);

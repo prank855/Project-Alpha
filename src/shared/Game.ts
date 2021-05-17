@@ -3,7 +3,7 @@ import { Scene } from './Scene';
 export abstract class Game {
 	static singleton: Game;
 	scenes: Scene[] = [];
-	currentScene: Scene;
+	currentScene: Scene = new Scene('EMPTY SCENE');
 
 	constructor() {
 		if (!Game.singleton) {
@@ -11,7 +11,6 @@ export abstract class Game {
 		} else {
 			throw 'You can not have more than one instance of Game';
 		}
-		this.currentScene = new Scene('EMPTY SCENE');
 		this.scenes.push(this.currentScene);
 	}
 
