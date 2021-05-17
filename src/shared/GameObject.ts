@@ -9,7 +9,7 @@ export class GameObject {
 	scene: Scene | null = null;
 	transform = new Transform();
 	components: GameComponent[] = [];
-	id: number = 0;
+	creationID: number = 0;
 	name: string = 'Unnamed Game Object';
 	started: boolean = false;
 
@@ -64,7 +64,7 @@ export class GameObject {
 	addComponent(co: GameComponent) {
 		if (this.getComponent(co.name) != null) {
 			console.log(
-				`${co.name} already exists on this Game Object ID:${this.id}`
+				`${co.name} already exists on this Game Object ID:${this.creationID}`
 			);
 			return;
 		}

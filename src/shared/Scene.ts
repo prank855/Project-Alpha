@@ -31,7 +31,7 @@ export class Scene {
 
 		//Resets Game Object to defaults;
 		go.scene = null;
-		go.id = GameObject.lastID++;
+		go.creationID = GameObject.lastID++;
 		go.components.length = 0;
 		go.children.length = 0;
 		go.transform = new Transform();
@@ -57,7 +57,7 @@ export class Scene {
 
 	findGameObjectByID(gameObjectID: number): GameObject | null {
 		for (let go of this.gameObjects) {
-			if (go.id == gameObjectID) {
+			if (go.creationID == gameObjectID) {
 				return go;
 			}
 		}
