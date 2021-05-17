@@ -34,50 +34,17 @@ export class PlatformerGame_Client extends Game {
 		AssetManager.loadImage('cursor.png', 'Cursor');
 	}
 
-	setupScenes() {
+	setup() {
 		/*Game Scene*/ {
 			let gameScene = new Scene('Game');
-			let background = Scene.createGameObject('Background');
-			let bgImage = AssetManager.getImage('Background');
-			let sr = new SpriteRenderer();
-			sr.setSprite(
-				new Sprite(bgImage, SpriteLayer.BACKGROUND, Align.CENTER, 0.5)
-			);
-			background.addComponent(sr);
-			gameScene.addGameObject(background);
-
-			{
+			/*Camera Object*/ {
 				let camera = Scene.createGameObject('Camera');
 				let cam = new Camera();
 				cam.controller = new PlatformerCameraController();
 				camera.addComponent(cam);
-				for (var i = 0; i < 1; i++) {
-					let player = Scene.createGameObject('Player');
-					gameScene.addGameObject(player);
-					let nameObject = Scene.createGameObject('Player Name');
-					var guiText = new GuiText();
-					guiText.text = 'You';
-					guiText.textStroke = true;
-					nameObject.addComponent(guiText);
-					nameObject.transform.position.y = 20;
-
-					player.addChildGameObject(nameObject);
-
-					player.transform.position = new Vector2(
-						Math.random() * 400,
-						Math.random() * 400
-					);
-					let image = AssetManager.getImage('Smiley');
-					let b = new SpriteRenderer();
-					b.setSprite(
-						new Sprite(image, SpriteLayer.FOREGROUND, Align.CENTER, 2, false)
-					);
-					player.addComponent(b);
-					player.addComponent(new MovementScript());
-					cam.target = player;
-					cam.position = Vector2.copy(player.transform.position);
-				}
-
+				gameScene.addGameObject(camera);
+			}
+			/*Cursor Object*/ {
 				let cursor = Scene.createGameObject('Cursor');
 				cursor.addComponent(new CursorManager());
 				let cursorSpriteRender = new SpriteRenderer();
@@ -93,14 +60,59 @@ export class PlatformerGame_Client extends Game {
 				);
 				cursor.addComponent(cursorSpriteRender);
 				gameScene.addGameObject(cursor);
-				gameScene.addGameObject(camera);
 			}
+			/*Background Object*/ {
+				let background = Scene.createGameObject('Background');
+				let bgImage = AssetManager.getImage('Background');
+				let sr = new SpriteRenderer();
+				sr.setSprite(
+					new Sprite(bgImage, SpriteLayer.BACKGROUND, Align.CENTER, 0.5)
+				);
+				background.addComponent(sr);
+				gameScene.addGameObject(background);
+			}
+			/*Player Object*/ {
+				let player = Scene.createGameObject('Player');
+				gameScene.addGameObject(player);
+				let nameObject = Scene.createGameObject('Name');
+				var guiText = new GuiText();
+				guiText.text = 'You';
+				guiText.textStroke = true;
+				nameObject.addComponent(guiText);
+				nameObject.transform.position.y = 20;
+
+				player.addChildGameObject(nameObject);
+
+				player.transform.position = new Vector2(
+					Math.random() * 400,
+					Math.random() * 400
+				);
+				let image = AssetManager.getImage('Smiley');
+				let b = new SpriteRenderer();
+				b.setSprite(
+					new Sprite(image, SpriteLayer.FOREGROUND, Align.CENTER, 2, false)
+				);
+				player.addComponent(b);
+				player.addComponent(new MovementScript());
+				var cam = gameScene
+					.findGameObjectByName('Camera')
+					?.getComponent('Camera') as Camera;
+				cam.target = player;
+				cam.position = Vector2.copy(player.transform.position);
+			}
+
 			this.addScene(gameScene);
 		}
 		/*Main Menu Scene*/ {
 			let mainMenu = new Scene('Main Menu');
-
-			/*Create Cursor Object*/ {
+			/*Camera Object*/ {
+				let camera = Scene.createGameObject('Camera');
+				let cam = new Camera();
+				//c.controller = new PlatformerCameraController();
+				camera.addComponent(cam);
+				mainMenu.addGameObject(camera);
+			}
+			/*Cursor Object*/ {
 				let cursor = Scene.createGameObject('Cursor');
 				cursor.addComponent(new CursorManager());
 				let cursorSpriteRender = new SpriteRenderer();
@@ -117,22 +129,14 @@ export class PlatformerGame_Client extends Game {
 				cursor.addComponent(cursorSpriteRender);
 				mainMenu.addGameObject(cursor);
 			}
-
-			/*Create Camera Object*/ {
-				let camera = Scene.createGameObject('Camera');
-				let cam = new Camera();
-				//c.controller = new PlatformerCameraController();
-				camera.addComponent(cam);
-				mainMenu.addGameObject(camera);
-			}
-			/*Create GUI Object*/ {
+			/*GUI Object*/ {
 				let gui = Scene.createGameObject('GUI');
 				let dynMenu = new DynamicMenuMovement();
 				dynMenu.scale = new Vector2(2, 0.5);
 				gui.addComponent(dynMenu);
 				mainMenu.addGameObject(gui);
-				/*Create Menu Object*/ {
-					/*Create Menu Box*/ {
+				/*Menu Object*/ {
+					/*Menu Box Object*/ {
 						let menuBox = Scene.createGameObject('Menu Box');
 						let guiBox = new GuiBox();
 						guiBox.fillColor = 'Cornsilk';
@@ -142,7 +146,7 @@ export class PlatformerGame_Client extends Game {
 						gui.addChildGameObject(menuBox);
 					}
 
-					/*Create Menu Image Object*/ {
+					/*Menu Image Object*/ {
 						let menuImage = Scene.createGameObject('Menu Image');
 						let sr = new SpriteRenderer();
 						menuImage.addComponent(sr);
@@ -159,11 +163,10 @@ export class PlatformerGame_Client extends Game {
 						gui.addChildGameObject(menuImage);
 					}
 
-					/*Create Start Game Button*/ {
+					/*Start Button Object*/ {
 						let button = Scene.createGameObject('Start Button');
 						gui.addChildGameObject(button);
-						// GuiButton Component
-						{
+						/*GuiButton Component*/ {
 							let guiButton = new GuiButton();
 							guiButton.width = 200;
 							guiButton.hoverColor = 'DarkMagenta	';
@@ -174,19 +177,20 @@ export class PlatformerGame_Client extends Game {
 							};
 							button.addComponent(guiButton);
 						}
-						let guiText = new GuiText();
-						guiText.text = 'Start Game';
-						guiText.textFont = 'Impact';
-						guiText.textSize = 15;
-						guiText.textColor = 'White ';
-						guiText.textStroke = true;
-						guiText.textStrokeStyle = 'Black';
-						guiText.textStrokeSize = 2;
-						button.addComponent(guiText);
-						console.log(1, button.parent?.transform);
+						/*GuiText Component*/ {
+							let guiText = new GuiText();
+							guiText.text = 'Start Game';
+							guiText.textFont = 'Impact';
+							guiText.textSize = 15;
+							guiText.textColor = 'White ';
+							guiText.textStroke = true;
+							guiText.textStrokeStyle = 'Black';
+							guiText.textStrokeSize = 2;
+							button.addComponent(guiText);
+						}
 					}
 
-					/*Create GitHub Button*/ {
+					/*GitHub Button Object*/ {
 						let button = Scene.createGameObject('GitHub Button');
 						button.transform.position.y = -40;
 						gui.addChildGameObject(button);
@@ -216,7 +220,6 @@ export class PlatformerGame_Client extends Game {
 							guiText.textStrokeStyle = 'Black';
 							guiText.textStrokeSize = 2;
 							button.addComponent(guiText);
-							console.log(1, button.parent?.transform);
 						}
 					}
 				}

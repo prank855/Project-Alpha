@@ -71,7 +71,7 @@ export class Client {
 		console.log('Assets Loaded');
 
 		this.lastTime = Time.getCurrTime();
-		this.game.setupScenes();
+		this.game.setup();
 		this.game.start();
 
 		var self = this;

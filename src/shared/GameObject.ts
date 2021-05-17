@@ -61,6 +61,12 @@ export class GameObject {
 		this.children.push(go);
 	}
 
+	createChildGameObject(childName: string): GameObject {
+		var go = Scene.createGameObject(childName);
+		this.addChildGameObject(go);
+		return go;
+	}
+
 	addComponent(co: GameComponent) {
 		if (this.getComponent(co.name) != null) {
 			console.log(

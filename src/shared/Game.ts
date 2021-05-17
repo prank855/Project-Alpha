@@ -21,16 +21,17 @@ export abstract class Game {
 	abstract frameRate: FrameRate | number;
 	frame: number = 0;
 
-	abstract setupScenes(): void;
+	abstract setup(): void;
 	abstract start(): void;
 	abstract update(): void;
-	addScene(scene: Scene) {
+	addScene(scene: Scene): void {
 		this.scenes.push(scene);
 	}
-	setScene(sceneName: string) {
+	setScene(sceneName: string): void {
 		for (var s of this.scenes) {
 			if (s.sceneName == sceneName) {
 				this.currentScene = s;
+				return;
 			}
 		}
 	}

@@ -16,7 +16,7 @@ export class PlatformerGame_Server extends Game implements NetworkedGameServer {
 
 	initializeWebSocket() {}
 
-	setupScenes() {}
+	setup() {}
 
 	start() {}
 

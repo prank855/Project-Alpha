@@ -11,7 +11,7 @@ export class Server {
 		console.log('Server Started');
 
 		this.lastTime = Time.getCurrTime();
-		this.game.setupScenes();
+		this.game.setup();
 		this.game.start();
 
 		this.loop();
