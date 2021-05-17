@@ -29,6 +29,16 @@ export class GameObject {
 			}
 		}
 	}
+	lateUpdate() {
+		for (let go of this.children) {
+			go.lateUpdate();
+		}
+		for (let co of this.components) {
+			if (co.isActive) {
+				co.lateUpdate();
+			}
+		}
+	}
 
 	getTransform(): Transform {
 		if (this.parent == null) {

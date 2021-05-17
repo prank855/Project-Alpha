@@ -88,5 +88,8 @@ export class Scene {
 				}
 			}
 		}
+		for (let go of this.gameObjects) {
+			go.lateUpdate();
+		}
 	}
 }

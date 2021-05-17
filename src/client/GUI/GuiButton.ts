@@ -9,17 +9,9 @@ import { SpriteManager } from '../SpriteManager';
 import { SpriteLayer } from '../SpriteLayer';
 
 export class GuiButton extends GameComponent implements isGUI {
-	//TODO: move text aspect of this to seperate GuiText
 	width: number = 20;
 	height: number = 20;
 	fillColor: string = 'Black';
-	text: string = '';
-	textColor: string = 'White';
-	textSize: number = 12;
-	texStroke: boolean = true;
-	textStrokeStyle: string = 'Black';
-	textStrokeSize: number = 1;
-	font: string = 'Georgia';
 	hoverColor: string = '';
 	hoverStrokeSize: number = 1;
 
@@ -31,7 +23,7 @@ export class GuiButton extends GameComponent implements isGUI {
 		super('GuiButton');
 	}
 	private lastMouseInput: boolean = false;
-	update() {
+	lateUpdate() {
 		if (!this.camera) {
 			this.camera = this.parent?.scene
 				?.findGameObjectByName('Camera')
@@ -55,31 +47,6 @@ export class GuiButton extends GameComponent implements isGUI {
 				);
 				ctx.fillStyle = this.fillColor;
 				ctx.fillRect(boxPos.x, boxPos.y, boxSize.x, boxSize.y);
-				ctx.fillStyle = this.textColor;
-				ctx.font = `${this.textSize * this.camera.currZoom}px ${this.font}`;
-				var measureText = ctx.measureText(this.text);
-				if (this.texStroke) {
-					ctx.strokeStyle = this.textStrokeStyle;
-					ctx.lineWidth = this.textStrokeSize * this.camera.currZoom;
-					ctx.strokeText(
-						this.text,
-						boxPos.x + boxSize.x / 2 - measureText.width / 2,
-						boxPos.y +
-							boxSize.y / 2 +
-							(measureText.actualBoundingBoxAscent +
-								measureText.actualBoundingBoxDescent) /
-								2
-					);
-				}
-				ctx.fillText(
-					this.text,
-					boxPos.x + boxSize.x / 2 - measureText.width / 2,
-					boxPos.y +
-						boxSize.y / 2 +
-						(measureText.actualBoundingBoxAscent +
-							measureText.actualBoundingBoxDescent) /
-							2
-				);
 
 				var mousePos = Vector2.copy(Input.mousePos);
 

@@ -46,6 +46,7 @@ export class Input {
 			if (document.visibilityState === 'hidden') {
 				this.mouseDown = false;
 				this.keys = [];
+				this.mousePos = new Vector2(-50, -50);
 			}
 		});
 	}

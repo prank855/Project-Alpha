@@ -16,4 +16,5 @@ export class GameComponent {
 	init() {} //called when component added to Game Object
 	start() {} //called when Game Object is added to GameObjectManager
 	update() {} //called each frame
+	lateUpdate() {} // called after update
 }

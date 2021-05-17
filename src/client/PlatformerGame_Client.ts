@@ -53,9 +53,16 @@ export class PlatformerGame_Client extends Game {
 				camera.addComponent(cam);
 				for (var i = 0; i < 1; i++) {
 					let player = Scene.createGameObject('Player');
-					var playerName = new GuiText();
-					playerName.text = 'You :D';
-					player.addComponent(playerName);
+					gameScene.addGameObject(player);
+					let nameObject = Scene.createGameObject('Player Name');
+					var guiText = new GuiText();
+					guiText.text = 'You :D';
+					guiText.textStroke = true;
+					nameObject.addComponent(guiText);
+					nameObject.transform.position.y = 20;
+
+					player.addChildGameObject(nameObject);
+
 					player.transform.position = new Vector2(
 						Math.random() * 400,
 						Math.random() * 400
@@ -67,7 +74,6 @@ export class PlatformerGame_Client extends Game {
 					);
 					player.addComponent(b);
 					player.addComponent(new MovementScript());
-					gameScene.addGameObject(player);
 					cam.target = player;
 					cam.position = Vector2.copy(player.transform.position);
 				}
@@ -133,73 +139,101 @@ export class PlatformerGame_Client extends Game {
 
 			//MAKES BUTTON
 			{
-				let button = Scene.createGameObject('Button');
-				let bRenderer = new GuiButton();
-				bRenderer.text = 'Start Game';
-				bRenderer.font = 'Impact';
-				bRenderer.textSize = 15;
-				bRenderer.width = 200;
-				bRenderer.hoverColor = 'DarkMagenta	';
-				bRenderer.fillColor = 'Plum';
-				bRenderer.textColor = 'White ';
-				bRenderer.texStroke = true;
-				bRenderer.textStrokeStyle = 'Black';
-				bRenderer.textStrokeSize = 2;
-				bRenderer.hoverStrokeSize = 2;
-				bRenderer.onClick = () => {
-					this.setScene('Game');
-				};
-
-				button.addComponent(bRenderer);
+				let button = Scene.createGameObject('Start Button');
 				gui.addChildGameObject(button);
+				// GuiButton Component
+				{
+					let guiButton = new GuiButton();
+					guiButton.width = 200;
+					guiButton.hoverColor = 'DarkMagenta	';
+					guiButton.fillColor = 'Plum';
+					guiButton.hoverStrokeSize = 2;
+					guiButton.onClick = () => {
+						this.setScene('Game');
+					};
+					button.addComponent(guiButton);
+				}
+				//GuiText Component
+				{
+					let guiText = new GuiText();
+					guiText.text = 'Start Game';
+					guiText.textFont = 'Impact';
+					guiText.textSize = 15;
+					guiText.textColor = 'White ';
+					guiText.textStroke = true;
+					guiText.textStrokeStyle = 'Black';
+					guiText.textStrokeSize = 2;
+					button.addComponent(guiText);
+					console.log(1, button.parent?.transform);
+				}
 			}
-			//MAKES BUTTON
+
+			//MENU IMAGE
 			{
-				let a = Scene.createGameObject('Button');
-				a.transform.position.y = -40;
-				let bRendererA = new GuiButton();
-				bRendererA.text = 'Open GitHub Page';
-				bRendererA.font = 'Impact';
-				bRendererA.textSize = 15;
-				bRendererA.width = 200;
-				bRendererA.hoverColor = 'DarkMagenta	';
-				bRendererA.fillColor = 'Red';
-				bRendererA.textColor = 'White ';
-				bRendererA.texStroke = true;
-				bRendererA.textStrokeStyle = 'Black';
-				bRendererA.textStrokeSize = 2;
-				bRendererA.hoverStrokeSize = 2;
-				bRendererA.onClick = () => {
-					window.open('https://github.com/prank855/Project-Alpha', '_blank');
-				};
-
-				a.addComponent(bRendererA);
-				gui.addChildGameObject(a);
+				let menuImage = Scene.createGameObject('Menu Image');
+				let sr = new SpriteRenderer();
+				menuImage.addComponent(sr);
+				sr.setSprite(
+					new Sprite(
+						AssetManager.getImage('Smiley'),
+						SpriteLayer.GUI,
+						Align.CENTER,
+						5,
+						false
+					)
+				);
+				menuImage.transform.position.y = 100;
+				gui.addChildGameObject(menuImage);
 			}
 
-			let menuImage = Scene.createGameObject('Menu Image');
-			let sr = new SpriteRenderer();
-			menuImage.addComponent(sr);
-			sr.setSprite(
-				new Sprite(
-					AssetManager.getImage('Smiley'),
-					SpriteLayer.GUI,
-					Align.CENTER,
-					5,
-					false
-				)
-			);
-			menuImage.transform.position.y = 100;
-			gui.addChildGameObject(menuImage);
+			{
+				let button = Scene.createGameObject('GitHub Button');
+				button.transform.position.y = -40;
+				gui.addChildGameObject(button);
+				// GuiButton Component
+				{
+					let guiButton = new GuiButton();
+					guiButton.width = 200;
+					guiButton.hoverColor = 'DarkMagenta	';
+					guiButton.fillColor = 'Plum';
+					guiButton.hoverStrokeSize = 2;
+					guiButton.onClick = () => {
+						window.open('https://github.com/prank855/Project-Alpha', '_blank');
+					};
+					button.addComponent(guiButton);
+				}
+				//GuiText Component
+				{
+					let guiText = new GuiText();
+					guiText.text = 'Open GitHub';
+					guiText.textFont = 'Impact';
+					guiText.textSize = 15;
+					guiText.textColor = 'White ';
+					guiText.textStroke = true;
+					guiText.textStrokeStyle = 'Black';
+					guiText.textStrokeSize = 2;
+					button.addComponent(guiText);
+					console.log(1, button.parent?.transform);
+				}
+			}
 
-			var testText = Scene.createGameObject('Game Title');
-			var text = new GuiText();
-			text.text = 'Project Alpha';
-			text.textColor = 'Yellow';
-			text.textStroke = true;
-			testText.transform.position.y = 45;
-			testText.addComponent(text);
-			gui.addChildGameObject(testText);
+			//MENU IMAGE
+			{
+				let menuImage = Scene.createGameObject('Menu Image');
+				let sr = new SpriteRenderer();
+				menuImage.addComponent(sr);
+				sr.setSprite(
+					new Sprite(
+						AssetManager.getImage('Smiley'),
+						SpriteLayer.GUI,
+						Align.CENTER,
+						5,
+						false
+					)
+				);
+				menuImage.transform.position.y = 100;
+				gui.addChildGameObject(menuImage);
+			}
 
 			this.addScene(mainMenu);
 		}

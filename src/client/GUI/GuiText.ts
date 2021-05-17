@@ -21,7 +21,8 @@ export class GuiText extends GameComponent implements isGUI {
 	constructor() {
 		super('GuiText');
 	}
-	update() {
+
+	lateUpdate() {
 		if (!this.camera) {
 			this.camera = this.parent?.scene
 				?.findGameObjectByName('Camera')
@@ -34,27 +35,25 @@ export class GuiText extends GameComponent implements isGUI {
 				var screenSpace = this.camera.toScreenSpace(
 					this.parent.getTransform().position
 				);
-
-				var measureText = ctx.measureText(this.text);
 				var origin = Vector2.Align(this.align);
 				ctx.font = `${this.textSize * this.camera.currZoom}px ${this.textFont}`;
+				var measureText = ctx.measureText(this.text);
 				if (this.textStroke) {
 					ctx.strokeStyle = this.textStrokeStyle;
 					ctx.lineWidth = this.textStrokeSize * this.camera.currZoom;
 					ctx.strokeText(
 						this.text,
-						screenSpace.x - origin.x * measureText.width,
+						screenSpace.x - measureText.width * origin.x,
 						screenSpace.y +
 							origin.y *
 								(measureText.actualBoundingBoxAscent +
 									measureText.actualBoundingBoxDescent)
 					);
 				}
-
 				ctx.fillStyle = this.textColor;
 				ctx.fillText(
 					this.text,
-					screenSpace.x - origin.x * measureText.width,
+					screenSpace.x - measureText.width * origin.x,
 					screenSpace.y +
 						origin.y *
 							(measureText.actualBoundingBoxAscent +

@@ -18,7 +18,7 @@ export class GuiBox extends GameComponent implements isGUI {
 	constructor() {
 		super('GuiBox');
 	}
-	update() {
+	lateUpdate() {
 		if (!this.camera) {
 			this.camera = this.parent?.scene
 				?.findGameObjectByName('Camera')
