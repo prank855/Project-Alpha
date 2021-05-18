@@ -103,7 +103,7 @@ export class Client {
 		this.loop();
 	}
 
-	private setIntervalError: number = 2;
+	private setTimeoutError: number = 2;
 	loop() {
 		let currTime = Time.getCurrTime();
 		let self = this;
@@ -111,20 +111,18 @@ export class Client {
 		if (this.game.frameRate > 5) {
 			if (currTime - this.lastTime < tickDelta) {
 				if (
-					currTime - this.lastTime + this.setIntervalError / 1000 <
+					currTime - this.lastTime + this.setTimeoutError / 1000 <
 					tickDelta
 				) {
 					setTimeout(
 						self.loop.bind(this),
 						1000 / this.game.frameRate -
-							((currTime - this.lastTime) * 1000 + this.setIntervalError)
+							((currTime - this.lastTime) * 1000 + this.setTimeoutError)
 					);
 				} else {
 					setImmediate(self.loop.bind(this));
 				}
 				return;
-			} else {
-				//console.log(currTime - this.lastTime);
 			}
 		}
 

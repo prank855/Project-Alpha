@@ -18,18 +18,18 @@ export class Server {
 	}
 
 	private frameTimeList: number[] = [];
-	private setIntervalError: number = 2; //Error in milliseconds that setInterval causes for proper consistent frametimes
+	private setTimeoutError: number = 2; //Error in milliseconds that setInterval causes for proper consistent frametimes
 	loop() {
 		let self = this;
 		let currTime = Time.getCurrTime();
 
 		let tickDelta = 1 / this.game.frameRate;
 		if (currTime - this.lastTime < tickDelta) {
-			if (currTime - this.lastTime + this.setIntervalError / 1000 < tickDelta) {
+			if (currTime - this.lastTime + this.setTimeoutError / 1000 < tickDelta) {
 				setTimeout(
 					self.loop.bind(this),
 					1000 / this.game.frameRate -
-						((currTime - this.lastTime) * 1000 + this.setIntervalError)
+						((currTime - this.lastTime) * 1000 + this.setTimeoutError)
 				);
 			} else {
 				setImmediate(self.loop.bind(this));

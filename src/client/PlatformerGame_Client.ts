@@ -181,10 +181,10 @@ export class PlatformerGame_Client extends Game {
 						guiText.text = 'Open GitHub';
 						guiText.textFont = 'Ubuntu';
 						guiText.textSize = 14;
-						guiText.textColor = 'lightblue ';
+						guiText.textColor = 'White';
 						guiText.textStroke = true;
 						guiText.textStrokeStyle = 'Black';
-						guiText.textStrokeSize = 1;
+						guiText.textStrokeSize = 1.5;
 						button.addComponent(guiText);
 					}
 				}
@@ -233,6 +233,7 @@ export class PlatformerGame_Client extends Game {
 				gameScene.addGameObject(player);
 				let nameObject = Scene.createGameObject('Name');
 				var guiText = new GuiText();
+				guiText.textFont = 'Ubuntu';
 				guiText.text = 'You';
 				guiText.textStroke = true;
 				nameObject.addComponent(guiText);
@@ -299,7 +300,9 @@ export class PlatformerGame_Client extends Game {
 					if (netManager) {
 						var text = com.parent?.getComponent('GuiText') as GuiText;
 						if (text) {
-							text.text = `Connected to Server: ${netManager.isConnected}`;
+							text.text = `Connection to Server: ${
+								netManager.isConnected ? 'Connected' : 'Connecting'
+							}`;
 						}
 					}
 				};
@@ -350,10 +353,10 @@ export class PlatformerGame_Client extends Game {
 			}
 
 			let pos = new Vector2(0, innerHeight - height * fontSize);
-			ctx.fillStyle = 'rgba(128,127,255,0.8)';
+			ctx.fillStyle = 'rgba(128,0,0,0.5)';
 			ctx.fillRect(pos.x, pos.y, 250, innerHeight - height * fontSize);
-			ctx.font = `${fontSize}px Consolas`;
 			ctx.fillStyle = 'White';
+			ctx.font = `${fontSize}px Ubuntu`;
 			ctx.fillText('Scene Hierarchy', pos.x + fontSize, pos.y + fontSize * 2);
 			ctx.fillText(
 				`"${this.currentScene.sceneName}"`,
@@ -362,17 +365,17 @@ export class PlatformerGame_Client extends Game {
 			);
 			let line = buffer;
 			var componentToken = '+';
+			ctx.font = `${fontSize}px Ubuntu`;
 			for (let go of this.currentScene.getGameObjects()) {
-				ctx.font = `${fontSize}px Ubuntu`;
 				let text = `${go.name}`;
 				var count = 0;
+				ctx.font = `${fontSize * 0.8}px Ubuntu`;
 				if (go.children.length > 0) {
 					for (var child of go.children) {
 						var t = `  -> ${child.name}`;
 						if (child.children.length > 0) {
 							t += ` +${child.children.length} more`;
 						}
-						ctx.font = `${fontSize * 0.8}px Ubuntu`;
 						t += ' ';
 						for (var i = 0; i < child.components.length; i++) {
 							t += componentToken;
@@ -390,6 +393,7 @@ export class PlatformerGame_Client extends Game {
 				for (var i = 0; i < go.components.length; i++) {
 					text += componentToken;
 				}
+				ctx.font = `${fontSize}px Ubuntu`;
 				ctx.fillText(
 					`* ` + text,
 					pos.x + fontSize,

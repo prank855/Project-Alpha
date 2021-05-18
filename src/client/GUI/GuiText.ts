@@ -9,7 +9,7 @@ export class GuiText extends GameComponent implements isGUI {
 	text: string = '';
 	textColor: string = 'White';
 	textSize: number = 12;
-	textFont: string = 'Georgia';
+	textFont: string = 'Ubuntu';
 
 	textStroke: boolean = false;
 	textStrokeStyle: string = 'Black';
@@ -49,20 +49,14 @@ export class GuiText extends GameComponent implements isGUI {
 					ctx.strokeText(
 						this.text,
 						screenSpace.x - measureText.width * origin.x,
-						screenSpace.y +
-							origin.y *
-								(measureText.actualBoundingBoxAscent +
-									measureText.actualBoundingBoxDescent)
+						screenSpace.y + origin.y * measureText.actualBoundingBoxAscent
 					);
 				}
 				ctx.fillStyle = this.textColor;
 				ctx.fillText(
 					this.text,
 					screenSpace.x - measureText.width * origin.x,
-					screenSpace.y +
-						origin.y *
-							(measureText.actualBoundingBoxAscent +
-								measureText.actualBoundingBoxDescent)
+					screenSpace.y + origin.y * measureText.actualBoundingBoxAscent
 				);
 			}
 		}
