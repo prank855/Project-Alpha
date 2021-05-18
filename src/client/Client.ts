@@ -143,7 +143,7 @@ export class Client {
 			this.ctx!.fillStyle = 'rgba(0,0,0,0.5)';
 			this.ctx!.fillRect(0, 0, 265, 150);
 			this.ctx!.fillStyle = 'white';
-			this.ctx!.font = '15px Consolas';
+			this.ctx!.font = '15px Ubuntu';
 			this.ctx!.fillText('Client Debug', 10, 15);
 			this.ctx!.fillText(
 				'Framerate: ' + (1 / Time.deltaTime).toFixed(1),

@@ -116,8 +116,8 @@ export class PlatformerGame_Client extends Game {
 					/*GuiText Component*/ {
 						let guiText = new GuiText();
 						guiText.text = 'Start Single Player Game';
-						guiText.textFont = 'Impact';
-						guiText.textSize = 15;
+						guiText.textFont = 'Ubuntu';
+						guiText.textSize = 14;
 						guiText.textColor = 'White ';
 						guiText.textStroke = true;
 						guiText.textStrokeStyle = 'Black';
@@ -145,9 +145,9 @@ export class PlatformerGame_Client extends Game {
 					//GuiText Component
 					{
 						let guiText = new GuiText();
-						guiText.text = 'Start Multiplayer Game (in dev)';
-						guiText.textFont = 'Impact';
-						guiText.textSize = 15;
+						guiText.text = 'Start Multiplayer Game (dev)';
+						guiText.textFont = 'Ubuntu';
+						guiText.textSize = 14;
 						guiText.textColor = 'White ';
 						guiText.textStroke = true;
 						guiText.textStrokeStyle = 'Black';
@@ -179,8 +179,8 @@ export class PlatformerGame_Client extends Game {
 					{
 						let guiText = new GuiText();
 						guiText.text = 'Open GitHub';
-						guiText.textFont = 'Impact';
-						guiText.textSize = 15;
+						guiText.textFont = 'Ubuntu';
+						guiText.textSize = 14;
 						guiText.textColor = 'lightblue ';
 						guiText.textStroke = true;
 						guiText.textStrokeStyle = 'Black';
@@ -363,6 +363,7 @@ export class PlatformerGame_Client extends Game {
 			let line = buffer;
 			var componentToken = '+';
 			for (let go of this.currentScene.getGameObjects()) {
+				ctx.font = `${fontSize}px Ubuntu`;
 				let text = `${go.name}`;
 				var count = 0;
 				if (go.children.length > 0) {
@@ -371,7 +372,7 @@ export class PlatformerGame_Client extends Game {
 						if (child.children.length > 0) {
 							t += ` +${child.children.length} more`;
 						}
-						ctx.font = `${fontSize * 0.8}px Consolas`;
+						ctx.font = `${fontSize * 0.8}px Ubuntu`;
 						t += ' ';
 						for (var i = 0; i < child.components.length; i++) {
 							t += componentToken;
@@ -385,7 +386,6 @@ export class PlatformerGame_Client extends Game {
 					}
 					line += count;
 				}
-				ctx.font = `${fontSize}px Consolas`;
 				text += ' ';
 				for (var i = 0; i < go.components.length; i++) {
 					text += componentToken;
