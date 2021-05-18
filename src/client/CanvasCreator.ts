@@ -14,11 +14,9 @@ export class CanvasCreator {
 			//console.log(`Window resized to ${canvas.width}x${canvas.height}`);
 		});
 		document.body.appendChild(canvas);
-		document
-			.getElementById(canvas.id)
-			?.addEventListener('contextmenu', function(e) {
-				e.preventDefault();
-			});
+		document.getElementById(canvas.id)?.addEventListener('contextmenu', e => {
+			e.preventDefault();
+		});
 		document.body.style.overflow = 'hidden';
 		document.body.style.margin = '0';
 		document.body.style.cursor = 'none';

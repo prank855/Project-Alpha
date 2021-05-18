@@ -1,4 +1,4 @@
-import { NetworkEvent } from './NetworkData';
+import { NetworkEvent } from './NetworkEvent';
 
 export interface NetworkPacket {
 	events: NetworkEvent[];

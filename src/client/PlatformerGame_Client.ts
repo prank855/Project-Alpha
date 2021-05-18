@@ -1,3 +1,4 @@
+import { ClientNetworkManager } from './ClientNetworkManager';
 import { GuiBox } from './GUI/GuiBox';
 import { PlatformerCameraController } from './PlatformerCameraController';
 import { SpriteLayer } from './SpriteLayer';
@@ -36,6 +37,7 @@ export class PlatformerGame_Client extends Game {
 	setup() {
 		/*Main Menu Scene*/ {
 			let mainMenu = new Scene('Main Menu');
+
 			/*Camera Object*/ {
 				let camera = Scene.createGameObject('Camera');
 				let cam = new Camera();
@@ -43,6 +45,7 @@ export class PlatformerGame_Client extends Game {
 				camera.addComponent(cam);
 				mainMenu.addGameObject(camera);
 			}
+
 			/*Cursor Object*/ {
 				let cursor = Scene.createGameObject('Cursor');
 				cursor.addComponent(new CursorManager());
@@ -60,106 +63,136 @@ export class PlatformerGame_Client extends Game {
 				cursor.addComponent(cursorSpriteRender);
 				mainMenu.addGameObject(cursor);
 			}
+
 			/*GUI Object*/ {
 				let gui = Scene.createGameObject('GUI');
 				let dynMenu = new DynamicMenuMovement();
 				dynMenu.scale = new Vector2(2, 0.5);
 				gui.addComponent(dynMenu);
 				mainMenu.addGameObject(gui);
-				/*Menu Object*/ {
-					/*Menu Box Object*/ {
-						let menuBox = Scene.createGameObject('Menu Box');
-						let guiBox = new GuiBox();
-						guiBox.fillColor = 'Cornsilk';
-						guiBox.width = 240 * 1.5;
-						guiBox.height = 20 * 20;
-						menuBox.addComponent(guiBox);
-						gui.addChildGameObject(menuBox);
-					}
 
-					/*Menu Image Object*/ {
-						let menuImage = Scene.createGameObject('Menu Image');
-						let sr = new SpriteRenderer();
-						menuImage.addComponent(sr);
-						sr.setSprite(
-							new Sprite(
-								AssetManager.getImage('Smiley'),
-								SpriteLayer.GUI,
-								Align.CENTER,
-								5,
-								false
-							)
-						);
-						menuImage.transform.position.y = 100;
-						gui.addChildGameObject(menuImage);
-					}
+				/*Menu Box Object*/ {
+					let menuBox = Scene.createGameObject('Menu Box');
+					let guiBox = new GuiBox();
+					guiBox.fillColor = 'Cornsilk';
+					guiBox.width = 240 * 1.5;
+					guiBox.height = 20 * 20;
+					menuBox.addComponent(guiBox);
+					gui.addChildGameObject(menuBox);
+				}
 
-					/*Start Button Object*/ {
-						let button = Scene.createGameObject('Start Button');
-						gui.addChildGameObject(button);
-						/*GuiButton Component*/ {
-							let guiButton = new GuiButton();
-							guiButton.width = 200;
-							guiButton.hoverColor = 'DarkMagenta	';
-							guiButton.fillColor = 'Plum';
-							guiButton.hoverStrokeSize = 2;
-							guiButton.onClick = () => {
-								this.setScene('Game');
-							};
-							button.addComponent(guiButton);
-						}
-						/*GuiText Component*/ {
-							let guiText = new GuiText();
-							guiText.text = 'Start Game';
-							guiText.textFont = 'Impact';
-							guiText.textSize = 15;
-							guiText.textColor = 'White ';
-							guiText.textStroke = true;
-							guiText.textStrokeStyle = 'Black';
-							guiText.textStrokeSize = 2;
-							button.addComponent(guiText);
-						}
-					}
+				/*Menu Image Object*/ {
+					let menuImage = Scene.createGameObject('Menu Image');
+					let sr = new SpriteRenderer();
+					menuImage.addComponent(sr);
+					sr.setSprite(
+						new Sprite(
+							AssetManager.getImage('Smiley'),
+							SpriteLayer.GUI,
+							Align.CENTER,
+							5,
+							false
+						)
+					);
+					menuImage.transform.position.y = 100;
+					gui.addChildGameObject(menuImage);
+				}
 
-					/*GitHub Button Object*/ {
-						let button = Scene.createGameObject('GitHub Button');
-						button.transform.position.y = -40;
-						gui.addChildGameObject(button);
-						// GuiButton Component
-						{
-							let guiButton = new GuiButton();
-							guiButton.width = 200;
-							guiButton.hoverColor = 'DarkMagenta	';
-							guiButton.fillColor = 'Plum';
-							guiButton.hoverStrokeSize = 2;
-							guiButton.onClick = () => {
-								window.open(
-									'https://github.com/prank855/Project-Alpha',
-									'_blank'
-								);
-							};
-							button.addComponent(guiButton);
-						}
-						//GuiText Component
-						{
-							let guiText = new GuiText();
-							guiText.text = 'Open GitHub';
-							guiText.textFont = 'Impact';
-							guiText.textSize = 15;
-							guiText.textColor = 'White ';
-							guiText.textStroke = true;
-							guiText.textStrokeStyle = 'Black';
-							guiText.textStrokeSize = 2;
-							button.addComponent(guiText);
-						}
+				/*Singleplayer Button Object*/ {
+					let button = Scene.createGameObject('Start Button');
+					gui.addChildGameObject(button);
+					/*GuiButton Component*/ {
+						let guiButton = new GuiButton();
+						guiButton.width = 200;
+						guiButton.hoverColor = 'DarkMagenta	';
+						guiButton.fillColor = 'Plum';
+						guiButton.hoverStrokeSize = 2;
+						guiButton.onClick = () => {
+							this.setScene('Single Player Game');
+						};
+						button.addComponent(guiButton);
+					}
+					/*GuiText Component*/ {
+						let guiText = new GuiText();
+						guiText.text = 'Start Single Player Game';
+						guiText.textFont = 'Impact';
+						guiText.textSize = 15;
+						guiText.textColor = 'White ';
+						guiText.textStroke = true;
+						guiText.textStrokeStyle = 'Black';
+						guiText.textStrokeSize = 1;
+						button.addComponent(guiText);
+					}
+				}
+
+				/*Multiplayer Button Object*/ {
+					let button = Scene.createGameObject('Multiplayer Button');
+					button.transform.position.y = -40;
+					gui.addChildGameObject(button);
+					// GuiButton Component
+					{
+						let guiButton = new GuiButton();
+						guiButton.width = 200;
+						guiButton.hoverColor = 'DarkMagenta	';
+						guiButton.fillColor = 'Plum';
+						guiButton.hoverStrokeSize = 2;
+						guiButton.onClick = () => {
+							this.setScene('Multiplayer Game');
+						};
+						button.addComponent(guiButton);
+					}
+					//GuiText Component
+					{
+						let guiText = new GuiText();
+						guiText.text = 'Start Multiplayer Game (in dev)';
+						guiText.textFont = 'Impact';
+						guiText.textSize = 15;
+						guiText.textColor = 'White ';
+						guiText.textStroke = true;
+						guiText.textStrokeStyle = 'Black';
+						guiText.textStrokeSize = 1;
+						button.addComponent(guiText);
+					}
+				}
+
+				/*GitHub Button Object*/ {
+					let button = Scene.createGameObject('GitHub Button');
+					button.transform.position.y = -80;
+					gui.addChildGameObject(button);
+					// GuiButton Component
+					{
+						let guiButton = new GuiButton();
+						guiButton.width = 200;
+						guiButton.hoverColor = 'DarkMagenta	';
+						guiButton.fillColor = 'Plum';
+						guiButton.hoverStrokeSize = 2;
+						guiButton.onClick = () => {
+							window.open(
+								'https://github.com/prank855/Project-Alpha',
+								'_blank'
+							);
+						};
+						button.addComponent(guiButton);
+					}
+					//GuiText Component
+					{
+						let guiText = new GuiText();
+						guiText.text = 'Open GitHub';
+						guiText.textFont = 'Impact';
+						guiText.textSize = 15;
+						guiText.textColor = 'lightblue ';
+						guiText.textStroke = true;
+						guiText.textStrokeStyle = 'Black';
+						guiText.textStrokeSize = 1;
+						button.addComponent(guiText);
 					}
 				}
 			}
 
 			this.addScene(mainMenu);
 		}
-		/*Game Scene*/ {
-			let gameScene = new Scene('Game');
+		/*Singleplayer Game Scene*/ {
+			let gameScene = new Scene('Single Player Game');
 			/*Camera Object*/ {
 				let camera = Scene.createGameObject('Camera');
 				let cam = new Camera();
@@ -226,6 +259,43 @@ export class PlatformerGame_Client extends Game {
 
 			this.addScene(gameScene);
 		}
+		/*Multiplayer Game Scene*/ {
+			let multiGame = new Scene('Multiplayer Game');
+
+			/*Camera Object*/ {
+				let camera = Scene.createGameObject('Camera');
+				let cam = new Camera();
+				cam.controller = new PlatformerCameraController();
+				camera.addComponent(cam);
+				multiGame.addGameObject(camera);
+			}
+			/*Cursor Object*/ {
+				let cursor = Scene.createGameObject('Cursor');
+				cursor.addComponent(new CursorManager());
+				let cursorSpriteRender = new SpriteRenderer();
+				cursorSpriteRender.setSprite(
+					new Sprite(
+						AssetManager.getImage('Cursor'),
+						SpriteLayer.CURSOR,
+						Align.TOP_LEFT,
+						0.75,
+						false,
+						true
+					)
+				);
+				cursor.addComponent(cursorSpriteRender);
+				multiGame.addGameObject(cursor);
+			}
+			/**Network Manager */ {
+				let networkObj = Scene.createGameObject('Client Network Manager');
+				let netManager = new ClientNetworkManager();
+				netManager.serverAddress = 'ws://joshh.moe:8080';
+				networkObj.addComponent(netManager);
+				multiGame.addGameObject(networkObj);
+			}
+
+			this.addScene(multiGame);
+		}
 		this.setScene('Main Menu');
 	}
 	start() {}
@@ -277,6 +347,10 @@ export class PlatformerGame_Client extends Game {
 							t += ` +${child.children.length} more`;
 						}
 						ctx.font = `${fontSize * 0.8}px Consolas`;
+						t += ' ';
+						for (var i = 0; i < child.components.length; i++) {
+							t += '-';
+						}
 						ctx.fillText(
 							t,
 							pos.x + fontSize,
@@ -287,6 +361,10 @@ export class PlatformerGame_Client extends Game {
 					line += count;
 				}
 				ctx.font = `${fontSize}px Consolas`;
+				text += ' ';
+				for (var i = 0; i < go.components.length; i++) {
+					text += '-';
+				}
 				ctx.fillText(
 					`* ` + text,
 					pos.x + fontSize,

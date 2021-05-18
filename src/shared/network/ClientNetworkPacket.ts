@@ -1,4 +1,4 @@
-import { NetworkEvent } from './NetworkData';
+import { NetworkEvent } from './NetworkEvent';
 import { NetworkPacket } from './NetworkPacket';
 
 export class ClientNetworkPacket implements NetworkPacket {

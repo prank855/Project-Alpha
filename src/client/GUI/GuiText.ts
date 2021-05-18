@@ -20,6 +20,9 @@ export class GuiText extends GameComponent implements isGUI {
 
 	//TODO: cache text to canvas for performance :)
 
+	// private text : string = '';
+	// setText(text : String){ render temporary canvas with drawn text }
+
 	constructor() {
 		super('GuiText');
 	}

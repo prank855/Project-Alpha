@@ -26,7 +26,11 @@ export class Server {
 		let tickDelta = 1 / this.game.frameRate;
 		if (currTime - this.lastTime < tickDelta) {
 			if (currTime - this.lastTime + this.setIntervalError / 1000 < tickDelta) {
-				setTimeout(self.loop.bind(this));
+				setTimeout(
+					self.loop.bind(this),
+					1000 / this.game.frameRate -
+						((currTime - this.lastTime) * 1000 + this.setIntervalError)
+				);
 			} else {
 				setImmediate(self.loop.bind(this));
 			}
@@ -41,7 +45,7 @@ export class Server {
 		this.game.frame++;
 		this.game.update();
 
-		if (this.game.frame % (this.game.frameRate * 15) == 0) {
+		if (this.game.frame % (this.game.frameRate * 5) == 0) {
 			let b = 0;
 			for (let a of this.frameTimeList) {
 				b += a;

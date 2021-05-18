@@ -113,7 +113,11 @@ export class Client {
 					currTime - this.lastTime + this.setIntervalError / 1000 <
 					tickDelta
 				) {
-					setTimeout(self.loop.bind(this));
+					setTimeout(
+						self.loop.bind(this),
+						1000 / this.game.frameRate -
+							((currTime - this.lastTime) * 1000 + this.setIntervalError)
+					);
 				} else {
 					setImmediate(self.loop.bind(this));
 				}
@@ -175,7 +179,7 @@ export class Client {
 		}
 		if (this.game.frameRate == FrameRate.SMOOTH_FRAMERATE) {
 			if (this.blackFrameInsertion) {
-				requestAnimationFrame(function() {
+				requestAnimationFrame(() => {
 					self.ctx!.fillStyle = 'black';
 					self.ctx!.fillRect(0, 0, window.innerWidth, window.innerHeight);
 					requestAnimationFrame(self.loop.bind(self));
