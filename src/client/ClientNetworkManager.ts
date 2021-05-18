@@ -18,12 +18,13 @@ export class ClientNetworkManager extends GameComponent {
 
 	update() {
 		if (this.ws) {
-			if (this.isConnected == true) {
+			if (this.isConnected) {
 				//do stuff
 				for (var packet of this.incomingPackets) {
 					//this.controller.processIncomingPacket(packet);
 				}
 				//this.controller.processOutgoingPacket(this.outgoingPacket);
+				this.ws.send(JSON.stringify(this.outgoingPacket));
 			}
 		}
 	}
@@ -40,6 +41,10 @@ export class ClientNetworkManager extends GameComponent {
 			this.isConnected = false;
 			console.warn(`Disconnected from: ${this.serverAddress}`);
 			//TODO: retry connected after x seconds
+		};
+		this.ws.onmessage = msg => {
+			var data = JSON.parse(msg.data) as ServerNetworkPacket;
+			this.incomingPackets.push(data);
 		};
 	}
 }

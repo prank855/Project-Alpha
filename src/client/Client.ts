@@ -72,6 +72,7 @@ export class Client {
 
 		this.lastTime = Time.getCurrTime();
 		this.game.setup();
+		console.warn(`Game Started: ${this.game.gameName}`);
 		this.game.start();
 
 		var self = this;

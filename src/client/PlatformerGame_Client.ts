@@ -361,6 +361,7 @@ export class PlatformerGame_Client extends Game {
 				pos.y + fontSize * 3
 			);
 			let line = buffer;
+			var componentToken = '+';
 			for (let go of this.currentScene.getGameObjects()) {
 				let text = `${go.name}`;
 				var count = 0;
@@ -373,7 +374,7 @@ export class PlatformerGame_Client extends Game {
 						ctx.font = `${fontSize * 0.8}px Consolas`;
 						t += ' ';
 						for (var i = 0; i < child.components.length; i++) {
-							t += '-';
+							t += componentToken;
 						}
 						ctx.fillText(
 							t,
@@ -387,7 +388,7 @@ export class PlatformerGame_Client extends Game {
 				ctx.font = `${fontSize}px Consolas`;
 				text += ' ';
 				for (var i = 0; i < go.components.length; i++) {
-					text += '-';
+					text += componentToken;
 				}
 				ctx.fillText(
 					`* ` + text,

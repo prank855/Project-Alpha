@@ -1,3 +1,4 @@
+import { GameComponent } from './../shared/GameComponent';
 import { ServerNetworkManager } from './ServerNetworkManager';
 import { Scene } from './../shared/Scene';
 import { Game } from '../shared/Game';
@@ -20,6 +21,15 @@ export class PlatformerGame_Server extends Game {
 				networkManager.host();
 				networkObj.addComponent(networkManager);
 				serverGameScene.addGameObject(networkObj);
+			}
+			/**Game Container */ {
+				var gameContainerObj = Scene.createGameObject('Game Container');
+				let com = new GameComponent('ServerGameManager');
+				com.update = () => {
+					//TODO game loop
+				};
+				gameContainerObj.addComponent(com);
+				serverGameScene.addGameObject(gameContainerObj);
 			}
 		}
 		this.setScene('Server Game');
