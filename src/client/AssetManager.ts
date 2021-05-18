@@ -15,6 +15,9 @@ export class AssetManager {
 		var img = new Image();
 		img.src = imgSrc;
 		this.tasks.push(imageName);
+		img.onerror = () => {
+			throw `Could not find ${imgSrc}`;
+		};
 		img.onload = () => {
 			//TODO: implement better downscale method for better quality
 			var canvases: HTMLCanvasElement[] = [];

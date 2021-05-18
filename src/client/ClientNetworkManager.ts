@@ -3,7 +3,7 @@ import { ServerNetworkPacket } from './../shared/network/ServerNetworkPacket';
 import { GameComponent } from './../shared/GameComponent';
 export class ClientNetworkManager extends GameComponent {
 	private ws: WebSocket | null = null;
-	private isConnected: boolean = false;
+	isConnected: boolean = false;
 
 	private incomingPackets: ServerNetworkPacket[] = [];
 	private outgoingPacket: ClientNetworkPacket | null = null;
@@ -35,6 +35,11 @@ export class ClientNetworkManager extends GameComponent {
 		this.ws.onopen = () => {
 			this.isConnected = true;
 			console.warn(`Connected to: ${this.serverAddress}`);
+		};
+		this.ws.onclose = () => {
+			this.isConnected = false;
+			console.warn(`Disconnected from: ${this.serverAddress}`);
+			//TODO: retry connected after x seconds
 		};
 	}
 }

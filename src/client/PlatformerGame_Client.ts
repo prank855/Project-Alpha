@@ -1,3 +1,4 @@
+import { GameComponent } from './../shared/GameComponent';
 import { ClientNetworkManager } from './ClientNetworkManager';
 import { GuiBox } from './GUI/GuiBox';
 import { PlatformerCameraController } from './PlatformerCameraController';
@@ -285,6 +286,29 @@ export class PlatformerGame_Client extends Game {
 				);
 				cursor.addComponent(cursorSpriteRender);
 				multiGame.addGameObject(cursor);
+			}
+			/**Connecting To Server GUI */ {
+				let serverGUIObj = Scene.createGameObject('Server Connecting GUI');
+
+				//create custom inline component
+				let com = new GameComponent('ServerGUIComponent');
+				com.update = () => {
+					var netManager = com.parent?.scene
+						?.findGameObjectByName('Client Network Manager')
+						?.getComponent('ClientNetworkManager') as ClientNetworkManager;
+					if (netManager) {
+						var text = com.parent?.getComponent('GuiText') as GuiText;
+						if (text) {
+							text.text = `Connected to Server: ${netManager.isConnected}`;
+						}
+					}
+				};
+				serverGUIObj.addComponent(com);
+
+				let text = new GuiText();
+				serverGUIObj.addComponent(text);
+
+				multiGame.addGameObject(serverGUIObj);
 			}
 			/**Network Manager */ {
 				let networkObj = Scene.createGameObject('Client Network Manager');
