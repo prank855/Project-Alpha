@@ -1,3 +1,6 @@
+import { Util } from './../shared/Util';
+import { Time } from './../shared/Time';
+import { Input } from './Input';
 import { GameComponent } from './../shared/GameComponent';
 import { ClientNetworkManager } from './ClientNetworkManager';
 import { GuiBox } from './GUI/GuiBox';
@@ -18,6 +21,7 @@ import { CursorManager } from './CursorManager';
 import { GuiButton } from './GUI/GuiButton';
 import { Align } from './GUI/Align';
 import { GuiText } from './GUI/GuiText';
+import { InputAction } from '../shared/InputAction';
 
 export class PlatformerGame_Client extends Game {
 	frameRate = FrameRate.DYNAMIC_FRAMERATE;
@@ -33,6 +37,7 @@ export class PlatformerGame_Client extends Game {
 		AssetManager.loadImage('roadmap.png', 'Background');
 		AssetManager.loadImage('smiley.png', 'Smiley');
 		AssetManager.loadImage('cursor.png', 'Cursor');
+		AssetManager.loadImage('car.png', 'Car');
 	}
 
 	setup() {
@@ -228,7 +233,8 @@ export class PlatformerGame_Client extends Game {
 				background.addComponent(sr);
 				gameScene.addGameObject(background);
 			}
-			/*Player Object*/ {
+
+			/*Player Object {
 				let player = Scene.createGameObject('Player');
 				gameScene.addGameObject(player);
 				let nameObject = Scene.createGameObject('Name');
@@ -264,6 +270,90 @@ export class PlatformerGame_Client extends Game {
 					?.getComponent('Camera') as Camera;
 				cam.target = player;
 				cam.position = Vector2.copy(player.transform.position);
+			}
+			*/
+
+			/**Car Object */ {
+				var carObj = Scene.createGameObject('Car');
+				var carCom = new GameComponent('CarComponent') as any;
+				carCom.init = () => {
+					carCom.direction = 0;
+					carCom.speed = 50;
+					carCom.turnSpeed = 0.01;
+					carCom.acceleration = 0;
+					carCom.velocity = 0;
+				};
+				carCom.update = () => {
+					var inputs = Input.GetInputs();
+					if (inputs.includes(InputAction.MOVEMENT_LEFT)) {
+						carCom.direction +=
+							carCom.acceleration * carCom.turnSpeed * Time.deltaTime;
+					}
+					if (inputs.includes(InputAction.MOVEMENT_RIGHT)) {
+						carCom.direction -=
+							carCom.acceleration * carCom.turnSpeed * Time.deltaTime;
+					}
+					carCom.velocity = 0;
+					if (inputs.includes(InputAction.MOVEMENT_UP)) {
+						carCom.velocity = 1;
+					}
+					if (inputs.includes(InputAction.MOVEMENT_DOWN)) {
+						carCom.velocity = -1;
+					}
+					carCom.acceleration +=
+						carCom.velocity * carCom.speed * Time.deltaTime;
+
+					if (carCom.acceleration > 150) {
+						carCom.acceleration = 150;
+					}
+					if (carCom.acceleration < -150) {
+						carCom.acceleration = -150;
+					}
+
+					carCom.parent.transform.position.x +=
+						Math.cos(carCom.direction) * carCom.acceleration * Time.deltaTime;
+					carCom.parent.transform.position.y +=
+						Math.sin(carCom.direction) * carCom.acceleration * Time.deltaTime;
+					if (carCom.velocity == 0) {
+						if (carCom.acceleration > 0) {
+							carCom.acceleration -= Time.deltaTime * carCom.speed;
+							if (carCom.acceleration < 0) {
+								carCom.acceleration = 0;
+							}
+						} else {
+							carCom.acceleration += Time.deltaTime * carCom.speed;
+							if (carCom.acceleration > 0) {
+								carCom.acceleration = 0;
+							}
+						}
+					}
+
+					var spriteRenderer = carCom.parent.getComponent(
+						'SpriteRenderer'
+					) as SpriteRenderer;
+					if (spriteRenderer.sprite) {
+						spriteRenderer.sprite.rotation = -carCom.direction + Math.PI / 2;
+					}
+				};
+				var carSr = new SpriteRenderer();
+				carSr.setSprite(
+					new Sprite(
+						AssetManager.getImage('Car'),
+						SpriteLayer.FOREGROUND,
+						Align.CENTER,
+						1.5,
+						false
+					)
+				);
+				carObj.addComponent(carSr);
+				carObj.addComponent(carCom);
+				gameScene.addGameObject(carObj);
+				var cam = gameScene
+					.findGameObjectByName('Camera')
+					?.getComponent('Camera') as Camera;
+				cam.target = carObj;
+				cam.speed = 2;
+				cam.position = Vector2.copy(carObj.transform.position);
 			}
 
 			this.addScene(gameScene);

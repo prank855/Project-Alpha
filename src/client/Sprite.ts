@@ -58,13 +58,35 @@ export class Sprite {
 				if (this.width * camera.currZoom < this.image[i].width / 2) {
 					SpriteRenderer.drawCount++;
 
-					ctx?.drawImage(
-						this.image[i],
-						screenSpace.x - this.width * origin.x * camera.currZoom,
-						screenSpace.y - this.height * origin.y * camera.currZoom,
-						this.width * camera.currZoom,
-						this.height * camera.currZoom
-					);
+					if (this.rotation % (Math.PI * 2) != 0) {
+						ctx.save();
+						ctx.translate(
+							screenSpace.x -
+								this.width * origin.x * camera.currZoom +
+								this.width * origin.x * camera.currZoom,
+							screenSpace.y -
+								this.height * origin.y * camera.currZoom +
+								this.height * origin.y * camera.currZoom
+						);
+						ctx.rotate(this.rotation);
+
+						ctx?.drawImage(
+							this.image[i],
+							-this.width * origin.x * camera.currZoom,
+							-this.height * origin.y * camera.currZoom,
+							this.width * camera.currZoom,
+							this.height * camera.currZoom
+						);
+						ctx.restore();
+					} else {
+						ctx?.drawImage(
+							this.image[i],
+							screenSpace.x - this.width * origin.x * camera.currZoom,
+							screenSpace.y - this.height * origin.y * camera.currZoom,
+							this.width * camera.currZoom,
+							this.height * camera.currZoom
+						);
+					}
 
 					/*
 					if (ctx) {

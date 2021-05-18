@@ -56,7 +56,7 @@ export class Server {
 				'| Frame Rate:',
 				parseFloat((1 / (b / this.frameTimeList.length)).toFixed(2)),
 				'|',
-				parseFloat(Time.elapsedTime.toFixed(1)),
+				parseFloat(Time.elapsedTime.toFixed(0)),
 				'seconds |',
 				this.game.currentScene!.getGameObjectsLength(),
 				'objects'
