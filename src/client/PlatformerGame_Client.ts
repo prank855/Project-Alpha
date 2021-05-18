@@ -248,7 +248,14 @@ export class PlatformerGame_Client extends Game {
 				let image = AssetManager.getImage('Smiley');
 				let b = new SpriteRenderer();
 				b.setSprite(
-					new Sprite(image, SpriteLayer.FOREGROUND, Align.CENTER, 2, false)
+					new Sprite(
+						image,
+						SpriteLayer.FOREGROUND,
+						Align.CENTER,
+						2,
+						false,
+						false
+					)
 				);
 				player.addComponent(b);
 				player.addComponent(new MovementScript());
@@ -303,6 +310,7 @@ export class PlatformerGame_Client extends Game {
 							text.text = `Connection to Server: ${
 								netManager.isConnected ? 'Connected' : 'Connecting'
 							}`;
+							text.textColor = netManager.isConnected ? 'DodgerBlue' : 'Red';
 						}
 					}
 				};

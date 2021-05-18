@@ -169,7 +169,7 @@ export class Client {
 				10,
 				105
 			);
-			this.ctx!.fillText('Pool Size: ' + Scene.getPoolSize(), 10, 105 + 15);
+			this.ctx!.fillText('Obj Pool Size: ' + Scene.getPoolSize(), 10, 105 + 15);
 			this.ctx!.fillText(
 				'Current Scene: ' + this.game.currentScene.sceneName,
 				10,

@@ -1,3 +1,4 @@
+import { Time } from './../shared/Time';
 import { SpriteLayer } from './SpriteLayer';
 import { Vector2 } from '../shared/Vector2';
 import { Camera } from './Camera';
@@ -13,19 +14,22 @@ export class Sprite {
 	layer: SpriteLayer = SpriteLayer.FOREGROUND;
 	antialias: boolean = true;
 	screenSpace: boolean = false;
+	rotation: number = 0;
 	constructor(
 		image: HTMLCanvasElement[],
 		layer: SpriteLayer,
 		align: Align,
 		scale: number,
 		antialias?: boolean,
-		screenSpace?: boolean
+		screenSpace?: boolean,
+		rotation?: number
 	) {
 		this.image = image;
 		this.width = image[0].width * scale;
 		this.height = image[0].height * scale;
 		this.align = align;
 		this.layer = layer;
+		this.rotation = rotation || 0;
 		if (antialias != null) {
 			this.antialias = antialias;
 		}
@@ -53,6 +57,7 @@ export class Sprite {
 			for (var i = this.image.length - 1; i >= 0; i--) {
 				if (this.width * camera.currZoom < this.image[i].width / 2) {
 					SpriteRenderer.drawCount++;
+
 					ctx?.drawImage(
 						this.image[i],
 						screenSpace.x - this.width * origin.x * camera.currZoom,
@@ -77,13 +82,35 @@ export class Sprite {
 			}
 
 			SpriteRenderer.drawCount++;
-			ctx?.drawImage(
-				this.image[0],
-				screenSpace.x - this.width * origin.x * camera.currZoom,
-				screenSpace.y - this.height * origin.y * camera.currZoom,
-				this.width * camera.currZoom,
-				this.height * camera.currZoom
-			);
+			if (this.rotation % (Math.PI * 2) != 0) {
+				ctx.save();
+				ctx.translate(
+					screenSpace.x -
+						this.width * origin.x * camera.currZoom +
+						this.width * origin.x * camera.currZoom,
+					screenSpace.y -
+						this.height * origin.y * camera.currZoom +
+						this.height * origin.y * camera.currZoom
+				);
+				ctx.rotate(this.rotation);
+
+				ctx?.drawImage(
+					this.image[0],
+					-this.width * origin.x * camera.currZoom,
+					-this.height * origin.y * camera.currZoom,
+					this.width * camera.currZoom,
+					this.height * camera.currZoom
+				);
+				ctx.restore();
+			} else {
+				ctx?.drawImage(
+					this.image[0],
+					screenSpace.x - this.width * origin.x * camera.currZoom,
+					screenSpace.y - this.height * origin.y * camera.currZoom,
+					this.width * camera.currZoom,
+					this.height * camera.currZoom
+				);
+			}
 		}
 	}
 }
