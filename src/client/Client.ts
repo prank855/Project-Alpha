@@ -9,7 +9,6 @@ import { Scene } from '../shared/Scene';
 export class Client {
 	game: Game;
 	lastTime: number = Time.getCurrTime();
-	//TODO: use requestAnimFrame to dynamically grab refresh rate
 	blackFrameInsertion: boolean = false;
 	private debug: boolean = true;
 	performanceWindow: boolean = true;

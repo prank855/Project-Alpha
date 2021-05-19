@@ -1,4 +1,3 @@
-import { Time } from './../shared/Time';
 import { SpriteLayer } from './SpriteLayer';
 import { Vector2 } from '../shared/Vector2';
 import { Camera } from './Camera';
@@ -57,9 +56,15 @@ export class Sprite {
 			for (var i = this.image.length - 1; i >= 0; i--) {
 				if (this.width * camera.currZoom < this.image[i].width / 2) {
 					SpriteRenderer.drawCount++;
-
+					if (
+						this.width * camera.currZoom <= this.image[i].width &&
+						!this.antialias
+					) {
+						ctx.imageSmoothingEnabled = true;
+					}
 					if (this.rotation % (Math.PI * 2) != 0) {
 						ctx.save();
+
 						ctx.translate(
 							screenSpace.x -
 								this.width * origin.x * camera.currZoom +
@@ -104,8 +109,15 @@ export class Sprite {
 			}
 
 			SpriteRenderer.drawCount++;
+			if (
+				this.width * camera.currZoom <= this.image[0].width &&
+				!this.antialias
+			) {
+				ctx.imageSmoothingEnabled = true;
+			}
 			if (this.rotation % (Math.PI * 2) != 0) {
 				ctx.save();
+
 				ctx.translate(
 					screenSpace.x -
 						this.width * origin.x * camera.currZoom +

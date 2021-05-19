@@ -40,7 +40,7 @@ export class ClientNetworkManager extends GameComponent {
 		this.ws.onclose = () => {
 			this.isConnected = false;
 			console.warn(`Disconnected from: ${this.serverAddress}`);
-			//TODO: retry connected after x seconds
+			//TODO: retry connection after x seconds
 		};
 		this.ws.onmessage = msg => {
 			var data = JSON.parse(msg.data) as ServerNetworkPacket;

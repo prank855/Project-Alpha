@@ -7,6 +7,8 @@ import { CameraController } from './CameraController';
 export class Camera extends GameComponent {
 	currZoom: number = 1;
 	position: Vector2 = Vector2.zero();
+	//TODO: rotation
+	// rotation : number = 0;
 	target: GameObject | null = null;
 	boundBoxSize: number = 240;
 	speed: number = 1;

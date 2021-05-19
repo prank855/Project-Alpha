@@ -41,6 +41,42 @@ export class PlatformerGame_Client extends Game {
 	}
 
 	setup() {
+		/**Prefabs */ {
+			/**Player Prefab */ {
+				Scene.registerPrefab('Player', obj => {
+					let player = obj;
+					let nameObject = Scene.createGameObject('Name');
+					var guiText = new GuiText();
+					guiText.textFont = 'Ubuntu';
+					guiText.text = 'You';
+					guiText.textStroke = true;
+					nameObject.addComponent(guiText);
+					nameObject.transform.position.y = 20;
+
+					player.addChildGameObject(nameObject);
+
+					player.transform.position = new Vector2(
+						Math.random() * 400,
+						Math.random() * 400
+					);
+					let image = AssetManager.getImage('Smiley');
+					let b = new SpriteRenderer();
+					b.setSprite(
+						new Sprite(
+							image,
+							SpriteLayer.FOREGROUND,
+							Align.CENTER,
+							2,
+							false,
+							false
+						)
+					);
+					player.addComponent(b);
+					player.addComponent(new MovementScript());
+				});
+			}
+		}
+
 		/*Main Menu Scene*/ {
 			let mainMenu = new Scene('Main Menu');
 
@@ -228,50 +264,11 @@ export class PlatformerGame_Client extends Game {
 				let bgImage = AssetManager.getImage('Background');
 				let sr = new SpriteRenderer();
 				sr.setSprite(
-					new Sprite(bgImage, SpriteLayer.BACKGROUND, Align.CENTER, 0.5)
+					new Sprite(bgImage, SpriteLayer.BACKGROUND, Align.CENTER, 2, false)
 				);
 				background.addComponent(sr);
 				gameScene.addGameObject(background);
 			}
-
-			/*Player Object {
-				let player = Scene.createGameObject('Player');
-				gameScene.addGameObject(player);
-				let nameObject = Scene.createGameObject('Name');
-				var guiText = new GuiText();
-				guiText.textFont = 'Ubuntu';
-				guiText.text = 'You';
-				guiText.textStroke = true;
-				nameObject.addComponent(guiText);
-				nameObject.transform.position.y = 20;
-
-				player.addChildGameObject(nameObject);
-
-				player.transform.position = new Vector2(
-					Math.random() * 400,
-					Math.random() * 400
-				);
-				let image = AssetManager.getImage('Smiley');
-				let b = new SpriteRenderer();
-				b.setSprite(
-					new Sprite(
-						image,
-						SpriteLayer.FOREGROUND,
-						Align.CENTER,
-						2,
-						false,
-						false
-					)
-				);
-				player.addComponent(b);
-				player.addComponent(new MovementScript());
-				var cam = gameScene
-					.findGameObjectByName('Camera')
-					?.getComponent('Camera') as Camera;
-				cam.target = player;
-				cam.position = Vector2.copy(player.transform.position);
-			}
-			*/
 
 			/**Car Object */ {
 				var carObj = Scene.createGameObject('Car');
@@ -306,8 +303,8 @@ export class PlatformerGame_Client extends Game {
 					if (carCom.acceleration > 150) {
 						carCom.acceleration = 150;
 					}
-					if (carCom.acceleration < -150) {
-						carCom.acceleration = -150;
+					if (carCom.acceleration < -80) {
+						carCom.acceleration = -80;
 					}
 
 					carCom.parent.transform.position.x +=
@@ -341,7 +338,7 @@ export class PlatformerGame_Client extends Game {
 						AssetManager.getImage('Car'),
 						SpriteLayer.FOREGROUND,
 						Align.CENTER,
-						1.5,
+						0.75,
 						false
 					)
 				);
@@ -389,7 +386,10 @@ export class PlatformerGame_Client extends Game {
 				let serverGUIObj = Scene.createGameObject('Server Connecting GUI');
 
 				//create custom inline component
-				let com = new GameComponent('ServerGUIComponent');
+				let com = new GameComponent('ServerGUIComponent') as any;
+				com.init = () => {
+					com.delete = false;
+				};
 				com.update = () => {
 					var netManager = com.parent?.scene
 						?.findGameObjectByName('Client Network Manager')
@@ -401,6 +401,14 @@ export class PlatformerGame_Client extends Game {
 								netManager.isConnected ? 'Connected' : 'Connecting'
 							}`;
 							text.textColor = netManager.isConnected ? 'DodgerBlue' : 'Red';
+							if (com.parent) {
+								if (com.delete == false && netManager.isConnected) {
+									com.delete = true;
+									setTimeout(() => {
+										com.parent.delete = true;
+									}, 1500);
+								}
+							}
 						}
 					}
 				};
@@ -438,7 +446,7 @@ export class PlatformerGame_Client extends Game {
 	}
 
 	drawSceneHierarchy() {
-		let ctx = SpriteManager.layers[SpriteLayer.GUI].getContext('2d');
+		let ctx = SpriteManager.layers[SpriteLayer.DEBUG].getContext('2d');
 		if (ctx) {
 			let fontSize = 15;
 			let buffer = 5;

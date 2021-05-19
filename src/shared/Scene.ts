@@ -1,3 +1,4 @@
+import { Game } from './Game';
 import { GameObject } from './GameObject';
 import { Transform } from './Transform';
 
@@ -42,6 +43,10 @@ export class Scene {
 
 	addGameObject(go: GameObject) {
 		go.scene = this;
+		for (var child of go.children) {
+			//TODO: recursively go through all children of children
+			child.scene = this;
+		}
 		this.gameObjects.push(go);
 		//console.log(`Added GameObject ID ${go.id}, Name: ${go.name}`);
 	}
@@ -91,5 +96,28 @@ export class Scene {
 		for (let go of this.gameObjects) {
 			go.lateUpdate();
 		}
+	}
+
+	//TODO: test this, works, test more :)
+	private static prefabs: Map<string, (obj: GameObject) => any> = new Map();
+	static registerPrefab(
+		prefabName: string,
+		callback: (obj: GameObject) => any
+	) {
+		this.prefabs.set(prefabName, callback);
+	}
+	static getPrefab(prefabName: string): GameObject {
+		var obj = Scene.createGameObject(prefabName);
+		if (this.prefabs.has(prefabName)) {
+			var cb = this.prefabs.get(prefabName);
+			if (cb) {
+				cb(obj);
+			}
+		} else {
+			console.warn(
+				`Prefab of name ${prefabName} does not exist or was not properly registered.`
+			);
+		}
+		return obj;
 	}
 }

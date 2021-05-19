@@ -33,10 +33,15 @@ export class ServerNetworkManager extends GameComponent {
 		this.wss = new WebSocket.Server({ port: 8080 });
 		this.isHosted = true;
 		this.wss.on('connection', (ws, req) => {
-			console.log(`Connected Client : ${req.socket.remoteAddress?.substr(7)}`);
+			console.log(`Client Connected: ${req.socket.remoteAddress?.substr(7)}`);
 			ws.onmessage = msg => {
 				var data = JSON.parse(msg.data.toString()) as ClientNetworkPacket;
 				this.incomingPackets.push(data);
+			};
+			ws.onclose = msg => {
+				console.log(
+					`Client Disconnected: ${req.socket.remoteAddress?.substr(7)}`
+				);
 			};
 		});
 

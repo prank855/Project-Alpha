@@ -53,9 +53,6 @@ export class GameObject {
 	}
 
 	addChildGameObject(go: GameObject) {
-		if (this.scene == null) {
-			throw 'Game Object needs to be added to the scene before adding children.';
-		}
 		go.parent = this;
 		go.scene = this.scene;
 		this.children.push(go);

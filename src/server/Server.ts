@@ -45,7 +45,7 @@ export class Server {
 		this.game.frame++;
 		this.game.update();
 
-		if (this.game.frame % (this.game.frameRate * 10) == 0) {
+		if (this.game.frame % (this.game.frameRate * 60) == 0) {
 			let b = 0;
 			for (let a of this.frameTimeList) {
 				b += a;
