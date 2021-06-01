@@ -197,9 +197,39 @@ export class PlatformerGame_Client extends Game {
 					}
 				}
 
+				/*Rhythm Game? Button Object*/ {
+					let button = Scene.createGameObject('RhythmGame Button');
+					button.transform.position.y = -80;
+					gui.addChildGameObject(button);
+					// GuiButton Component
+					{
+						let guiButton = new GuiButton();
+						guiButton.width = 200;
+						guiButton.hoverColor = 'DarkMagenta	';
+						guiButton.fillColor = 'Plum';
+						guiButton.hoverStrokeSize = 2;
+						guiButton.onClick = () => {
+							this.setScene('Rhythm Game');
+						};
+						button.addComponent(guiButton);
+					}
+					//GuiText Component
+					{
+						let guiText = new GuiText();
+						guiText.text = 'Start Rhythm Game?';
+						guiText.textFont = 'Ubuntu';
+						guiText.textSize = 14;
+						guiText.textColor = 'White ';
+						guiText.textStroke = true;
+						guiText.textStrokeStyle = 'Black';
+						guiText.textStrokeSize = 1;
+						button.addComponent(guiText);
+					}
+				}
+
 				/*GitHub Button Object*/ {
 					let button = Scene.createGameObject('GitHub Button');
-					button.transform.position.y = -80;
+					button.transform.position.y = -120;
 					gui.addChildGameObject(button);
 					// GuiButton Component
 					{
@@ -428,6 +458,11 @@ export class PlatformerGame_Client extends Game {
 			}
 
 			this.addScene(multiGame);
+		}
+		/*Rhythm Game Scene */ {
+			let rhythmGameScene = new Scene('Rhythm Game');
+
+			this.addScene(rhythmGameScene);
 		}
 		this.setScene('Main Menu');
 	}

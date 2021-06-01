@@ -25,7 +25,7 @@ export class PlatformerCameraController extends CameraController {
 				(camera.target.transform.position.x - camera.position.x) *
 				Time.deltaTime *
 				camera.speed *
-				(1 / camera.zoom);
+				camera.zoom;
 			if (xv > 0) {
 				if (camera.position.x + xv > camera.target.transform.position.x) {
 					camera.position.x = camera.target.transform.position.x;
@@ -43,7 +43,7 @@ export class PlatformerCameraController extends CameraController {
 				(camera.target.transform.position.y - camera.position.y) *
 				Time.deltaTime *
 				camera.speed *
-				(1 / camera.zoom);
+				camera.zoom;
 			if (yv > 0) {
 				if (camera.position.y + yv > camera.target.transform.position.y) {
 					camera.position.y = camera.target.transform.position.y;
