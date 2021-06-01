@@ -156,7 +156,7 @@ export class PlatformerGame_Client extends Game {
 					}
 					/*GuiText Component*/ {
 						let guiText = new GuiText();
-						guiText.text = 'Start Single Player Game';
+						guiText.text = 'Start Car Game';
 						guiText.textFont = 'Ubuntu';
 						guiText.textSize = 14;
 						guiText.textColor = 'White ';
@@ -216,7 +216,7 @@ export class PlatformerGame_Client extends Game {
 					//GuiText Component
 					{
 						let guiText = new GuiText();
-						guiText.text = 'Start Rhythm Game?';
+						guiText.text = 'Start Rhythm Game? (dev)';
 						guiText.textFont = 'Ubuntu';
 						guiText.textSize = 14;
 						guiText.textColor = 'White ';
