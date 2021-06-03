@@ -14,6 +14,8 @@ export class Sprite {
 	antialias: boolean = true;
 	screenSpace: boolean = false;
 	rotation: number = 0;
+
+	//TODO: use direct properties instead of constructor :)
 	constructor(
 		image: HTMLCanvasElement[],
 		layer: SpriteLayer,
