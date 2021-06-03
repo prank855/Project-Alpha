@@ -1,11 +1,9 @@
-import { Game } from './Game';
 import { GameObject } from './GameObject';
 import { Transform } from './Transform';
 
 export class Scene {
 	sceneName: string;
 
-	//TODO: static/global object pooling
 	private gameObjects: GameObject[] = [];
 	private static filledPool: boolean = false;
 	private static gameObjectPool: GameObject[] = [];
@@ -44,7 +42,7 @@ export class Scene {
 	addGameObject(go: GameObject) {
 		go.scene = this;
 		for (var child of go.children) {
-			//TODO: recursively go through all children of children
+			//TODO: recursively go through all children of children... etc
 			child.scene = this;
 		}
 		this.gameObjects.push(go);

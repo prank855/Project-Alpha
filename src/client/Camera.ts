@@ -16,7 +16,6 @@ export class Camera extends GameComponent {
 	size: number = 500;
 	zoomSpeed: number = 1.5;
 	zoomFactor = 8;
-	//TODO: rotation
 
 	controller: CameraController | null = null;
 
