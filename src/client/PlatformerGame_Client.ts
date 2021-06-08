@@ -474,6 +474,7 @@ export class PlatformerGame_Client extends Game {
 			this.currentScene.update();
 		}
 		if (document.visibilityState == 'visible') {
+			//TODO: find way to process update/render at same time
 			SpriteManager.render();
 			this.drawSceneHierarchy();
 		}
